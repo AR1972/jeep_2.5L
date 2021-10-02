@@ -13,4 +13,27 @@ of 91-95 Jeep and Dodge vehicles. Please submit a PR if you heppen to find
 or aquire one.
 
 
+Capacitors:
+
+Replacment electrolytic capacitors for these ECU's can be purchased through
+Mouser, Digikey, etc. I prefer the Nichicon HE series with part numbers.
+
+UHE1V471MHD6, UHE1V221MPD for the 35 volt variant and UHE1E221MPD1TD, 
+UHE1E471MPD6TD for the 25 volt versions. Early ECU's had one 470uF and
+two 220uF capacitors, while later ECU's have three 220uF all versions
+used 25 volt capacitors, 35 volt capacitors have the advantage of being
+in stock and will have a longer service life due to operating well under
+half thier rated voltage.
+
+
+EEPROMS:
+
+These ECU's were equipped with EEPROMS from various manufactures most are
+supported by the TL866II programmer.
+
+Some ECU's were equipped with Toshiba TC97208P and TC97209P EEPROMS,
+these EEPROMS are explicitly supported by the vintage Needham EMP-20 with
+01A module, but can be read with the TL866II programmer with the help of
+a DIP28 socket, unchecking the 'Check ID' box. and reading the device as
+an Intel 27C256 for the TC97208P and Intel 27C512 for the TC98209P.
 

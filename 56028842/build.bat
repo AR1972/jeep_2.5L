@@ -1,6 +1,6 @@
 
 asm11.exe 56028842.asm -l
-mot2bin.exe 56028842.s19
+mot2bin.exe -P03F 56028842.s19 56028842.bin
 32k.exe 56028842.bin 32k_56028842.bin
 DEL 56028842.bin
 MOVE 32k_56028842.bin 56028842.BIN

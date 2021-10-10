@@ -1326,11 +1326,11 @@ loc_9D66:
         brset   <BitFlags29 $40 loc_9D78
 
 loc_9D75:
-        jmp loc_9DD7
+        jmp     loc_9DD7
 
 loc_9D78:
         ldaa    <b5C_IPL1_t3
-        bne loc_9DD7
+        bne     loc_9DD7
         ldaa    <MapVolts
         cmpa    byte_8A9F
         bcs     loc_9DD7
@@ -1702,10 +1702,10 @@ locret_9FEC:
 sub_9FED:
         ldaa    TL_ConfigurationFlags2
         bita    #$80
-        bne loc_9FF7
+        bne     loc_9FF7
 
 loc_9FF4:
-        jmp loc_A09B
+        jmp     loc_A09B
 
 loc_9FF7:
         brset   <StartupSwitchMirror1 1 loc_A078
@@ -2354,7 +2354,7 @@ loc_A403:
         jmp     loc_A59C
 
 loc_A41B:
-        jmp loc_A58E
+        jmp     loc_A58E
 
 loc_A41E:
         brclr   <b5C_IPL1_t3 $88 loc_A433
@@ -2371,9 +2371,9 @@ loc_A42F:
         rts
 
 loc_A433:
-        jsr sub_A5D4
+        jsr     sub_A5D4
         dex
-        bne loc_A43A
+        bne     loc_A43A
         rts
 
 loc_A43A:
@@ -3068,15 +3068,15 @@ loc_A892:
         jmp     loc_AA64
 
 loc_A8AE:
-        inc Counter_Cruise_1
+        inc     Counter_Cruise_1
         ldaa    Temp1_t3
         tab
         eora    PIA2_Buffer_t3_Temp
         anda    #$C0
-        beq loc_A913
+        beq     loc_A913
         brset   <BitFlags6a_t3 1 loc_A913
         bita    #$40
-        bne loc_A8C5
+        bne     loc_A8C5
         lsrb
 
 loc_A8C5:
@@ -3872,7 +3872,7 @@ loc_AD90:
         stab    <CruiseControlVar1
 
 loc_AD92:
-        jmp loc_AE35
+        jmp     loc_AE35
 
 loc_AD95:
         clra
@@ -4112,7 +4112,7 @@ loc_AF1D:
 ;---0x6DA bytes of padding removed---------------------------------------------
 ;------------------------------------------------------------------------------
 
-        org $B600
+ ORG $B600
 word_B600:  fdb $FFFF
         fcb $FF
         fcb $FF
@@ -4818,7 +4818,7 @@ sub_B914:
         subd    Temp4
         std     <VehicleSpeed_HB
         cli
-        bra     *+2
+        bra     loc_B92D
 
 loc_B92D:
         clra
@@ -5528,7 +5528,7 @@ loc_BD4A:
         brclr   <PIA2_Buffer_t3 2 loc_BD51
 
 loc_BD4E:
-        ldx #$811F
+        ldx     #$811F
 
 loc_BD51:
         ldaa    <EngineRPM_3D
@@ -6592,11 +6592,11 @@ loc_C43C:
 ;------------------------------------------------------------------------------
 
 AVG2_CalculateAverages2:
-        ldx #$864F
+        ldx     #$864F
         ldaa    <MapValueTemp1
         cmpa    <MapValue
-        bcc loc_C455
-        ldx #$91
+        bcc     loc_C455
+        ldx     #$91
 
 loc_C455:
         ldy     #$8A
@@ -7535,18 +7535,18 @@ loc_CA12:
 ;------------------------------------------------------------------------------
 
 DRBSerialToggles:
-        fcb   0
-        fcb   0
-        fcb   0
+        fcb $00
+        fcb $00
+        fcb $00
         fcb $20
         fcb $20
         fcb $30
         fcb $20
-        fcb   0
+        fcb $00
         fcb $20
         fcb $20
         fcb $20
-        fcb   0
+        fcb $00
         fcb $30
         fcb $30
         fcb $30
@@ -8259,14 +8259,14 @@ loc_CDD0:
         fcb $54
         fcb $59
         fcb $5A
-        fcb   6
+        fcb $06
         fcb $FF
         fcb $5B
         fcb $50
-        fcb   8
-        fcb  $A
-        fcb  $B
-        fcb  $D
+        fcb $08
+        fcb $0A
+        fcb $0B
+        fcb $0D
         fcb $46
         fcb $46
         fcb $FF
@@ -8560,13 +8560,13 @@ AtmClrOC2SetOC3SetOC4SetOC5:    fcb $BF
 AtmToggleOC3:                   fcb $10
 AtmToggleOC3_ForceCompare:      fcb $20
 AtmSetOC2ClrOC3SetOC4SetOC5:    fcb $EF
-AtmToggleOC4:                   fcb   4
+AtmToggleOC4:                   fcb $04
 AtmToggleOC4_ForceCompare:      fcb $10
 AtmSetOC2SetOC3ClrOC4SetOC5:    fcb $FB
         fcb $12
         fcb $27
         fcb $10
-        fcb   3
+        fcb $03
         fcb $7E
         fcb $D0
         fcb $9C
@@ -8667,7 +8667,7 @@ ATM_PTUIndicator:
         eora    #2
         staa    <PIA3_Buffer_t3
         staa    PIA3_Buffer_2_t3
-        bra     *+2
+        bra     ATM_SerialOut
 
 ATM_SerialOut:
         ldaa    <DRBPointer1
@@ -9148,7 +9148,7 @@ loc_D316:
         staa    <ErrorCodeUpdateKeyOnCount2
 
 loc_D320:
-        clr ErrorCodeUpdateKeyOnCount
+        clr     ErrorCodeUpdateKeyOnCount
 
 loc_D323:
         clra
@@ -9259,44 +9259,16 @@ loc_D3BE:
 ;------------------------------------------------------------------------------
 
 gw_PIA1AManipulation_Table2:
-        fcb 0
-        fcb   0
-        fcb 4
-        fcb   0
-        fcb $10
-        fcb $20
-        fcb 0
-        fcb $80
-        fcb 0
-        fcb   0
-        fcb $19
-        fcb   0
-        fcb $32
-        fcb  $C
-        fcb 0
-        fcb  $E
+        fcb $00, $00, $04, $00, $10, $20, $00, $80 
+        fcb $00, $00, $19, $00, $32, $0C, $00, $0E
 
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 
 gw_PIA1AManipulation_Table:
-        fcb 1
-        fcb   2
-        fcb 4
-        fcb   8
-        fcb $10
-        fcb $20
-        fcb 0
-        fcb   0
-        fcb $10
-        fcb $11
-        fcb $33
-        fcb $51
-        fcb $A
-        fcb $12
-        fcb 0
-        fcb   0
+        fcb $01, $02, $04, $08, $10, $20, $00, $00
+        fcb $10, $11, $33, $51, $0A, $12, $00, $00
 
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
@@ -9699,7 +9671,7 @@ loc_D6B4:
 
 loc_D6BA:
         ldx     <KeyOnOrEngineRunningTime
-        cpx #3
+        cpx     #3
         bls     loc_D6DE
         bclr    <Ram_05 $C0
         brclr   <PIA1_Buffer_t3 $40 loc_D6DD
@@ -9857,10 +9829,10 @@ locret_D794:
 sub_D795:
         anda    #$F
         ldab    ERRORCODERESETTIMERIN_UN_ERRORCODEIN_LN_VAR
-        beq loc_D7A4
+        beq     loc_D7A4
         andb    #$F
         cba
-        bne locret_D7AB
+        bne     locret_D7AB
         ldaa    ERRORCODERESETTIMERIN_UN_ERRORCODEIN_LN_VAR
 
 loc_D7A4:
@@ -9876,12 +9848,12 @@ loc_D7AC:
 
 loc_D7AE:
         deca
-        beq loc_D7B4
+        beq     loc_D7B4
         aslb
-        bra loc_D7AE
+        bra     loc_D7AE
 
 loc_D7B4:
-        clr ERRORCODERESETTIMERIN_UN_ERRORCODEIN_LN_VAR
+        clr     ERRORCODERESETTIMERIN_UN_ERRORCODEIN_LN_VAR
         comb
         sei
         andb    <b5C_IPL1_t3
@@ -12513,7 +12485,7 @@ DetermineNumberOfOverflowsBetweenSensorPulses_MM:
         bpl     loc_E717
         ldaa    0,x
         inca
-        beq loc_E717
+        beq     loc_E717
         staa    0,x
 
 loc_E717:
@@ -12745,7 +12717,7 @@ sub_E825:
         bclr    <Ram_30 $80
 
 loc_E83C:
-        clr CountdownTimerFromKeyOn
+        clr     CountdownTimerFromKeyOn
         cli
         rts
 
@@ -13036,7 +13008,7 @@ sub_EA06:
         stab    0,x
         inca
         staa    PPROG_EEPROMControlReg
-        ldy #$1652
+        ldy     #$1652
 
 loc_EA15:
         dey
@@ -14285,10 +14257,12 @@ loc_F216:
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 
+off_F21F:
         fdb InjectorPulsewidth_HB_Cyl1
         fdb InjectorPulsewidth_HB_Cyl3
         fdb InjectorPulsewidth_HB_Cyl4
         fdb InjectorPulsewidth_HB_Cyl2
+off_F227:
         fdb TOC3_Counter_OC3
         fdb InjectorPulsewidth_HB_Cyl3
         fdb InjectorPulsewidth_HB_Cyl1
@@ -14334,19 +14308,19 @@ loc_F250:
         bra     locret_F2C8
 
 loc_F25E:
-        ldx     #$F21F
+        ldx     #off_F21F
         brset   <BitFlags27 $80 loc_F268
-        ldx     #$F227
+        ldx     #off_F227
 
 loc_F268:
         ldab    <CylinderPointer
         aslb
         abx
         ldx     0,x
-        ldy     #$F233
+        ldy     #ToggleOC3
         cpx     #$101A
         beq     loc_F28F
-        ldy     #$F236
+        ldy     #ToggleOC2
         cpx     #$1018
         beq     loc_F28F
         ldd     <InjectorPulsewidth_HB
@@ -14742,7 +14716,7 @@ CrankInterrupt_CalculateFuel:
         bra     loc_F572
 
 loc_F546:
-        bra *+2
+        bra     loc_F548
 
 loc_F548:
         clra
@@ -15133,38 +15107,11 @@ loc_F7A7:
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 
-        fcb   4
-        fcb   4
-        fcb   4
-        fcb   4
-        fcb   3
-        fcb   3
-        fcb   3
-        fcb   3
-        fcb   2
-        fcb   2
-        fcb   2
-        fcb   2
-        fcb   1
-        fcb   1
-        fcb   1
-        fcb   1
-        fcb   3
-        fcb   2
-        fcb   2
-        fcb   2
-        fcb   2
-        fcb   1
-        fcb   1
-        fcb   1
-        fcb   1
-        fcb   1
-        fcb   1
-        fcb   1
-        fcb   1
-        fcb   1
-        fcb   1
-        fcb   1
+IRQ_tbl_1:
+        fcb $04, $04, $04, $04, $03, $03, $03, $03, $02, $02, $02, $02, $01, $01, $01, $01
+
+IRQ_tbl_2:
+        fcb $03, $02, $02, $02, $02, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01
 
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
@@ -15192,9 +15139,9 @@ loc_F7E0:
         bita    #$80
         bne     loc_F815
         bclr    <Ram_EC $40
-        ldx     #$F7B0
+        ldx     #IRQ_tbl_1
         brset   <BitFlags27 $40 loc_F806
-        ldx     #$F7C0
+        ldx     #IRQ_tbl_2
 
 loc_F806:
         ldab    <Ram_EC
@@ -15264,17 +15211,15 @@ loc_F865:
 ;------------------------------------------------------------------------------
 
  ORG $FFA1
-        fcb $FF
-        fcb $FF
-        fcb $3F
-        fcb $3F
+        fcb $FF, $FF
+ ORG $FFA5
         fcc '1994 COPYRIGHT CHRYSLER .'
-        fcb $80
-        fcb   2
-; end of 'ROM'
-; ===========================================================================
-; Segment type: Pure data
-        ; segment USER_VEC
+        fcb $80, $02
+
+;------------------------------------------------------------------------------
+;------------------------------------------------------------------------------
+;------------------------------------------------------------------------------
+
  ORG $FFC0
 RESERVFFC0: fcb $FF
 RESERVFFC1: fcb $FF
@@ -15319,5 +15264,4 @@ off_FFE0:   fdb I4_I5
         fdb NOCOP
         fdb CME
 off_FFFE:   fdb __RESET
-; end of 'USER_VEC'
-        end
+ END

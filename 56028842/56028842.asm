@@ -5515,7 +5515,7 @@ locret_BD33:
 
 sub_BD34:
         clr     Temp4
-        ldx     #$8083
+        ldx     #TL_Spark1A_RPMMAP
         ldaa    <BitFlags6d_t3
         bita    #$50
         bne     loc_BD51
@@ -5528,7 +5528,7 @@ loc_BD4A:
         brclr   <PIA2_Buffer_t3 2 loc_BD51
 
 loc_BD4E:
-        ldx     #$811F
+        ldx     #TL_Spark1B_RPMMAP
 
 loc_BD51:
         ldaa    <EngineRPM_3D
@@ -5540,7 +5540,7 @@ loc_BD51:
 loc_BD5C:
         staa    Temp5
         brclr   <IPL1 $10 loc_BD7B
-        ldx     #$81BC
+        ldx     #TL_Spark2A_RPMMAP
         ldaa    <EngineRPM_3D
         ldab    <MapValue2
         jsr     sub_E72F
@@ -6519,7 +6519,7 @@ loc_C38B:
         jsr     sub_E68D
         stab    <Ram_AC
         ldaa    <BatteryVolts
-        ldx     #$843E
+        ldx     #TL_TL_843E
         jsr     Lookup4ByteTable
         stab    <Ram_B1
         ldaa    <BatteryVolts

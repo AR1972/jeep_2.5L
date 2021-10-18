@@ -61,9 +61,7 @@ TL_RPM3DInputModifierFromRPM:
             fcb $2F, $90, $01, $05
             fcb $9C, $FF
 
-            fcb $FF, $FF, $FF, $FF
-            fcb $FF, $FF, $FF, $FF
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $0C, $FF ; 12 bytes of 0xFF
 
  ORG $806A
 TL_TL_806a:
@@ -273,7 +271,7 @@ byte_842A:  fcb $00
             fcb $58, $00, $00, $00
             fcb $FF, $00
 
-            fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+ DCB.B $0C, $FF ; 12 bytes of 0xFF
 
  ORG $843E
 tl_tl_843e:
@@ -297,13 +295,13 @@ tl_tl_843e:
             fcb $60, $40, $02, $00
             fcb $80, $80
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
             fcb $02
             fcb $00, $00, $00, $00
             fcb $FF, $00
 
-            fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+ DCB.B $0C, $FF ; 12 bytes of 0xFF
 
 TL_TL_8481: fdb $8000
 TL_TL_8483: fcb $D0
@@ -354,7 +352,7 @@ TL_RPM3DInputModifierFromRPM2:
             fcb $3E, $C0, $01, $57
             fcb $6D, $FF
 
-            fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+ DCB.B $0C, $FF ; 12 bytes of 0xFF
 
 TL_O2LoLimitForInMiddleDetermination:
             fcb $05
@@ -366,115 +364,7 @@ TL_O2LoLimitForInMiddleDetermination:
             fcb $18, $18, $18, $18, $18, $18, $18, $18, $18
             fcb $18, $18, $18, $18, $18, $18, $18, $18, $18
 
-            fcb $FF
-
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
+ DCB.B $6C, $FF ; 108 bytes of 0xFF
 
 TL_O2HiLimitForInMiddleDetermination:
             fcb $05
@@ -486,115 +376,8 @@ TL_O2HiLimitForInMiddleDetermination:
             fcb $20, $20, $20, $20, $20, $20, $20, $20, $20
             fcb $20, $20, $20, $20, $20, $20, $20, $20, $20
 
-            fcb $FF
-            
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
+ DCB.B $6C, $FF ; 108 bytes of 0xFF
+
 byte_8645:  fcb $0B
 byte_8646:  fcb $10
 byte_8647:  fcb $20
@@ -682,14 +465,14 @@ TL_SparkAdvanceAddedWhenRpmBelowControl_FromDeltaRpm:
             fcb $05, 00, $01, $6E
             fcb $0C, $0A
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_SparkAdvanceRetardedWhenRpmAboveControl_FromDeltaRpm:
             fcb $02
             fcb $05, $00, $FF, $9A
             fcb $0F, $FC
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_MinVoltageForAis:
 byte_86B6:  fcb $71
@@ -846,13 +629,13 @@ TL_AISDecel_FromBaro:
             fcb $C8, $EC, $00, $80
             fcb $F0, $00
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
             fcb $02
             fcb $0B, $00, $00, $00
             fcb $1B, $00
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_AISDecel_FromTemp:
             fcb $04
@@ -861,7 +644,7 @@ TL_AISDecel_FromTemp:
             fcb $A8, $10, $FF, $9A
             fcb $D0, $00
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_AdditionToControlMap:
             fcb $04
@@ -881,7 +664,7 @@ TL_TempTermForMapOffset_FromTemp:
             fcb $90, $FF, $00, $00
             fcb $C7, $FF
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_DecelAisOpenStepsFromNeg_FromDeltaMap:
             fcb $04
@@ -983,15 +766,15 @@ byte_886B:  fcb $40
             fcb $8A, $61, $00, $00
             fcb $8A, $A8
 
-            fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+ DCB.B $08, $FF ; 8 bytes of 0xFF
 
             fcb $04
             fcb $1F, $0F, $00, $F7
             fcb $74, $61, $00, $00
             fcb $8A, $61, $00, $00
             fcb $8A, $A8
-            
-            fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+
+ DCB.B $08, $FF ; 8 bytes of 0xFF
 
 TL_PTUMinLockTemperature:
 byte_88B1:  fcb $B8
@@ -1031,7 +814,7 @@ TL_LowerLimitForPTULock:
             fcb $64, $0F, $00, $00
             fcb $96, $0F
 
-            fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+ DCB.B $08, $FF ; 8 bytes of 0xFF
 
 TL_UpperLimitForPTUUnlock:
             fcb $04
@@ -1045,7 +828,7 @@ TL_LowerLimitForPTUUnlock:
             fcb $5E, $05, $00, $00
             fcb $96, $05
 
-            fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+ DCB.B $08, $FF ; 8 bytes of 0xFF
 
 byte_88F7:  fcb $50
 TL_TL_88E4: fcb $2D
@@ -1146,7 +929,7 @@ TL_CruiseControlVacRegularGainCurve_FromDeltaSpeed:
             fcb $80, $10, $00, $0C
             fcb $FF, $16
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_CruiseControlVacAcceleratedGainCurve_FromDeltaSpeed:
             fcb $04
@@ -1170,7 +953,7 @@ TL_CruiseControlAdditionalSetupPulseForResume_FromSpeedDifference:
             fcb $B0, $60, $FF, $00 
             fcb $D0, $40
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_CruiseControlAdditionalSetupPulseForResume_FromSpeedDifference2:
             fcb $04
@@ -1178,8 +961,8 @@ TL_CruiseControlAdditionalSetupPulseForResume_FromSpeedDifference2:
             fcb $84, $84, $00, $20
             fcb $94, $86, $00, $14
             fcb $C6, $8A
-            
-            fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+
+ DCB.B $10, $FF ; 16 bytes of 0xFF
 
 TL_CruiseControlSpeedGainFactor_FromSpeed:
             fcb $04
@@ -1206,35 +989,35 @@ TL_UnknownTableForCruiseControl1:
             fcb $20, $E8, $FE, $80
             fcb $30, $D0
 
-            fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+ DCB.B $08, $FF ; 8 bytes of 0xFF
 
 TL_UnknownTableForCruiseControl2:
             fcb $02
             fcb $A0, $03, $00, $18
             fcb $C0, $06
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_UnknownTableForCruiseControl3:
             fcb $02
             fcb $A8, $80, $FE, $ED
             fcb $D0, $55
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_UnknownTableForCruiseControl4:
             fcb $02
             fcb $60, $00, $00, $00
             fcb $40, $00
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_UnknownTableForCruiseControl5:
             fcb $02
             fcb $A8, $00, $00, $00
             fcb $D0, $00
 
-            fcb $FF, $FF, $FF, $FF
+ DCB.B $04, $FF ; 4 bytes of 0xFF
 
 byte_8A12:  fcb $02
             fcb $20, $0D
@@ -1460,159 +1243,14 @@ byte_8AB9:  fcb $DA
             fcb $05
             fcb $09
             fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $00
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
-            fcb $FF
+            fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
+            fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
+            fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
+            fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
+            fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
+
+ DCB.B $6C, $FF ; 108 bytes of 0xFF
+
 word_8B56:  fdb $0002
 
 ;------------------------------------------------------------------------------

@@ -1,11 +1,22 @@
 #include defines.inc
- ORG $8000
-#include data.inc
- ORG $9400
 
 ;------------------------------------------------------------------------------
+;---Begin Data-----------------------------------------------------------------
 ;------------------------------------------------------------------------------
+
+ ORG $8000
+#include data.inc
+
 ;------------------------------------------------------------------------------
+;---End Data-------------------------------------------------------------------
+;------------------------------------------------------------------------------
+
+
+;------------------------------------------------------------------------------
+;---Begin Code-----------------------------------------------------------------
+;------------------------------------------------------------------------------
+
+ ORG $9400
 
 XIRQ:
         ldab    #1
@@ -4112,521 +4123,15 @@ loc_AF1D:
 ;---0x6DA bytes of padding removed---------------------------------------------
 ;------------------------------------------------------------------------------
 
+;------------------------------------------------------------------------------
+;---Begin EEPROM---------------------------------------------------------------
+;------------------------------------------------------------------------------
+
  ORG $B600
-word_B600:  fdb $FFFF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-word_B610:  fdb $FFFF
-byte_B612:  fcb $FF
-        fcb $FF
-byte_B614:  fcb $FF
-byte_B615:  fcb $FF
-        fcb $FF
-        fcb $FF
-byte_B618:  fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-byte_B7E0:  fcb $FF
-byte_B7E1:  fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-byte_B7EF:  fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-        fcb $FF
-; end of 'EEPROM'
+#include eeprom.inc
 
 ;------------------------------------------------------------------------------
-;------------------------------------------------------------------------------
+;---End EEPROM-----------------------------------------------------------------
 ;------------------------------------------------------------------------------
 
  ORG $B800
@@ -11981,281 +11486,117 @@ loc_E416:
 ;------------------------------------------------------------------------------
 
 gb_AISTEP_BitPatternForAisControl:
-        fcb   6
-        fcb   5
-        fcb   9
-        fcb  $A
+        fcb $06, $05, $09, $0A
 
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 
 TL_TempForColdScaleFromA2D:
-        fcb   7
-        fcb   0
-        fcb $D3
-        fcb $FF
-        fcb $85
-        fcb $53
-        fcb $AB
-        fcb $FF
-        fcb $9D
-        fcb $D7
-        fcb $78
-        fcb $FF
-        fcb $55
-        fcb $E6
-        fcb $6E
-        fcb $FF
-        fcb $17
-        fcb $F1
-        fcb $64
-        fcb $FE
-        fcb $CD
-        fcb $F6
-        fcb $5E
-        fcb $FD
-        fcb $AB
-        fcb $FF
-        fcb $49
+        fcb $07
+        fcb $00, $D3, $FF, $85
+        fcb $53, $AB, $FF, $9D
+        fcb $D7, $78, $FF, $55
+        fcb $E6, $6E, $FF, $17
+        fcb $F1, $64, $FE, $CD
+        fcb $F6, $5E, $FD, $AB
+        fcb $FF, $49
 
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 
 TL_TempForHotScaleA2D:
-        fcb   4
-        fcb $42
-        fcb $FF
-        fcb $FF
-        fcb $55
-        fcb $57
-        fcb $F1
-        fcb $FF
-        fcb $75
-        fcb $C5
-        fcb $B5
-        fcb $FF
-        fcb $4F
-        fcb $FF
-        fcb $8D
+        fcb $04
+        fcb $42, $FF, $FF, $55
+        fcb $57, $F1, $FF, $75
+        fcb $C5, $B5, $FF, $4F
+        fcb $FF, $8D
 
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 
 TL_ScaleCoolantTemp:
-        fcb   9
-        fcb $58
-        fcb   0
-        fcb   1
-        fcb $86
-        fcb $6D
-        fcb $20
-        fcb   1
-        fcb $86
-        fcb $82
-        fcb $40
-        fcb   1
-        fcb $86
-        fcb $97
-        fcb $60
-        fcb   1
-        fcb $86
-        fcb $AC
-        fcb $80
-        fcb   1
-        fcb $86
-        fcb $C1
-        fcb $A0
-        fcb   1
-        fcb $86
-        fcb $D6
-        fcb $C0
-        fcb   1
-        fcb $86
-        fcb $EB
-        fcb $E0
-        fcb   1
-        fcb $8C
-        fcb $FF
-        fcb $FF
-        fcb   3
-        fcb $2F
-        fcb $99
-        fcb $FF
-        fcb $AF
-        fcb $CC
-        fcb $67
-        fcb $FF
-        fcb $7C
-        fcb $E9
-        fcb $58
-        fcb   5
-        fcb $15
-        fcb $FF
-        fcb $FE
-        fcb   0
-        fcb $1B
-        fcb $F3
-        fcb $FE
-        fcb $F3
-        fcb $2E
-        fcb $DF
-        fcb $FF
-        fcb $4A
-        fcb $4A
-        fcb $CB
-        fcb $FF
-        fcb $91
-        fcb $C8
-        fcb $94
+        fcb $09
+        fcb $58, $00, $01, $86
+        fcb $6D, $20, $01, $86
+        fcb $82, $40, $01, $86
+        fcb $97, $60, $01, $86
+        fcb $AC, $80, $01, $86
+        fcb $C1, $A0, $01, $86
+        fcb $D6, $C0, $01, $86
+        fcb $EB, $E0, $01, $8C
+        fcb $FF, $FF
+
+        fcb $03
+        fcb $2F, $99, $FF, $AF
+        fcb $CC, $67, $FF, $7C
+        fcb $E9, $58
+
+        fcb $05
+        fcb $15, $FF, $FE, $00
+        fcb $1B, $F3, $FE, $F3
+        fcb $2E, $DF, $FF, $4A
+        fcb $4A, $CB, $FF, $91
+        fcb $C8, $94
 
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 
 TL_ScaleChargeTemp: 
-        fcb   9
-        fcb $58
-        fcb   0
-        fcb   1
-        fcb $99
-        fcb $6C
-        fcb $20
-        fcb   1
-        fcb $99
-        fcb $80
-        fcb $40
-        fcb   1
-        fcb $99
-        fcb $94
-        fcb $60
-        fcb   1
-        fcb $99
-        fcb $A8
-        fcb $80
-        fcb   1
-        fcb $99
-        fcb $BC
-        fcb $A0
-        fcb   1
-        fcb $99
-        fcb $D0
-        fcb $C0
-        fcb   1
-        fcb $99
-        fcb $E4
-        fcb $E0
-        fcb   1
-        fcb $8C
-        fcb $F8
-        fcb $FF
+        fcb $09
+        fcb $58, $00, $01, $99
+        fcb $6C, $20, $01, $99
+        fcb $80, $40, $01, $99
+        fcb $94, $60, $01, $99
+        fcb $A8, $80, $01, $99
+        fcb $BC, $A0, $01, $99
+        fcb $D0, $C0, $01, $99
+        fcb $E4, $E0, $01, $8C
+        fcb $F8, $FF
 
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 
 TL_TempForScaleAmbientA2D:
-        fcb   6
-        fcb   5
-        fcb $FF
-        fcb $FC
-        fcb $C0
-        fcb $15
-        fcb $CB
-        fcb $FE
-        fcb $F8
-        fcb $32
-        fcb $AD
-        fcb $FF
-        fcb $83
-        fcb $6F
-        fcb $8F
-        fcb $FF
-        fcb $96
-        fcb $C8
-        fcb $6C
-        fcb $FF
-        fcb $56
-        fcb $E7
-        fcb $58
-        fcb   5
-        fcb $79
-        fcb $EC
-        fcb $FF
-        fcb $E4
-        fcb $82
-        fcb $EB
-        fcb $FF
-        fcb $A2
-        fcb $95
-        fcb $E4
-        fcb $FF
-        fcb $9A
-        fcb $AE
-        fcb $DA
-        fcb $FF
-        fcb $C8
-        fcb $B7
-        fcb $D8
-        fcb   5
-        fcb $79
-        fcb $ED
-        fcb $FF
-        fcb $E4
-        fcb $82
-        fcb $EC
-        fcb $FF
-        fcb $95
-        fcb $95
-        fcb $E4
-        fcb $FF
-        fcb $A4
-        fcb $AE
-        fcb $DB
-        fcb $FF
-        fcb $8F
-        fcb $B7
-        fcb $D7
-        fcb   5
-        fcb $79
-        fcb $EE
-        fcb $FF
-        fcb $C8
-        fcb $82
-        fcb $EC
-        fcb $FF
-        fcb $A2
-        fcb $95
-        fcb $E5
-        fcb $FF
-        fcb $9A
-        fcb $AE
-        fcb $DB
-        fcb $FF
-        fcb $AB
-        fcb $B7
-        fcb $D8
-        fcb   5
-        fcb $96
-        fcb $9C
-        fcb $FA
-        fcb   0
-        fcb $A2
-        fcb $54
-        fcb $FF
-        fcb   0
-        fcb $C2
-        fcb $34
-        fcb $FF
-        fcb $9C
-        fcb $E3
-        fcb $27
-        fcb $FF
-        fcb $B7
-        fcb $FF
-        fcb $1F
+        fcb $06
+        fcb $05, $FF, $FC, $C0
+        fcb $15, $CB, $FE, $F8
+        fcb $32, $AD, $FF, $83
+        fcb $6F, $8F, $FF, $96
+        fcb $C8, $6C, $FF, $56
+        fcb $E7, $58
+
+        fcb $05
+        fcb $79, $EC, $FF, $E4
+        fcb $82, $EB, $FF, $A2
+        fcb $95, $E4, $FF, $9A
+        fcb $AE, $DA, $FF, $C8
+        fcb $B7, $D8
+
+        fcb $05
+        fcb $79, $ED, $FF, $E4
+        fcb $82, $EC, $FF, $95
+        fcb $95, $E4, $FF, $A4
+        fcb $AE, $DB, $FF, $8F
+        fcb $B7, $D7
+
+        fcb $05
+        fcb $79, $EE, $FF, $C8
+        fcb $82, $EC, $FF, $A2
+        fcb $95, $E5, $FF, $9A
+        fcb $AE, $DB, $FF, $AB
+        fcb $B7, $D8
+
+        fcb $05
+        fcb $96, $9C, $FA, $00
+        fcb $A2, $54, $FF, $00
+        fcb $C2, $34, $FF, $9C
+        fcb $E3, $27, $FF, $B7
+        fcb $FF, $1F
 
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
@@ -15264,4 +14605,9 @@ off_FFE0:   fdb I4_I5
         fdb NOCOP
         fdb CME
 off_FFFE:   fdb __RESET
+
  END
+;------------------------------------------------------------------------------
+;---End Code-------------------------------------------------------------------
+;------------------------------------------------------------------------------
+

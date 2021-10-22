@@ -2,36 +2,37 @@
 
 TL_IDENT1:  fcb $01
             fcb $00
-            fcb $56
+unk_8002:   fcb $56
             fcb $02
             fcb $88
 byte_8005:  fcb $42
 byte_8006:  fcb $A2
-            fcb $56
+unk_8007:   fcb $56
             fcb $02
             fcb $88
             fcb $42
 byte_800B:  fcb $A2
             fcb $5D
-            fcb $4E
+unk_800D:   fcb $4E
             fcb $18
 byte_800F:  fcb $15
             fcb $88
 byte_8011:  fcb $02
 word_8012:  fdb $0182
 byte_8014:  fcb $FF
-TL_CONF01:  fcb $81
+TL_CONF01:
+byte_8015:  fcb $81
 TL_ConfigurationFlags2:
-            fcb $22
+byte_8016:  fcb $22
 
 TL_Amount_MINTHR_IsIncreasedAtKeyOnOnly:
-            fcb $03
+byte_8017:  fcb $03
 
 byte_8018:  fcb $10
 byte_8019:  fcb $02
 byte_801A:  fcb $01
 TL_ValueOf_MINTHR_WhenBatteryDisconnected:
-            fcb $5C
+byte_801B:  fcb $5C
 byte_801C:  fcb $26
 byte_801D:  fcb $4C
 byte_801E:  fcb $04
@@ -41,12 +42,14 @@ byte_8021:  fcb $00
 word_8022:  fdb $0000
 
 TL_TL_8024:
+unk_8024:
             fcb $05
             fcb $1F, $00, $00, $32
             fcb $3E, $06, $00, $42
             fcb $5D, $0E, $FF, $90
             fcb $7D, $00, $00, $29
             fcb $9C, $05
+
 byte_8037:  fcb $90
 byte_8038:  fcb $20
 
@@ -56,6 +59,7 @@ TL_RPMCellLookupTable:
 
  ORG $8053
 TL_RPM3DInputModifierFromRPM:
+unk_8053:
             fcb $03
             fcb $13, $00, $05, $25
             fcb $2F, $90, $01, $05
@@ -87,6 +91,7 @@ byte_8082:  fcb $05
 
  ORG $8083
 TL_Spark1A_RPMMAP:
+unk_8083:
             fcb $11 ; number of rows in table
             fcb $09 ; number of cols in table
             fcb $00 ; 00 = unsigned, 80/FF = signed
@@ -114,6 +119,7 @@ TL_Spark1A_RPMMAP:
 
  ORG $811F
 TL_Spark1B_RPMMAP:
+unk_811F:
             fcb $11
             fcb $09
             fcb $00
@@ -144,6 +150,7 @@ byte_81BB:  fcb $03
 
  ORG $81BC
 TL_Spark2A_RPMMAP:
+unk_81BC:
             fcb $11
             fcb $09
             fcb $00
@@ -170,15 +177,18 @@ TL_Spark2A_RPMMAP:
 ;-------------------------------------------------------------------------------
 
 TL_MapValFromRPMPtr:
+unk_8258:
             fcb $FF, $FF, $FF, $FF, $FF
 
 TL_TL_825d:
             fcb $FF, $FF, $98, $98, $98, $98, $98, $98, $98
 
 TL_TL_8266:
+unk_8266:
             fcb $28, $26, $24, $20, $20, $20, $20, $20, $1A
 
 TL_TL_826F:
+unk_826F:
             fcb $26, $24, $22, $20, $20, $1A, $14, $14, $14
 
 byte_8278:  fcb $D0
@@ -187,12 +197,16 @@ byte_827A:  fcb $14
 byte_827B:  fcb $1C
 
 TL_TL_827C:
+unk_827C:
             fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 TL_TL_8285:
+unk_8285:
             fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
-word_828E:  fcb $01, $B3, $02, $00, $FF, $00, $00, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+word_828E:  fdb $01B3
+
+            fcb $02, $00, $FF, $00, $00, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
             fcb $FF, $FF, $FF, $FF, $FF, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
             fcb $00
             
@@ -201,6 +215,7 @@ word_82AF:  fdb $30D4
 word_82B1:  fdb $7530
 
 TL_ColdLoad3DTableOffIdle:
+unk_82B3:
             fcb $11
             fcb $09
             fcb $00
@@ -223,6 +238,7 @@ TL_ColdLoad3DTableOffIdle:
             fcb $A0, $90, $E1, $D1, $C6, $BE, $B7, $DA, $AA
 
 TL_HotLoad3DTableOffIdle:
+unk_834F:
             fcb $11
             fcb $09
             fcb $00
@@ -245,28 +261,36 @@ TL_HotLoad3DTableOffIdle:
             fcb $4A, $4A, $4A, $55, $5F, $5E, $5F, $5F, $5F
 
 TL_TL_83EB:
+unk_83EB:
             fcb $D0, $A4, $74, $13, $0C, $0A, $04, $04, $04
 
 TL_TL_83F4:
+unk_83F4:
             fcb $14, $14, $14, $14, $10, $0A, $03, $03, $03
 
 TL_TL_83FD:
+unk_83FD:
             fcb $CA, $88, $58, $2A, $23, $0F, $05, $00, $00
 
 TL_TL_8406:
+unk_8406:
             fcb $50, $48, $34, $1E, $10, $08, $00, $00, $00
 
 TL_TL_840f:
+unk_840F:
             fcb $00, $00, $00, $00, $40, $60, $60, $80, $80
 
 TL_TL_8418:
+unk_8418:
             fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 TL_TL_8421:
+unk_8421:
             fcb $40, $40, $30, $30, $28, $20, $1A, $08, $08
 
 byte_842A:  fcb $00
 
+unk_842B:
             fcb $02
             fcb $58, $00, $00, $00
             fcb $FF, $00
@@ -275,6 +299,7 @@ byte_842A:  fcb $00
 
  ORG $843E
 tl_tl_843e:
+unk_843E:
             fcb $08
             fcb $61, $80, $FF, $30
             fcb $71, $73, $FD, $60
@@ -285,10 +310,13 @@ tl_tl_843e:
             fcb $E3, $03, $FF, $E5
             fcb $FF, $00
 
+unk_845D:
             fcb $F8, $C0, $70, $2D, $28, $25, $14, $14, $14
 
+unk_8466:
             fcb $CC, $CC, $CC, $CC, $CC, $CC, $E6, $FF, $FF
 
+unk_846F:
             fcb $04
             fcb $0C, $00, $00, $AB
             fcb $30, $18, $00, $D5
@@ -297,54 +325,66 @@ tl_tl_843e:
 
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
+unk_8482:
             fcb $02
             fcb $00, $00, $00, $00
             fcb $FF, $00
 
  DCB.B $0C, $FF ; 12 bytes of 0xFF
 
+word_8495:
 TL_TL_8481: fdb $8000
+byte_8497:
 TL_TL_8483: fcb $D0
+byte_8498:
 TL_TL_8484: fcb $D0
+byte_8499:
 TL_TL_8485: fcb $04
 
+unk_849A:
             fcb $10, $10, $10, $10, $12, $18, $1C, $1C, $1C
 
+unk_84A3:
             fcb $10, $10, $10, $0B, $08, $08, $04, $04, $04
 
+unk_84AC:
             fcb $20, $20, $20, $18, $18, $18, $18, $18, $18
 
+unk_84B5:
             fcb $CF, $A0, $7D, $32, $2A, $2A, $1C, $1C, $16
 
+unk_84BE:
             fcb $60, $50, $40, $40, $30, $30, $10, $10, $10
 
+unk_84C7:
             fcb $20, $20, $20, $20, $20, $40, $40, $40, $40
 
 TL_MapVoltsAverageFactors1:
-            fcb $80, $80
+unk_84D0:   fcb $80, $80
 
 byte_84D2:  fcb $96
 byte_84D3:  fcb $60
 byte_84D4:  fcb $9F
 
 TL_RPMAverageFactors1:
-            fcb $20, $20
+unk_84D5:    fcb $20, $20
 
 word_84D7:  fdb $0001
 word_84D9:  fdb $FFD6
 word_84DB:  fdb $0219
 byte_84DD:  fcb $99
 byte_84DE:  fcb $99
-            fcb $40
+unk_84DF:   fcb $40
             fcb $40
 byte_84E1:  fcb $F0
 
-            fcb $28, $28, $24, $1D, $18, $18, $18, $18, $18
+unk_84E2:   fcb $28, $28, $24, $1D, $18, $18, $18, $18, $18
 
 byte_84EB:  fcb $10
 word_84EC:  fdb $024F
 
 TL_RPM3DInputModifierFromRPM2:
+unk_84EE:
             fcb $05
             fcb $13, $00, $0A, $AB
             fcb $19, $40, $0A, $AB
@@ -355,6 +395,7 @@ TL_RPM3DInputModifierFromRPM2:
  DCB.B $0C, $FF ; 12 bytes of 0xFF
 
 TL_O2LoLimitForInMiddleDetermination:
+unk_850D:
             fcb $05
             fcb $09
             fcb $00
@@ -367,6 +408,7 @@ TL_O2LoLimitForInMiddleDetermination:
  DCB.B $6C, $FF ; 108 bytes of 0xFF
 
 TL_O2HiLimitForInMiddleDetermination:
+unk_85A9:
             fcb $05
             fcb $09
             fcb $00
@@ -388,18 +430,18 @@ byte_864B:  fcb $60
 byte_864C:  fcb $01
 byte_864D:  fcb $FE
 byte_864E:  fcb $29
-            fcb $40
+unk_864F:   fcb $40
 byte_8650:  fcb $0B
 byte_8651:  fcb $05
 byte_8652:  fcb $8C
-            fcb $C0
+unk_8653:   fcb $C0
 byte_8654:  fcb $0B
 byte_8655:  fcb $15
             fcb $20
 byte_8657:  fcb $26
 byte_8658:  fcb $10
 byte_8659:  fcb $A0
-            fcb $C0
+unk_865A:   fcb $C0
             fcb $C0
 byte_865C:  fcb $D6
 byte_865D:  fcb $08
@@ -408,12 +450,12 @@ byte_865F:  fcb $74
 byte_8660:  fcb $FF
 byte_8661:  fcb $01
 byte_8662:  fcb $38
-            fcb $10
+unk_8663:   fcb $10
             fcb $07
             fcb $A0
             fcb $00
             fcb $C0
-            fcb $08
+unk_8668:   fcb $08
             fcb $03
             fcb $90
             fcb $00
@@ -461,6 +503,7 @@ byte_869E:  fcb $1C
 byte_869F:  fcb $1C
 
 TL_SparkAdvanceAddedWhenRpmBelowControl_FromDeltaRpm:
+unk_86A0:
             fcb $02
             fcb $05, 00, $01, $6E
             fcb $0C, $0A
@@ -468,6 +511,7 @@ TL_SparkAdvanceAddedWhenRpmBelowControl_FromDeltaRpm:
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_SparkAdvanceRetardedWhenRpmAboveControl_FromDeltaRpm:
+unk_86AB:
             fcb $02
             fcb $05, $00, $FF, $9A
             fcb $0F, $FC
@@ -478,16 +522,19 @@ TL_MinVoltageForAis:
 byte_86B6:  fcb $71
 
 TL_BrakeOverrideForAis_FromDeltaThrottle:
+unk_86B7:
             fcb $03, $D0, $D0, $00, $00, $D0, $D0, $00, $00, $D0, $D0
 
 TL_AisStartupPosition_FromTemp:
+unk_86C2:
             fcb $05
             fcb $58, $E0, $FE, $66
             fcb $80, $A0, $FD, $CD
             fcb $A8, $48, $FF, $9A
             fcb $D0, $38, $00, $CD
             fcb $F8, $58
-            
+
+unk_86D5:
             fcb $03
             fcb $9A, $28, $FF, $7A
             fcb $C8, $10, $FF, $9A
@@ -500,6 +547,7 @@ byte_86E3:  fcb $D0
 byte_86E4:  fcb $EE
 
 TL_ACOffIdleDelta_FromSpeed:
+unk_86E5:
             fcb $04
             fcb $14, $11, $00, $00
             fcb $3C, $11, $00, $00
@@ -510,18 +558,21 @@ TL_AISAddedFromTimeEngRunning:
 byte_86F4:  fcb $00
 
 TL_AisColdPosition_FromTemp:
+unk_86F5:
             fcb $04
             fcb $68, $50, $FF, $55
             fcb $80, $40, $FF, $6B
             fcb $B0, $24, $FF, $07
             fcb $D5, $00
 
+unk_8704:
             fcb $03
             fcb $00, $00, $00, $00
             fcb $10, $00, $00, $00
             fcb $21, $00
 
 TL_AisPosition_FromThrottle:
+unk_870F:
             fcb $04
             fcb $00, $00, $00, $00
             fcb $02, $00, $00, $00
@@ -529,18 +580,21 @@ TL_AisPosition_FromThrottle:
             fcb $1E, $00
 
 TL_AisPosition_FromRpm:
+unk_871E:
             fcb $04
             fcb $1C, $08, $00, $00
             fcb $2E, $08, $00, $00
             fcb $3F, $08, $00, $00
             fcb $FF, $08
-            
+
+unk_872D:
             fcb $03
             fcb $9A, $50, $FF, $DF
             fcb $C8, $4A, $FF, $C0
             fcb $F0, $40
 
 TL_IdleSpeedParkNeutral_FromTemp:
+unk_8738:
             fcb $05
             fcb $58, $96, $FF, $86
             fcb $A8, $70, $FF, $86
@@ -549,6 +603,7 @@ TL_IdleSpeedParkNeutral_FromTemp:
             fcb $EE, $82
 
 TL_IdleSpeedDrive_FromTemp:
+unk_874B:
             fcb $05
             fcb $58, $96, $FF, $86
             fcb $A8, $70, $FF, $86
@@ -557,6 +612,7 @@ TL_IdleSpeedDrive_FromTemp:
             fcb $EE, $82
 
 TL_DecelAisBaseAirflowCurveOffset_FromTime2:
+unk_875E:
             fcb $03
             fcb $00, $00, $00, $00
             fcb $00, $00, $00, $00
@@ -566,6 +622,7 @@ byte_8769:  fcb $67
 byte_876A:  fcb $5D
 
 TL_ForwardAisSteps_NoSlope:
+unk_876B:
             fcb $05
             fcb $32, $01, $00, $00
             fcb $4B, $02, $00, $00
@@ -574,6 +631,7 @@ TL_ForwardAisSteps_NoSlope:
             fcb $96, $08
 
 TL_ReverseAisSteps_NoSlope:
+unk_877E:
             fcb $05
             fcb $40, $FF, $00, $00
             fcb $A0, $FF, $00, $00
@@ -585,11 +643,11 @@ byte_8791:  fcb $0A
 byte_8792:  fcb $0A
 byte_8793:  fcb $EB
 
-            fcb $1A, $1A, $1A, $1A, $1A, $1A, $16, $14, $14
+unk_8794:   fcb $1A, $1A, $1A, $1A, $1A, $1A, $16, $14, $14
 
 byte_879D:  fcb $25
 
-            fcb $1A, $1A, $1A, $1A, $1A, $1A, $16, $14, $14
+unk_879E:   fcb $1A, $1A, $1A, $1A, $1A, $1A, $16, $14, $14
 
 TL_AisPeriodForRpmFeedback11ms:
 byte_87A7:  fcb $38
@@ -598,8 +656,7 @@ TL_AisHighLimitMaxOpenSteps:
 byte_87A8:  fcb $DB
 
 TL_AisDelayAfterThrottleClosesWhenMoving:
-            fcb $40
-            fcb $50
+unk_87A9:   fcb $40, $50
 
 TL_UpdateRateOffIdleWhenAisClosing:
 byte_87AB:  fcb $7F
@@ -611,18 +668,21 @@ TL_AISAddedFromTimeEngRunning2:
 byte_87AD:  fcb $08
 
 TL_DeltaRpmChangeToUse_DRPNK_or_PNDRK:
+unk_87AE:
             fcb $03
             fcb $58, $F0, $00, $00
             fcb $A8, $F0, $00, $00
             fcb $F8, $F0
 
 TL_DeltaRpmChangeToUse_DRPNK_or_PNDRK2
+unk_87B9:
             fcb $03
             fcb $58, $10, $00, $00
             fcb $A8, $10, $00, $00
             fcb $F8, $10
 
 TL_AISDecel_FromBaro:
+unk_87C4:
             fcb $04
             fcb $9A, $E8, $00, $36
             fcb $AD, $EC, $00, $00
@@ -631,6 +691,7 @@ TL_AISDecel_FromBaro:
 
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
+unk_87D7:
             fcb $02
             fcb $0B, $00, $00, $00
             fcb $1B, $00
@@ -638,6 +699,7 @@ TL_AISDecel_FromBaro:
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_AISDecel_FromTemp:
+unk_87E2:
             fcb $04
             fcb $58, $30, $FF, $B3
             fcb $80, $24, $FF, $80
@@ -647,6 +709,7 @@ TL_AISDecel_FromTemp:
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_AdditionToControlMap:
+unk_87F5:
             fcb $04
             fcb $1F, $00, $00, $00
             fcb $46, $00, $00, $00
@@ -654,12 +717,14 @@ TL_AdditionToControlMap:
             fcb $BC, $00
 
 TL_OffsetCorrectionTo_MAPFLR_FromBaro:
+unk_8804:
             fcb $03
             fcb $00, $00, $00, $00
             fcb $8F, $00, $00, $00
             fcb $FF, $00
 
 TL_TempTermForMapOffset_FromTemp:
+unk_880F:
             fcb $02
             fcb $90, $FF, $00, $00
             fcb $C7, $FF
@@ -667,6 +732,7 @@ TL_TempTermForMapOffset_FromTemp:
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_DecelAisOpenStepsFromNeg_FromDeltaMap:
+unk_881A:
             fcb $04
             fcb $08, $00, $00, $80
             fcb $0C, $02, $00, $40
@@ -674,6 +740,7 @@ TL_DecelAisOpenStepsFromNeg_FromDeltaMap:
             fcb $18, $05
 
 TL_DecelAisOpenStepsFromPos_FromDeltaMap:
+unk_8829:
             fcb $04
             fcb $08, $00, $FF, $C0
             fcb $0C, $FF, $FF, $C0
@@ -729,7 +796,7 @@ byte_8859:  fcb $5A
 byte_885A:  fcb $46
 
 TL_FanTurnOnTempAbove45Mph:
-            fcb $E8
+unk_885B:   fcb $E8
 
 TL_FanTurnOnTempAbove45Mph2:
             fcb $E3
@@ -752,6 +819,7 @@ byte_8869:  fcb $00
 byte_886A:  fcb $06
 byte_886B:  fcb $40
 
+unk_886C:
             fcb $06
             fcb $1C, $24, $00, $E7
             fcb $3B, $40, $05, $C0
@@ -759,7 +827,8 @@ byte_886B:  fcb $40
             fcb $42, $6B, $00, $00
             fcb $54, $6B, $00, $00
             fcb $54, $A8
-            
+
+unk_8883:
             fcb $04
             fcb $1F, $0F, $00, $F7
             fcb $74, $61, $00, $00
@@ -768,6 +837,7 @@ byte_886B:  fcb $40
 
  DCB.B $08, $FF ; 8 bytes of 0xFF
 
+unk_889A:
             fcb $04
             fcb $1F, $0F, $00, $F7
             fcb $74, $61, $00, $00
@@ -792,7 +862,7 @@ TL_PTUDeltaTPSForUnlock:
 byte_88B5:  fcb $66
 
 TL_PTUMAPThresholdForLock1:
-            fcb $81, $18
+unk_88B6:   fcb $81, $18
 
 TL_PTUCounterHiSpeed:
 byte_88B8:  fcb $20
@@ -803,6 +873,7 @@ byte_88B9:  fcb $11
 byte_88BA:  fcb $00
 
 TL_UpperLimitForPTULock:
+unk_88BB:
             fcb $04
             fcb $64, $0F, $00, $00
             fcb $64, $2E, $00, $AB
@@ -817,6 +888,7 @@ TL_LowerLimitForPTULock:
  DCB.B $08, $FF ; 8 bytes of 0xFF
 
 TL_UpperLimitForPTUUnlock:
+unk_88D9:
             fcb $04
             fcb $5E, $05, $00, $00
             fcb $5E, $33, $00, $AB
@@ -831,6 +903,7 @@ TL_LowerLimitForPTUUnlock:
  DCB.B $08, $FF ; 8 bytes of 0xFF
 
 byte_88F7:  fcb $50
+byte_88F8:
 TL_TL_88E4: fcb $2D
 byte_88F9:  fcb $28
 byte_88FA:  fcb $0A
@@ -841,7 +914,7 @@ byte_88FE:  fcb $0F
 byte_88FF:  fcb $50
 byte_8900:  fcb $08
 
-            fcb $FF, $FF, $FF, $41, $41, $3F, $3C, $40, $40
+unk_8901:   fcb $FF, $FF, $FF, $41, $41, $3F, $3C, $40, $40
 
 byte_890A:  fcb $08
 byte_890B:  fcb $0D
@@ -915,6 +988,7 @@ TL_CruiseMask:
 byte_8933:  fcb $08
 
 TL_CruiseControlVentRegularGainCurve_FromDeltaSpeed:
+unk_8934:
             fcb $04
             fcb $00, $00, $FF, $FB
             fcb $30, $FF, $FF, $F6
@@ -922,6 +996,7 @@ TL_CruiseControlVentRegularGainCurve_FromDeltaSpeed:
             fcb $FF, $F2
 
 TL_CruiseControlVacRegularGainCurve_FromDeltaSpeed:
+unk_8943:
             fcb $05
             fcb $00, $00, $00, $30
             fcb $10, $03, $00, $1B
@@ -932,6 +1007,7 @@ TL_CruiseControlVacRegularGainCurve_FromDeltaSpeed:
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_CruiseControlVacAcceleratedGainCurve_FromDeltaSpeed:
+unk_895A:
             fcb $04
             fcb $00, $00, $01, $00
             fcb $10, $10, $00, $C0
@@ -939,6 +1015,7 @@ TL_CruiseControlVacAcceleratedGainCurve_FromDeltaSpeed:
             fcb $70, $30
 
 TL_CruiseControlSetupPulseForSet_FromSpeed:
+unk_8969:
             fcb $04
             fcb $00, $00, $00, $B3
             fcb $3C, $2A, $00, $1A
@@ -946,6 +1023,7 @@ TL_CruiseControlSetupPulseForSet_FromSpeed:
             fcb $6E, $30
 
 TL_CruiseControlAdditionalSetupPulseForResume_FromSpeedDifference:
+unk_8978:
             fcb $05
             fcb $00, $C0, $FF, $55
             fcb $30, $A0, $FF, $9A
@@ -956,6 +1034,7 @@ TL_CruiseControlAdditionalSetupPulseForResume_FromSpeedDifference:
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_CruiseControlAdditionalSetupPulseForResume_FromSpeedDifference2:
+unk_898F:
             fcb $04
             fcb $80, $80, $01, $00
             fcb $84, $84, $00, $20
@@ -965,6 +1044,7 @@ TL_CruiseControlAdditionalSetupPulseForResume_FromSpeedDifference2:
  DCB.B $10, $FF ; 16 bytes of 0xFF
 
 TL_CruiseControlSpeedGainFactor_FromSpeed:
+unk_89AE:
             fcb $04
             fcb $46, $04, $FF, $F3
             fcb $5A, $03, $FF, $F3
@@ -972,6 +1052,7 @@ TL_CruiseControlSpeedGainFactor_FromSpeed:
             fcb $82, $00
 
 TL_CruiseControlThrottleGainFactor_FromThrottle:
+unk_89BD:
             fcb $04
             fcb $00, $06, $00, $E0
             fcb $10, $14, $00, $90
@@ -979,12 +1060,14 @@ TL_CruiseControlThrottleGainFactor_FromThrottle:
             fcb $30, $20
 
 TL_UnknownTableForCruiseControl6:
+unk_89CC:
             fcb $03
             fcb $02, $18, $10, $00
             fcb $04, $38, $08, $00
             fcb $06, $48
 
 TL_UnknownTableForCruiseControl1:
+unk_89D7:
             fcb $02
             fcb $20, $E8, $FE, $80
             fcb $30, $D0
@@ -992,6 +1075,7 @@ TL_UnknownTableForCruiseControl1:
  DCB.B $08, $FF ; 8 bytes of 0xFF
 
 TL_UnknownTableForCruiseControl2:
+unk_89E6:
             fcb $02
             fcb $A0, $03, $00, $18
             fcb $C0, $06
@@ -999,6 +1083,7 @@ TL_UnknownTableForCruiseControl2:
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_UnknownTableForCruiseControl3:
+unk_89F1:
             fcb $02
             fcb $A8, $80, $FE, $ED
             fcb $D0, $55
@@ -1006,6 +1091,7 @@ TL_UnknownTableForCruiseControl3:
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_UnknownTableForCruiseControl4:
+unk_89FC:
             fcb $02
             fcb $60, $00, $00, $00
             fcb $40, $00
@@ -1013,6 +1099,7 @@ TL_UnknownTableForCruiseControl4:
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
 TL_UnknownTableForCruiseControl5:
+unk_8A07:
             fcb $02
             fcb $A8, $00, $00, $00
             fcb $D0, $00
@@ -1020,7 +1107,7 @@ TL_UnknownTableForCruiseControl5:
  DCB.B $04, $FF ; 4 bytes of 0xFF
 
 byte_8A12:  fcb $02
-            fcb $20, $0D
+unk_8A13:   fcb $20, $0D
 word_8A15:  fdb $000C
 word_8A17:  fdb $2000
 byte_8A19:  fcb $02
@@ -1028,12 +1115,14 @@ byte_8A1A:  fcb $02
 byte_8A1B:  fcb $80
 byte_8A1C:  fcb $00
 byte_8A1D:  fcb $00
-            fcb $10, $10, $10, $10, $10, $10, $10, $10, $10
+unk_8A1E:   fcb $10, $10, $10, $10, $10, $10, $10, $10, $10
 byte_8A27:  fcb $00
 byte_8A28:  fcb $00
-            fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
+
+unk_8A29:   fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 TL_ErrorBitsMask1:
+unk_8A32:
             fcb $26
             fcb $00, $00, $00, $00, $00
 byte_8A38:  fcb $04
@@ -1053,10 +1142,10 @@ TL_PowerLossLightMask3:
 byte_8A3C:  fcb $7E
 
 TL_TstatDiagnosticsMinTempToArmDiagnosticsAtStartup:
-            fcb $63
+byte_8A3D:   fcb $63
 
 TL_TstatDiagnosticsMaxTempToArmDiagnosticsAtStartup:
-            fcb $E4
+byte_8A3E:  fcb $E4
 
 TL_TstatDiagnosticsTemperatureGoalWithin_HOTIME:
 byte_8A3F:  fcb $CF
@@ -1071,22 +1160,22 @@ byte_8A43:  fcb $BD
 byte_8A44:  fcb $79
 
 TL_CoolantTempOutOfRangeLow:
-            fcb $1A
+byte_8A45:   fcb $1A
 
 TL_CoolantTempOutOfRangeHigh:
-            fcb $FD
+byte_8A46:   fcb $FD
 
 TL_DefaultCoolantTempRaw:
-            fcb $B1
+byte_8A47:   fcb $B1
 
 TL_ChargeTempOutOfRangeLow:
-            fcb $1A
+byte_8A48:   fcb $1A
 
 TL_ChargeTempOutOfRangeHigh:
-            fcb $FD
+byte_8A49:    fcb $FD
 
 TL_DefaultChargeTemp_Limpin:
-            fcb $B1
+byte_8A4A:  fcb $B1
 
 TL_BatteryVoltsDiagLimitOverTarget:
 byte_8A4B:  fcb $10
@@ -1143,6 +1232,7 @@ byte_8A60:  fcb $DC
 byte_8A61:  fcb $8C
 byte_8A62:  fcb $64
 byte_8A63:  fcb $CE
+byte_8A64:
 TL_t3_0xfd: fcb $AB
 
 TL_MapSensorLowerLimit:
@@ -1152,7 +1242,7 @@ TL_MapSensorUpperLimit:
 byte_8A66:  fcb $FD
 
 TL_MapSensorMiddleLimit:
-            fcb $66
+byte_8A67:  fcb $66
 
 TL_DeltaMapThatChecksGood:
 byte_8A68:  fcb $01
@@ -1164,6 +1254,7 @@ TL_DeltaMapThatChecksGoodX:
 byte_8A6A:  fcb $05
 
 TL_NotSure2:
+unk_8A6B:
             fcb $F0, $80, $50, $40, $30, $30, $20, $20, $20, $10, $10, $10, $10, $00, $00, $00
 
 TL_DisableMapCheckUnderThisRpm_600:
@@ -1185,12 +1276,15 @@ TL_CheckMapAtZeroSpeedAndThisBaroSwitch:
 byte_8A83:  fcb $CE
 
 TL_AllowMapToTestGoodThisNearBaro:
+unk_8A84:
             fcb $21
 
 TL_AllowMapToTestGoodThisNearBaro2:
+unk_8A85:
             fcb $10
 
 TL_LimpinTableForMapFromThrottle:
+unk_8A86:
             fcb $05
             fcb $00, $00, $07, $92
             fcb $07, $35, $04, $64
@@ -1240,6 +1334,7 @@ byte_8AB7:  fcb $FF
 byte_8AB8:  fcb $C0
 byte_8AB9:  fcb $DA
 
+unk_8ABA:
             fcb $05
             fcb $09
             fcb $00

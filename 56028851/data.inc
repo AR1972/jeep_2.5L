@@ -21,8 +21,9 @@ byte_8011:  fcb $02
 word_8012:  fdb $0582
 byte_8014:  fcb $00
 ;------------------------------------------------------------------------------
-; bit 7: 0 = 6 cylinder, 1 = 4 cylinder
-; bit 6: 1 = radiator fan ???
+; bit 8: 0 = 6 cylinder, 1 = 4 cylinder
+; bit 7: 1 = radiator fan ???
+; bit 6: unknown
 ; bit 5: unknown
 ; bit 4: unknown
 ; bit 3: unknown

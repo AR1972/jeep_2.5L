@@ -1,3 +1,4 @@
+baseaddr equ $6000 ;base offset for external RAM
 #include defines.inc
  ORG $8000
 #include data.inc
@@ -38,14 +39,14 @@ loc_9416:
 		ldd	7,x
 		std	<Ram_01
 		std	Temp1
-		lds	#$64FF
+		lds	#TopOfStack
 		clr	MinimumTimerCountBeforeMainloopCanContinue
 		clr	Ram_04
 		bra	loc_94A2
 
 CME:
 		sei
-		lds	#$64FF
+		lds	#TopOfStack
 		ldd	#$2A9
 		staa	TMSK2_TimerInterruptMask2
 		stab	OPTION_SysConfigOptionReg
@@ -75,7 +76,7 @@ loc_9468:
 
 __RESET:
 		sei
-		lds	#$64FF
+		lds	#TopOfStack
 		ldd	#$2A9
 		staa	TMSK2_TimerInterruptMask2
 		stab	OPTION_SysConfigOptionReg
@@ -218,7 +219,7 @@ loc_9586:
 loc_9598:
 		inx
 		stab	0,x
-		cpx	#$64C8
+		cpx	#STe_64C8
 		bcs	loc_9598
 		ldaa	#$E5
 		staa	<PIA3_Buffer_t3
@@ -696,7 +697,7 @@ loc_9926:
 		staa	ADCTL_A2DControlReg
 		ldd	Temp0
 		ldx	#Counter_TimerPastHalfwayBetweenCamPulses
-		ldy	#$649E
+		ldy	#Temp5
 		jsr	sub_E703
 		cmpa	#$10
 		bcs	loc_995A
@@ -739,7 +740,7 @@ loc_996F:
 		ldd	TCNT_Counter_FreeRunning16bit
 		lsld
 		ldx	#Counter_TimerRegHalfOverflowBetweenSpeedoPulses
-		ldy	#$649E
+		ldy	#Temp5
 		jsr	sub_E703
 
 loc_9991:
@@ -3952,7 +3953,7 @@ loc_AE80:
 		ldaa	byte_8A12
 		staa	Ram64c3
 		ldx	#unk_8A13
-		ldy	#$64C4
+		ldy	#Ram64c4
 		ldd	<EngineRpm_HB
 		subd	UNe_64C1
 		lsld
@@ -7069,7 +7070,7 @@ DRB_CheckSpecialProgramSize:
 		bne	loc_CB2A
 		ldab	<DRBPointer3
 		abx
-		cpx	#$64D0
+		cpx	#UNk_64D0
 		bcs	loc_CB2A
 		ldaa	#$FF
 		staa	DRB_ProgramModeFlag
@@ -10014,7 +10015,7 @@ loc_DDAE:
 		rts
 
 sub_DDB8:
-		ldy	#$6485
+		ldy	#LDXi_6485
 		brset	<DRBSerialMode $80 loc_DE29
 		brclr	<DRBSerialMode $40 loc_DE29
 		ldaa	BAUD_SerialBaudRate
@@ -10307,7 +10308,7 @@ loc_DFAB:
 		jmp	loc_E065
 
 loc_DFB5:
-		ldx	#$64D0
+		ldx	#UNk_64D0
 		ldy	#$DFD8
 
 loc_DFBC:
@@ -10317,7 +10318,7 @@ loc_DFBC:
 		iny
 		cpy	#$DFF5
 		bne	loc_DFBC
-		ldx	#$64D0
+		ldx	#UNk_64D0
 		ldy	FDRVar3
 		jsr	0,x
 		ldx	#FDRVar0
@@ -11161,12 +11162,12 @@ unk_E546:
         fcb $D6, $C0, $01, $86
         fcb $EB, $E0, $01, $8C
         fcb $FF, $FF
-        
+
 		fcb $03
         fcb $2F, $99, $FF, $AF
         fcb $CC, $67, $FF, $7C
         fcb $E9, $58
-        
+
 		fcb $05
         fcb $15, $FF, $FE, $00
         fcb $1B, $F3, $FE, $F3

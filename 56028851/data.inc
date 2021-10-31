@@ -22,7 +22,7 @@ word_8012:  fdb $0582
 byte_8014:  fcb $00
 ;------------------------------------------------------------------------------
 ; bit 8: 0 = 6 cylinder, 1 = 4 cylinder
-; bit 7: 1 = radiator fan ???
+; bit 7: 1 = 6 cylinder, 0 = 4 cylinder
 ; bit 6: unknown
 ; bit 5: unknown
 ; bit 4: unknown
@@ -30,7 +30,7 @@ byte_8014:  fcb $00
 ; bit 2: unknown
 ; bit 1: 1 = manual transmission, 0 = auto transmission ???
 TL_CONF01:
-byte_8015:  fcb %01000001
+byte_8015:  fcb %01000000+TransType
 ;------------------------------------------------------------------------------
 TL_ConfigurationFlags2:
 byte_8016:  fcb $26

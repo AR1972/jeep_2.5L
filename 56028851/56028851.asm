@@ -1,4 +1,9 @@
-baseaddr equ $6000 ;base offset for external RAM
+;base address for TI chip, correct values are $0000
+;for 8 cylinder ECU, $6000 for 4,6 cylinder ECU
+BaseAddr equ $6000
+;config for transmission type, correct values are ATX for
+;automatic transmission, MTX for manual transmission.
+TransType equ MTX
 #include defines.inc
  ORG $8000
 #include data.inc

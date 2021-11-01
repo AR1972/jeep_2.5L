@@ -6,6 +6,7 @@ BaseAddr equ $6400
 ;automatic transmission, MTX for manual transmission.
 TransType equ MTX
 #include defines.inc
+ DCB.B $8000, $00 ; null bytes for 64k EEPROM
  ORG $8000
 #include data.inc
  ORG $9400

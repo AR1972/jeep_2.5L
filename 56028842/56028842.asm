@@ -1,6 +1,6 @@
-;base address for TI chip, correct values are $0400
-;for 8 cylinder ECU, $6400 for 4,6 cylinder ECU and
-;$6000 for 93 and earlyier ECU's.
+;base address for TI chip, correct values are $0400 for 94
+;and later 8 cylinder ECU's, $6400 for 94 and later 4,6
+;cylinder ECU's and $6000 for 93 and earlier ECU's.
 BaseAddr equ $6400
 ;config for transmission type, correct values are ATX for
 ;automatic transmission, MTX for manual transmission.

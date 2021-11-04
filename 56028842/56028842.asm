@@ -1,12 +1,16 @@
+ DCB.B $8000, $00 ; null bytes for 64k EEPROM
+#include defines.inc
+#include eeprom.inc
+;
 ;base address for TI chip, correct values are $0400 for 94
 ;and later 8 cylinder ECU's, $6400 for 94 and later 4,6
 ;cylinder ECU's and $6000 for 93 and earlier ECU's.
 BaseAddr equ $6400
+;
 ;config for transmission type, correct values are ATX for
 ;automatic transmission, MTX for manual transmission.
 TransType equ MTX
-#include defines.inc
- DCB.B $8000, $00 ; null bytes for 64k EEPROM
+;
  ORG $8000
 #include data.inc
  ORG $9400
@@ -1519,7 +1523,7 @@ sub_9EDC:
 
 loc_9EE6:
 		brset	<BitFlags6a_t3 $40 locret_9F30
-		ldd	word_B610
+		ldd	byte_B610
 		cpd	#$5AA5
 		beq	loc_9EF8
 
@@ -4046,7 +4050,7 @@ loc_AF1D:
 		rts
 
  ORG $B600
-#include eeprom.inc
+ DCB.B $200, $FF
 
  ORG $B800
 sub_B800:
@@ -10860,7 +10864,7 @@ CCD_TargetIdleSPeed:
 		jmp	CCD_CCDBusOutputStatus
 
 loc_E344:
-		ldd	word_B600
+		ldd	byte_B600
 		lsld
 		lsld
 		staa	Temp3

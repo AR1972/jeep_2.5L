@@ -9,7 +9,7 @@ BaseAddr equ $6400
 ;
 ;config for transmission type, correct values are ATX for
 ;automatic transmission, MTX for manual transmission.
-TransType equ MTX
+TransType equ ATX
 ;
  ORG $8000
 #include data.inc

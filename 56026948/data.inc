@@ -32,7 +32,7 @@ byte_8014:  fcb $00
 ; bit 1: 1 = manual transmission, 0 = auto transmission
 
 TL_CONF01:
-byte_8015:  fcb %01000000+%00000000
+byte_8015:  fcb %01000000+TransType
 ;------------------------------------------------------------------------------
 ; bit 8: unknown
 ; bit 7: unknown

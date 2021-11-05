@@ -1,6 +1,7 @@
 
 
-TL_IDENT1:  fcb $01
+TL_IDENT1:
+byte_8000:  fcb $01
             fcb $00
 unk_8002:   fcb $56
             fcb $02
@@ -28,23 +29,32 @@ byte_8014:  fcb $00
 ; bit 4: unknown
 ; bit 3: unknown
 ; bit 2: unknown
-; bit 1: 1 = manual transmission, 0 = auto transmission ???
+; bit 1: 1 = manual transmission, 0 = auto transmission
+
 TL_CONF01:
 byte_8015:  fcb %01000000+TransType
 ;------------------------------------------------------------------------------
+; bit 8: unknown
+; bit 7: unknown
+; bit 6: 1 = manual transmission, 0 = auto transmission
+; bit 5: unknown
+; bit 4: unknown
+; bit 3: unknown
+; bit 2: unknown
+; bit 1: unknown
+
 TL_ConfigurationFlags2:
-byte_8016:  fcb $26
+byte_8016:  fcb %00100000+%00000110
+;------------------------------------------------------------------------------
 
 TL_Amount_MINTHR_IsIncreasedAtKeyOnOnly:
 byte_8017:  fcb $03
-
 byte_8018:  fcb $10
 byte_8019:  fcb $02
 byte_801A:  fcb $01
 
 TL_ValueOf_MINTHR_WhenBatteryDisconnected:
 byte_801B:  fcb $39
-
 byte_801C:  fcb $26
 byte_801D:  fcb $4C
 byte_801E:  fcb $05
@@ -81,13 +91,12 @@ unk_8053:
         fcb $9C, $FF
 
  ORG $806A
-TL_TL_806a:
-        fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+TL_TL_806a: fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 word_8072:  fdb $262
 byte_8074:  fcb $5A
             fcb $00
-word_8076:  fdb $02
+word_8076:  fdb $0002
 byte_8078:  fcb $62
             fcb $5A
 word_807A:  fdb $37CD
@@ -98,10 +107,6 @@ byte_807F:  fcb $14 ;North America
 byte_8080:  fcb $02
 byte_8081:  fcb $0C
 byte_8082:  fcb $04
-
-;-------------------------------------------------------------------------------
-;-------------------------------------------------------------------------------
-;-------------------------------------------------------------------------------
 
  ORG $8083
 ; North America
@@ -130,7 +135,7 @@ unk_8083:
 
 ; Europe
 ;unk_8083:
-;        fcb $11
+;       fcb $11
 ;       fcb $09
 ;       fcb $00
 ;       fcb $1C, $1C, $1C, $1C, $1C, $14, $14, $14, $14
@@ -150,10 +155,6 @@ unk_8083:
 ;       fcb $1C, $38, $56, $4E, $4C, $44, $3B, $36, $28
 ;       fcb $1C, $38, $56, $5A, $54, $3F, $40, $36, $30
 ;       fcb $1C, $38, $56, $5C, $50, $3E, $42, $40, $2A
-
-;-------------------------------------------------------------------------------
-;-------------------------------------------------------------------------------
-;-------------------------------------------------------------------------------
 
 TL_Spark1B_RPMMAP:
 unk_811F:
@@ -177,10 +178,6 @@ unk_811F:
         fcb $1C, $38, $4A, $5C, $4A, $44, $3E, $34, $22
         fcb $1C, $38, $40, $5C, $48, $42, $3E, $34, $20
         fcb $1C, $38, $40, $56, $4C, $44, $3C, $34, $28
-
-;-------------------------------------------------------------------------------
-;-------------------------------------------------------------------------------
-;-------------------------------------------------------------------------------
 
  ORG $81BB
 byte_81BB:  fcb $03
@@ -210,19 +207,15 @@ unk_81BC:
         fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 TL_MapValFromRPMPtr:
-unk_8258:
-        fcb $FF, $FF, $FF, $FF, $FF
+unk_8258:   fcb $FF, $FF, $FF, $FF, $FF
 
-TL_TL_825d:
-        fcb $A4, $A4, $A4, $80, $80, $80, $80, $80, $80
+TL_TL_825d: fcb $A4, $A4, $A4, $80, $80, $80, $80, $80, $80
 
 TL_TL_8266:
-unk_8266:
-        fcb $2A, $2A, $2A, $2A, $28, $26, $20, $1E, $1A
+unk_8266:   fcb $2A, $2A, $2A, $2A, $28, $26, $20, $1E, $1A
 
 TL_TL_826F:
-unk_826F:
-        fcb $28, $24, $24, $20, $20, $1A, $1A, $1A, $1A
+unk_826F:   fcb $28, $24, $24, $20, $20, $1A, $1A, $1A, $1A
 
 byte_8278:  fcb $D0
 byte_8279:  fcb $02
@@ -230,22 +223,18 @@ byte_827A:  fcb $00
 byte_827B:  fcb $00
 
 TL_TL_827C:
-unk_827C:
-        fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
+unk_827C:   fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 TL_TL_8285:
-unk_8285:
-        fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+unk_8285:   fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 word_828E: fdb $02B3
 
         fcb $05, $4E, $04, $00, $BD, $65, $15, $02, $66, $79, $45, $00, $C0, $7D
         fcb $48, $01, $CE, $9C, $80, $08, $06, $00, $D0, $00, $01, $00, $00, $00, $00, $00
-
         fcb $00
 
 word_82AF:  fdb $208D
-
 word_82B1:  fdb $4E20
 
 TL_ColdLoad3DTableOffIdle:
@@ -319,32 +308,25 @@ unk_834F:
         fcb $FF, $FF, $D4, $B8, $A4, $AC, $AC, $C9, $BF
 
 TL_TL_83EB:
-unk_83EB:
-        fcb $D0, $A4, $5E, $18, $0E, $0C, $06, $06, $06
+unk_83EB:   fcb $D0, $A4, $5E, $18, $0E, $0C, $06, $06, $06
 
 TL_TL_83F4:
-unk_83F4:
-        fcb $40, $38, $30, $22, $12, $0C, $08, $08, $04
+unk_83F4:   fcb $40, $38, $30, $22, $12, $0C, $08, $08, $04
 
 TL_TL_83FD:
-unk_83FD:
-        fcb $C8, $90, $50, $2A, $28, $18, $0E, $10, $10
+unk_83FD:   fcb $C8, $90, $50, $2A, $28, $18, $0E, $10, $10
 
 TL_TL_8406:
-unk_8406:
-        fcb $2C, $28, $24, $18, $0C, $08, $00, $00, $00
+unk_8406:   fcb $2C, $28, $24, $18, $0C, $08, $00, $00, $00
 
 TL_TL_840f:
-unk_840F:
-        fcb $00, $00, $00, $00, $00, $50, $B0, $C0, $C0
+unk_840F:   fcb $00, $00, $00, $00, $00, $50, $B0, $C0, $C0
 
 TL_TL_8418:
-unk_8418:
-        fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
+unk_8418:   fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 TL_TL_8421:
-unk_8421:
-        fcb $40, $37, $2B, $20, $1C, $14, $10, $10, $10
+unk_8421:   fcb $40, $37, $2B, $20, $1C, $14, $10, $10, $10
 
 byte_842A:  fcb $44
 
@@ -369,11 +351,9 @@ unk_843E:
         fcb $E3, $10, $FF, $6E
         fcb $FF, $00
 
-unk_845D:
-        fcb $F4, $C8, $90, $40, $20, $14, $10, $0F, $0B
+unk_845D:   fcb $F4, $C8, $90, $40, $20, $14, $10, $0F, $0B
 
-unk_8466:
-        fcb $CC, $CC, $CC, $CC, $CC, $CC, $E6, $FF, $FF
+unk_8466:   fcb $CC, $CC, $CC, $CC, $CC, $CC, $E6, $FF, $FF
 
 unk_846F:
         fcb $04
@@ -393,31 +373,28 @@ unk_8482:
 
 TL_TL_8481:
 word_8495:  fdb $7D00
+
 TL_TL_8483:
 byte_8497:  fcb $E8
+
 TL_TL_8484:
 byte_8498:  fcb $D0
+
 TL_TL_8485:
 byte_8499:  fcb $00 ;North America
 ;byte_8499:  fcb $06 ;Europe
 
-unk_849A:
-        fcb $08, $08, $08, $0A, $0C, $0E, $14, $1C, $1C
+unk_849A:   fcb $08, $08, $08, $0A, $0C, $0E, $14, $1C, $1C
 
-unk_84A3:
-        fcb $1C, $1C, $1C, $09, $09, $09, $09, $09, $09
+unk_84A3:   fcb $1C, $1C, $1C, $09, $09, $09, $09, $09, $09
 
-unk_84AC:
-        fcb $10, $10, $10, $20, $20, $20, $20, $20, $20
+unk_84AC:   fcb $10, $10, $10, $20, $20, $20, $20, $20, $20
 
-unk_84B5:
-        fcb $CF, $8E, $63, $2A, $2A, $28, $1C, $16, $16
+unk_84B5:   fcb $CF, $8E, $63, $2A, $2A, $28, $1C, $16, $16
 
-unk_84BE:
-        fcb $60, $50, $40, $32, $2C, $28, $20, $20, $20
+unk_84BE:   fcb $60, $50, $40, $32, $2C, $28, $20, $20, $20
 
-unk_84C7:
-        fcb $50, $40, $38, $30, $28, $20, $10, $10, $10
+unk_84C7:   fcb $50, $40, $38, $30, $28, $20, $10, $10, $10
 
 TL_MapVoltsAverageFactors1:
 unk_84D0:   fcb $80, $80
@@ -510,32 +487,32 @@ byte_865F:  fcb $55
 byte_8660:  fcb $FF
 byte_8661:  fcb $01
 byte_8662:  fcb $38
+
 unk_8663:   fcb $10
             fcb $07
             fcb $A0
             fcb $00
             fcb $C0
+
 unk_8668:   fcb $08
             fcb $03
             fcb $90
             fcb $00
             fcb $E0
+
 byte_866D:  fcb $A8
 byte_866E:  fcb $6C
 byte_866F:  fcb $10
-
 byte_8670:  fcb $04
 byte_8671:  fcb $00
 byte_8672:  fcb $0A
 byte_8673:  fcb $6D
 byte_8674:  fcb $36
-
 byte_8675:  fcb $22
-
 byte_8676:  fcb $5A
 byte_8677:  fcb $F2
 byte_8678:  fcb $36
-word_8679:  fdb $01
+word_8679:  fdb $0001
 byte_867B:  fcb $6A
 byte_867C:  fcb $80
 word_867D:  fdb $0384
@@ -547,11 +524,11 @@ byte_8683:  fcb $01
 byte_8684:  fcb $03
 byte_8685:  fcb $14
 byte_8686:  fcb $94
-word_8687:  fdb $00
-word_8689:  fdb $00
+word_8687:  fdb $0000
+word_8689:  fdb $0000
 byte_868B:  fcb $00
 byte_868C:  fcb $02
-word_868D:  fdb $320
+word_868D:  fdb $0320
 word_868F:  fdb $5DC0
 word_8691:  fdb $0640
 byte_8693:  fcb $E0
@@ -586,7 +563,10 @@ byte_86B6:  fcb $71
 
 TL_BrakeOverrideForAis_FromDeltaThrottle:
 unk_86B7:
-        fcb $03, $FF, $FF, $00, $00, $FF, $FF, $00, $00, $FF, $FF
+        fcb $03
+        fcb $FF, $FF, $00, $00
+        fcb $FF, $FF, $00, $00
+        fcb $FF, $FF
 
 TL_AisStartupPosition_FromTemp:
 unk_86C2:
@@ -621,7 +601,8 @@ TL_AISAddedFromTimeEngRunning:
 byte_86F4:  fcb $00
 
 TL_AisColdPosition_FromTemp:
-unk_86F5:   fcb $04
+unk_86F5:
+        fcb $04
         fcb $68, $58, $FE, $80
         fcb $80, $34, $FF, $80
         fcb $A8, $20, $FF, $33
@@ -632,6 +613,7 @@ unk_8704:
         fcb $00, $00, $00, $00
         fcb $10, $00, $00, $00
         fcb $1A, $00
+
 
 TL_AisPosition_FromThrottle:
 unk_870F:
@@ -1131,7 +1113,9 @@ byte_8A1A:  fcb $03
 byte_8A1B:  fcb $80
 byte_8A1C:  fcb $1E
 byte_8A1D:  fcb $38
+
 unk_8A1E:   fcb $00, $00, $00, $08, $08, $00, $00, $00, $00
+
 byte_8A27:  fcb $10
 byte_8A28:  fcb $40
 
@@ -1141,9 +1125,9 @@ TL_ErrorBitsMask1:
 unk_8A32:
             fcb $26
             fcb $00, $00, $00, $00, $00
+
 byte_8A38:  fcb $84
 byte_8A39:  fcb $11
-
 byte_8A3A:  fcb $EB
 byte_8A3B:  fcb $93
 byte_8A3C:  fcb $7E
@@ -1258,8 +1242,4 @@ unk_8ABA:
 
 word_8B56:
         fcb $00, $02
-
-;------------------------------------------------------------------------------
-;---0x8A8 bytes of padding removed---------------------------------------------
-;------------------------------------------------------------------------------
 

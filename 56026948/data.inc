@@ -3,7 +3,7 @@
 tl_ident1
 byte_8000:  fcb $01
             fcb $00
-unk_8002    fcb $56
+unk_8002:   fcb $56
             fcb $02
             fcb $69
 byte_8005:  fcb $48
@@ -414,7 +414,7 @@ unk_84DF:   fcb $40
             fcb $40
 byte_84E1:  fcb $F0
 
-unk_84E2:  fcb $44, $33, $2F, $1E, $1A, $20, $28, $28, $17
+unk_84E2:   fcb $44, $33, $2F, $1E, $1A, $20, $28, $28, $17
 
 byte_84EB:  fcb $06
 word_84EC:  fdb $024E
@@ -842,13 +842,13 @@ TL_FanTurnOnTempAbove45Mph:
 unk_885B:   fcb $E7
 
 TL_FanTurnOnTempAbove45Mph2:
-        fcb $E2
+            fcb $E2
 
 TL_FanTurnOnTempAbove45Mph3:
-        fcb $E7
+            fcb $E7
 
 TL_FanTurnOnTempAbove45Mph4:
-        fcb $E2
+            fcb $E2
 
 word_885F:  fdb $0B9B
 word_8861:  fdb $00C0
@@ -915,6 +915,7 @@ byte_88B9:  fcb $11
 
 byte_88BA:  fcb $00
 
+TL_UpperLimitForPTULock:
 unk_88BB:
         fcb $04
         fcb $64, $0F, $00, $00
@@ -930,7 +931,6 @@ TL_LowerLimitForPTULock:
  DCB.B $08, $FF ; 8 bytes of 0xFF
 
 TL_UpperLimitForPTUUnlock:
-
 unk_88D9:
         fcb $04
         fcb $5E, $05, $00, $00
@@ -1123,8 +1123,8 @@ unk_8A29:   fcb $20, $18, $10, $17, $08, $02, $02, $02, $00
 
 TL_ErrorBitsMask1:
 unk_8A32:
-        fcb $26
-        fcb $00, $00, $00, $00, $00
+            fcb $26
+            fcb $00, $00, $00, $00, $00
 
 byte_8A38:  fcb $84
 byte_8A39:  fcb $11
@@ -1229,14 +1229,14 @@ byte_8AB8:  fcb $C0
 byte_8AB9:  fcb $DA
 
 unk_8ABA:
-        fcb $05
-        fcb $09
-        fcb $00
-        fcb $00, $00, $00, $01, $01, $00, $00, $00, $00
-        fcb $00, $00, $04, $05, $04, $03, $03, $00, $00
-        fcb $00, $00, $05, $04, $03, $03, $03, $00, $00
-        fcb $00, $00, $03, $04, $02, $02, $02, $00, $00
-        fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
+            fcb $05
+            fcb $09
+            fcb $00
+            fcb $00, $00, $00, $01, $01, $00, $00, $00, $00
+            fcb $00, $00, $04, $05, $04, $03, $03, $00, $00
+            fcb $00, $00, $05, $04, $03, $03, $03, $00, $00
+            fcb $00, $00, $03, $04, $02, $02, $02, $00, $00
+            fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
 
  DCB.B $6C, $FF
 

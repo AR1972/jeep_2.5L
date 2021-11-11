@@ -32,7 +32,7 @@ CodeOrg equ $0040
 CommandRAMAddress:
         fdb   CodeOrg ; can define any valid RAM, so long as it doesn't overwrite the stack or temp RAM
 CommandByteCount:
-        fcb   $20
+        fcb   ReadAllBytesEnd-ReadAllBytes
 
         ORG    CodeOrg
 
@@ -68,6 +68,6 @@ LoopForByte:
        beq      LoopForByte                       ;if true(<>0) start completely over
        pulA
        rts
-
+ReadAllBytesEnd:
 ;-------------------------------------------------------------------------------
 

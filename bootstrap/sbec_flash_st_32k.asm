@@ -30,7 +30,7 @@ CodeOrg equ $6480
 CommandRAMAddress:
         fdb   CodeOrg ; can define any valid RAM, so long as it doesn't overwrite the stack or temp RAM
 CommandByteCount:
-        fcb   $75
+        fcb   SBECII_Flash_STEnd-SBECII_Flash_ST
 
         ORG    CodeOrg
 
@@ -109,4 +109,4 @@ ShortDelayLoop:
            decb
            bne   ShortDelayLoop             ; branch if not equal (not zero)
            rts                              ; return from subroutine
-
+SBECII_Flash_STEnd:

@@ -30,7 +30,7 @@ CodeOrg equ $0040
 CommandRAMAddress:
         fdb   CodeOrg ; can define any valid RAM, so long as it doesn't overwrite the stack or temp RAM
 CommandByteCount:
-        fcb   $4b ;5f is max
+        fcb   SBEC_Clear_STEnd-SBEC_Clear_ST
 
         ORG    CodeOrg
 
@@ -83,4 +83,4 @@ ShortDelayLoop:
            decb
            bne   ShortDelayLoop             ; branch if not equal (not zero)
            rts                              ; return from subroutine
-
+SBEC_Clear_STEnd:

@@ -30,7 +30,7 @@ CodeOrg equ $0040
 CommandRAMAddress:
           fdb   CodeOrg ; can define any valid RAM, so long as it doesn't overwrite the stack or temp RAM
 CommandByteCount:
-          fcb   $30
+          fcb   EraseEEPROMEnd-EraseEEPROM
 
           fcb   CodeOrg
 
@@ -67,4 +67,4 @@ SendLastByte:                               ;send the last byte (should be $FF) 
            bpl   SendLastByte               ;if any bits set loop
            staA  CPU_SerialData             ;put a into sci register and send
            jmp   Begin                      ;when finished, jump back to bootloader
-
+EraseEEPROMEnd:

@@ -30,7 +30,7 @@ CodeOrg equ $0040
 CommandRAMAddress:
         fdb   CodeOrg ; can define any valid RAM, so long as it doesn't overwrite the stack or temp RAM
 CommandByteCount:
-        fcb   $4f
+        fcb   SBEC_Erase_ToshibaEnd-SBEC_Erase_Toshiba
 
         .org    CodeOrg
 
@@ -76,4 +76,4 @@ SendBToSCI:
            ldaa  CPU_SerialData             ; load a with memory contents
            stab  CPU_SerialData             ; store b into memory
            jmp   Begin
-
+SBEC_Erase_ToshibaEnd:

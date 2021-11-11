@@ -30,7 +30,7 @@ CodeOrg equ $6480
 CommandRAMAddress:
         fdb   CodeOrg ; can define any valid RAM, so long as it doesn't overwrite the stack or temp RAM
 CommandByteCount:
-        fcb   $74 ; too big! needs to be less than 0x5f
+        fcb   SBEC_Flash_ToshibaEnd-SBEC_Flash_Toshiba
 
         ORG    CodeOrg
 
@@ -114,4 +114,4 @@ ShortDelayLoop:
            decb
            bne   ShortDelayLoop             ; branch if not equal (not zero)
            rts                              ; return from subroutine
-
+SBEC_Flash_ToshibaEnd:

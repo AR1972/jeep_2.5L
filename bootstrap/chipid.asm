@@ -30,7 +30,7 @@ CodeOrg equ $040
 CommandRAMAddress:
         fdb    CodeOrg ; can define any valid RAM, so long as it doesn't overwrite the stack or temp RAM
 CommandByteCount:
-        fcb    $43
+        fcb    ID_MfgAndChipEnd-ID_MfgAndChip
 
         ORG    CodeOrg
 
@@ -92,7 +92,7 @@ LongDelayLoop:
            dex                              ;reduce counter
            bne   LongDelayLoop
            rts
-
+ID_MfgAndChipEnd:
 ;--------------------------------------------------------------------------------
 
 ; Data section that will contain the EEPROM and RAM start for each ECU

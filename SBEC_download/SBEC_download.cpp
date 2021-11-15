@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
 
-	char *device = "\\\\.\\COM5\0\0";
+	char *device;
 	HANDLE hComm;
 	HANDLE hBuff;
 	int ret = 0;
@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
 	send_buffer = (unsigned char *)malloc(0x201);
 	name_buffer = (char *)malloc(0x10);
 	save_buffer = (unsigned char *)malloc(0x10000);
+	device = (char *)malloc(0x20);
 		
 //null out buffers
 
@@ -48,7 +49,7 @@ int main(int argc, char *argv[])
 		recv_buffer[i] = (unsigned char) 0x00;
 	}
 
-	for (i=0; i < 0x10; ++i) {
+	for (i=0; i < 0x1; ++i) {
 		name_buffer[i] = (unsigned char) 0x00;
 	}
 
@@ -72,7 +73,7 @@ int main(int argc, char *argv[])
 		printf("Error in opening COM%s\n", argv[1]);
 		goto EXIT;
 	} else {
-		printf("opening COM%s successful\n", argv[1]);
+		printf("Opening COM%s successful\n", argv[1]);
 	}
 
 // setup comport timeouts
@@ -200,7 +201,6 @@ Start:
 	while (ReadFile(hComm, &recv_buffer[i], 0x200, &num, NULL)) {
 		i = i + num;
 		recv_num = recv_num + num;
-        printf("0x%02X bytes recived\n", recv_num);
 		if (num != 0x200) {
 			if (recv_num == 0x8000) {
 				goto Save;
@@ -221,6 +221,8 @@ Start:
 				goto Start;
 			}
 		}
+		printf("\r");
+		printf("0x%02X bytes recived", recv_num);
 	}
 
 Save:
@@ -228,7 +230,7 @@ Save:
 // use ECU part number for filename
 
 	sprintf(name_buffer, "%02X%02X%02X%02X.bin",recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5]);
-    
+
 // special handeling for 64k EPROM's
 
 	if (recv_num == 0xE000) {
@@ -261,6 +263,8 @@ Save:
 	hBuff = CreateFile(name_buffer,GENERIC_READ|GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 	ret = WriteFile(hBuff, recv_buffer, recv_num, &num, NULL);
 	ret = CloseHandle(hBuff);
+	
+	printf("\nEPROM saved to %s", name_buffer);
 
 EXIT:
 	state.fDtrControl = 0;
@@ -271,5 +275,6 @@ EXIT:
 	free(send_buffer);
 	free(name_buffer);
 	free(save_buffer);
+	free(device);
 	return 0;
 }

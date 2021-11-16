@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 	unsigned long recv_num = 0;
 	unsigned long num = 0;
     const int max_retry = 30;
-	unsigned long baud = 1200;
+	unsigned long baud = 9600;
 	COMMTIMEOUTS timeouts = {0};
 	DCB state = {0};
 
@@ -141,6 +141,15 @@ Start:
 
 	ret = FlushFileBuffers(hComm);
 
+
+// set the BAUD rate of the bootstrap
+
+	if (baud == 1200) {
+		send_buffer[8] = 0x33;
+	} else if (baud == 9600) {
+		send_buffer[8] = 0x30;
+	}
+
 // send bootstrap to ECU, ECU's that use the 68HC11E9
 // have variable length download, bootstrap length
 // of 257 bytes should work in all cases.
@@ -190,7 +199,7 @@ Start:
 
 // start capturing byte stream
 
-	printf("Downloading...\n");
+	printf("Downloading at %d BAUD\n", baud);
 	i=0;
 	send_num = 0;
 	recv_num = 0;
@@ -212,11 +221,17 @@ Start:
 				state.fRtsControl = 0; // power ECU off
 				ret = SetCommState(hComm, &state);
 				if (retry_num >= max_retry) {
-					printf("ERPOM download failed after %d attempts", retry_num);
+					printf("\nERPOM download failed after %d attempts", retry_num);
 					getchar();
 					goto EXIT;
 				}
-				printf("retry %d\n", retry_num);
+
+				// seems like we are losing some data 1200 BAUD usualy works
+
+				if (baud != 1200) {
+					baud = 1200;
+				}
+				printf("\nretry %d\n", retry_num);
 				Sleep(2000);
 				goto Start;
 			}

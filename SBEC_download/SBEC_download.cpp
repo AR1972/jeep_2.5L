@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
 	unsigned long send_num = 0;
 	unsigned long recv_num = 0;
 	unsigned long num = 0;
-    const int max_retry = 30;
-	unsigned long baud = 9600;
+	const int max_retry = 30;
+	unsigned long baud = 1200;
 	COMMTIMEOUTS timeouts = {0};
 	DCB state = {0};
 
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	name_buffer = (char *)malloc(0x10);
 	save_buffer = (unsigned char *)malloc(0x10000);
 	device = (char *)malloc(0x20);
-		
+
 //null out buffers
 
 	for (i=0; i < 0x10000; ++i) {
@@ -76,20 +76,28 @@ int main(int argc, char *argv[])
 		printf("Opening COM%s successful\n", argv[1]);
 	}
 
+	if (!GetCommState(hComm, &state)) {
+		printf("failed to get COM state");
+		goto EXIT;
+	}
+
 // setup comport timeouts
 
 	timeouts.ReadIntervalTimeout = 0;
-	timeouts.ReadTotalTimeoutConstant = 8000;
+	timeouts.ReadTotalTimeoutConstant = 4000;
 	timeouts.ReadTotalTimeoutMultiplier = 0;
-	timeouts.WriteTotalTimeoutConstant = 8000;
+	timeouts.WriteTotalTimeoutConstant = 4000;
 	timeouts.WriteTotalTimeoutMultiplier = 0;
-	ret = SetCommTimeouts(hComm, &timeouts);
+	if (!SetCommTimeouts(hComm, &timeouts)) {
+		printf("failed to set COM timeouts");
+		goto EXIT;
+	}
 
 Start:
 
-// setup serial port, ECU seems to start at 9600 BAUD
-// then switches to 1200 BAUD, setup for 9600 BAUD to 
-// capture the BREAK the ECU sends to signal it has 
+// setup serial port, ECU starts start at 7812 BAUD
+// then switches to 1200 BAUD, setup for 9600 BAUD to
+// capture the BREAK the ECU sends to signal it has
 // entered bootstrap mode.
 
 	state.DCBlength = sizeof(DCB);
@@ -99,26 +107,41 @@ Start:
 	state.StopBits = ONESTOPBIT;
 	state.fDtrControl = 1; // apply 12 volts to pin 45
 	state.fRtsControl = 0; // ECU power off
-	ret = SetCommState(hComm, &state);
-	Sleep(50);
+	if (!SetCommState(hComm, &state)) {
+		printf("failed to set COM state");
+		goto EXIT;
+	}
+	Sleep(10);
 	state.fRtsControl = 1; // ECU power on
-	ret = SetCommState(hComm, &state);
+	if (!SetCommState(hComm, &state)) {
+		printf("failed to power on ECU");
+		goto EXIT;
+	}
 
+	Sleep(10);
 
 // ECU sends 0x00 when it enters bootstrap mode
 
-	ret = ReadFile(hComm, recv_buffer, 1, &num, NULL);
-	printf("ECU sent 0x%02X\n", recv_buffer[0]);
+	recv_buffer[0] = 0xAA;
+
+	if(ReadFile(hComm, recv_buffer, 1, &num, NULL)) {
+		if (num == 1 && recv_buffer[0] == 0x00) {
+			printf("ECU sent 0x%02X\n", recv_buffer[0]);
+		} else {
+			printf("ECU not in bootstrap mode");
+			goto EXIT;
+		}
+	} else {
+		printf("ECU not in bootstrap mode");
+		goto EXIT;
+	}
 
 // ECU is in bootstrap mode disconnect 12 volts
 // from pin 45 and connect COM port TXD
 
 	state.fDtrControl = 0; // disconnect 12 volts from pin 45
-	ret = SetCommState(hComm, &state);
-
-// if someting other than 0x00 was reveived GTFO
-
-	if (recv_buffer[0] != 0x00){
+	if(!SetCommState(hComm, &state)) {
+		printf("failed to disconnect power from pin 45");
 		goto EXIT;
 	}
 
@@ -129,18 +152,22 @@ Start:
 	state.ByteSize = 8;
 	state.Parity = NOPARITY;
 	state.StopBits = ONESTOPBIT;
-	ret = SetCommState(hComm, &state);
-
+	if (!SetCommState(hComm, &state)) {
+		printf("failed to set COM state for bootstrap download");
+		goto EXIT;
+	}
 
 // give ECU a few secondes to settle, seems to help?
 
 	printf("Waiting for ECU to settle\n");
 	Sleep(5000);
-    
-// purge garbage from serial port buffers
 
-	ret = FlushFileBuffers(hComm);
+	// purge garbage from serial port buffers
 
+	if(!FlushFileBuffers(hComm)) {
+		printf("failed to flush file buffers");
+		goto EXIT;
+	}
 
 // set the BAUD rate of the bootstrap
 
@@ -155,20 +182,49 @@ Start:
 // of 257 bytes should work in all cases.
 
 	printf("Sending bootstrap...\n");
-	ret = WriteFile(hComm, send_buffer, 0x101, &send_num, NULL);
+	if(!WriteFile(hComm, send_buffer, 0x101, &send_num, NULL)) {
+		printf("failed to send bootstrap");
+		goto EXIT;
+	}
 	printf("%d bytes sent\n", send_num);
 
 // ECU echos back charaters sent, check
-// if it send 256 bytes back, if 256 bytes
-// were not recieved, enter retry loop
-// TODO: compair send and recieve buffers
+// if it sent 256 bytes back, if 256 bytes
+// were not received, enter retry loop
 
-	ret = ReadFile(hComm, recv_buffer, 0x100, &recv_num, NULL);
+	if (!ReadFile(hComm, recv_buffer, 0x100, &recv_num, NULL)) {
+		printf("failed to read from COM port");
+	}
+
 	if (recv_num != 0x100) {
+		printf("%d bytes received\n", recv_num);
 		retry_num++;
 		state.fDtrControl = 0; // disconnect 12 volts from pin 45
 		state.fRtsControl = 0; // power ECU off
-		ret = SetCommState(hComm, &state);
+		if (!SetCommState(hComm, &state)) {
+			printf("failed to set COM state");
+			goto EXIT;
+		}
+
+		if (retry_num >= max_retry) {
+			printf("ERPOM download failed after %d attempts", retry_num);
+			getchar();
+			goto EXIT;
+		}
+		printf("retry %d\n", retry_num);
+		Sleep(2000);
+		goto Start;
+	}
+
+	if(memcmp(send_buffer+1, recv_buffer, 0x100) != 0) {
+		printf("bootstrap is corrupt\n");
+		retry_num++;
+		state.fDtrControl = 0; // disconnect 12 volts from pin 45
+		state.fRtsControl = 0; // power ECU off
+		if (!SetCommState(hComm, &state)) {
+			printf("failed to set COM state");
+			goto EXIT;
+		}
 		if (retry_num >= max_retry) {
 			printf("ERPOM download failed after %d attempts", retry_num);
 			getchar();
@@ -184,7 +240,7 @@ Start:
 // setting this to 9600 BAUD works with
 // FTDI based USB adapters but tends to
 // lose data on 'real' serial ports, likely
-// due to the quick and dirty way we are 
+// due to the quick and dirty way we are
 // connecting to the ECU. Byte 9 of the
 // bootstrap will need to be changed from
 // 0x33 to 0x30 to set the ECU to send
@@ -195,7 +251,10 @@ Start:
 	state.ByteSize = 8;
 	state.Parity = NOPARITY;
 	state.StopBits = ONESTOPBIT;
-	ret = SetCommState(hComm, &state);
+	if (!SetCommState(hComm, &state)) {
+		printf("failed to set COM state");
+		goto EXIT;
+	}
 
 // start capturing byte stream
 
@@ -204,13 +263,13 @@ Start:
 	send_num = 0;
 	recv_num = 0;
 
-// EPROM's can be 0x8000 or 0xE000, capture in 512 byte chunks
+// EPROM's can be 0x8000 or 0xE000, capture in 128 byte chunks
 // check byte count when stream stops then save buffer
 
-	while (ReadFile(hComm, &recv_buffer[i], 0x200, &num, NULL)) {
+	while (ReadFile(hComm, &recv_buffer[i], 0x100, &num, NULL)) {
 		i = i + num;
 		recv_num = recv_num + num;
-		if (num != 0x200) {
+		if (num != 0x100) {
 			if (recv_num == 0x8000) {
 				goto Save;
 			} else if (recv_num == 0xE000) {
@@ -237,7 +296,7 @@ Start:
 			}
 		}
 		printf("\r");
-		printf("0x%02X bytes recived", recv_num);
+		printf("0x%02X bytes received", recv_num);
 	}
 
 Save:
@@ -251,40 +310,51 @@ Save:
 	if (recv_num == 0xE000) {
 
 		// copy 64k EPROM to new buffer starting at offset 0x2000
-		
+
 		for (i=0; i < recv_num; i++) {
 			save_buffer[0x2000+i] = recv_buffer[i];
 		}
-		
+
 		// clear 68HC11 EEPROM
-		
+
 		for (i=0xB600; i<0xB800; i++) {
 			save_buffer[i] = (unsigned char) 0xFF;
 		}
 		recv_buffer = save_buffer;
 		recv_num = 0x10000;
 	} else if (recv_num == 0x8000) {
-		
+
 		// clear 68HC11 EEPROM
-		
+
 		for (i=0x3600; i<0x3800; i++) {
 			recv_buffer[i] = (unsigned char) 0xFF;
 		}
 	}
 
-
 // save EPROM image to file
 
 	hBuff = CreateFile(name_buffer,GENERIC_READ|GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
-	ret = WriteFile(hBuff, recv_buffer, recv_num, &num, NULL);
-	ret = CloseHandle(hBuff);
-	
+
+	if (hBuff == INVALID_HANDLE_VALUE) {
+		printf("failed to create EPROM file");
+	}
+
+	if (!WriteFile(hBuff, recv_buffer, recv_num, &num, NULL)) {
+		printf("failed to write EPROM to file");
+	}
+
+	if (!CloseHandle(hBuff)) {
+		printf("failed to close file handle");
+	}
+
 	printf("\nEPROM saved to %s", name_buffer);
 
 EXIT:
 	state.fDtrControl = 0;
 	state.fRtsControl = 0;
-	ret = SetCommState(hComm, &state);
+	if(!SetCommState(hComm, &state)){
+		printf("failed to set COM state");
+	}
 	CloseHandle(hComm);
 	free(recv_buffer);
 	free(send_buffer);

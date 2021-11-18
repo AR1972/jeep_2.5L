@@ -95,11 +95,7 @@ SOURCE=.\SBEC_download.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\bootmainall.h
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\..\..\Documents and Settings\Adam\Desktop\readallbytes.h"
+SOURCE=.\dump.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

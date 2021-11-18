@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 	char *device;
 	HANDLE hComm;
 	HANDLE hBuff;
-	int ret = 0;
+	int ret = 1;
 	unsigned long i = 0;
 	int retry_num = 0;
 	unsigned char *recv_buffer;
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 	if (argc != 2 || strlen(argv[1]) > 1) {
 		printf("please supply COM port number\n");
 		printf("correct value is 1 through 9\n");
-		return 1;
+		return ret;
 	}
 
 // get some memory for buffers
@@ -40,32 +40,13 @@ int main(int argc, char *argv[])
 	device = (char *)malloc(0x20);
 
 //null out buffers
-
-	for (i=0; i < 0x10000; ++i) {
-		save_buffer[i] = (unsigned char) 0x00;
-	}
-
-	for (i=0; i < 0xE001; ++i) {
-		recv_buffer[i] = (unsigned char) 0x00;
-	}
-
-	for (i=0; i < 0x1; ++i) {
-		name_buffer[i] = (unsigned char) 0x00;
-	}
-
-// prepare buffer to send bootstrap
-
-	for (i=0; i < 0x201; ++i) {
-		if (i < sizeof(dump)){
-			send_buffer[i] = dump[i];
-		} else {
-			send_buffer[i] = (unsigned char) 0x00;
-		}
-	}
+	memset(recv_buffer, 0x00, 0xE001);
+	memset(name_buffer, 0x00, 0x10);
+	memset(save_buffer, 0x00, 0x10000);
 
 	sprintf(device,"\\\\.\\COM%s", argv[1]);
 
-// create seiral port handle
+// create serial port handle
 
 	hComm = CreateFileA(device, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 
@@ -118,7 +99,7 @@ Start:
 		goto EXIT;
 	}
 
-	Sleep(10);
+	Sleep(50);
 
 // ECU sends 0x00 when it enters bootstrap mode
 
@@ -157,24 +138,23 @@ Start:
 		goto EXIT;
 	}
 
-// give ECU a few secondes to settle, seems to help?
-
-	printf("Waiting for ECU to settle\n");
-	Sleep(5000);
-
-	// purge garbage from serial port buffers
-
-	if(!FlushFileBuffers(hComm)) {
-		printf("failed to flush file buffers");
-		goto EXIT;
-	}
+	memset(send_buffer, 0x00, 0x201);
+	memcpy(send_buffer, dump, sizeof(dump));
+	memset(recv_buffer, 0x00, 0xE001);
 
 // set the BAUD rate of the bootstrap
-
+	
 	if (baud == 1200) {
 		send_buffer[8] = 0x33;
 	} else if (baud == 9600) {
 		send_buffer[8] = 0x30;
+	}
+
+// purge garbage from serial port buffers
+
+	if(!FlushFileBuffers(hComm)) {
+		printf("failed to flush file buffers");
+		goto EXIT;
 	}
 
 // send bootstrap to ECU, ECU's that use the 68HC11E9
@@ -208,7 +188,6 @@ Start:
 
 		if (retry_num >= max_retry) {
 			printf("ERPOM download failed after %d attempts", retry_num);
-			getchar();
 			goto EXIT;
 		}
 		printf("retry %d\n", retry_num);
@@ -216,7 +195,13 @@ Start:
 		goto Start;
 	}
 
-	if(memcmp(send_buffer+1, recv_buffer, 0x100) != 0) {
+// compare sned and receive buffers, sometimes the ECU will
+// send a leading null and will cause the bootstrap corruption
+// check to fail, try to handel leading null and no leading null
+// cases
+
+	if((memcmp(send_buffer+1, recv_buffer, sizeof(dump)) != 0) &
+		(memcmp(send_buffer+1, recv_buffer+1, sizeof(dump)) !=0)) {
 		printf("bootstrap is corrupt\n");
 		retry_num++;
 		state.fDtrControl = 0; // disconnect 12 volts from pin 45
@@ -227,7 +212,6 @@ Start:
 		}
 		if (retry_num >= max_retry) {
 			printf("ERPOM download failed after %d attempts", retry_num);
-			getchar();
 			goto EXIT;
 		}
 		printf("retry %d\n", retry_num);
@@ -281,7 +265,6 @@ Start:
 				ret = SetCommState(hComm, &state);
 				if (retry_num >= max_retry) {
 					printf("\nERPOM download failed after %d attempts", retry_num);
-					getchar();
 					goto EXIT;
 				}
 
@@ -348,6 +331,7 @@ Save:
 	}
 
 	printf("\nEPROM saved to %s", name_buffer);
+	ret = 0;
 
 EXIT:
 	state.fDtrControl = 0;
@@ -361,5 +345,5 @@ EXIT:
 	free(name_buffer);
 	free(save_buffer);
 	free(device);
-	return 0;
+	return ret;
 }

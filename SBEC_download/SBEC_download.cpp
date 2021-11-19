@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 	unsigned long recv_num = 0;
 	unsigned long num = 0;
 	const int max_retry = 30;
-	unsigned long baud = 1200;
+	unsigned long baud = 9600;
 	COMMTIMEOUTS timeouts = {0};
 	DCB state = {0};
 	DWORD dwAttrib = 0;
@@ -202,10 +202,9 @@ Start:
 		goto Start;
 	}
 
-// compare sned and receive buffers, sometimes the ECU will
+// compare send and receive buffers, sometimes the ECU will
 // send a leading null and will cause the bootstrap corruption
-// check to fail, try to handel leading null and no leading null
-// cases
+// check to fail, handle leading null and no leading null cases
 
 	if((memcmp(send_buffer+1, recv_buffer, sizeof(dump)) != 0) &
 		(memcmp(send_buffer+1, recv_buffer+1, sizeof(dump)) !=0)) {
@@ -254,13 +253,13 @@ Start:
 	send_num = 0;
 	recv_num = 0;
 
-// EPROM's can be 0x8000 or 0xE000, capture in 128 byte chunks
+// EPROM's can be 0x8000 or 0xE000, capture in 64 byte chunks
 // check byte count when stream stops then save buffer
 
-	while (ReadFile(hComm, &recv_buffer[i], 0x100, &num, NULL)) {
+	while (ReadFile(hComm, &recv_buffer[i], 0x40, &num, NULL)) {
 		i = i + num;
 		recv_num = recv_num + num;
-		if (num != 0x100) {
+		if (num != 0x40) {
 			if (recv_num == 0x8000) {
 				goto Save;
 			} else if (recv_num == 0xE000) {
@@ -280,7 +279,7 @@ Start:
 				if (baud != 1200) {
 					baud = 1200;
 				}
-				printf("\nretry %d\n", retry_num);
+				printf("retry %d\n", retry_num);
 				Sleep(2000);
 				goto Start;
 			}

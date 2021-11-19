@@ -25,6 +25,12 @@ Start:
     staB    $3F,X       ; store valie in register B ($01) in 0x1000 + 0x003F
                         ; System Config Register
 
+; give receiver around 200ms to prepare for byte stream
+
+    ldX     #$FFFF
+Delay:
+    deX
+    bne     Delay
 
 ; this section tries to determin a 64k EPROM by checking
 ; for the first two bytes of the part number that should

@@ -2,6 +2,7 @@
 #include<windows.h>
 #include<stdio.h>
 #include<malloc.h>
+#include<winbase.h>
 #include "dump.h"
 
 int main(int argc, char *argv[])
@@ -24,6 +25,7 @@ int main(int argc, char *argv[])
 	unsigned long baud = 1200;
 	COMMTIMEOUTS timeouts = {0};
 	DCB state = {0};
+	DWORD dwAttrib = 0;
 
 	if (argc != 2 || strlen(argv[1]) > 1) {
 		printf("please supply COM port number\n");
@@ -156,6 +158,11 @@ Start:
 		printf("failed to flush file buffers");
 		goto EXIT;
 	}
+
+
+// need to let the data lines settle a little after power on
+
+	Sleep(2000);
 
 // send bootstrap to ECU, ECU's that use the 68HC11E9
 // have variable length download, bootstrap length
@@ -316,18 +323,35 @@ Save:
 
 // save EPROM image to file
 
+// check if file already exists, allow up to 99 duplicate files
+
+	dwAttrib = GetFileAttributes(name_buffer);
+	if (dwAttrib != 0xFFFFFFFF && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
+		for (i = 1; i < 100; i++) {
+			sprintf(name_buffer, "%02X%02X%02X%02X (%d).bin",recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5], i);
+			dwAttrib = GetFileAttributes(name_buffer);
+			if (dwAttrib == 0xFFFFFFFF && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
+				goto SAVE_FILE;
+			}
+		}
+		printf("\nfile exists");
+		goto EXIT;
+	}
+
+
+SAVE_FILE:
 	hBuff = CreateFile(name_buffer,GENERIC_READ|GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hBuff == INVALID_HANDLE_VALUE) {
-		printf("failed to create EPROM file");
+		printf("\nfailed to create EPROM file");
 	}
 
 	if (!WriteFile(hBuff, recv_buffer, recv_num, &num, NULL)) {
-		printf("failed to write EPROM to file");
+		printf("\nfailed to write EPROM to file");
 	}
 
 	if (!CloseHandle(hBuff)) {
-		printf("failed to close file handle");
+		printf("\nfailed to close file handle");
 	}
 
 	printf("\nEPROM saved to %s", name_buffer);
@@ -337,7 +361,7 @@ EXIT:
 	state.fDtrControl = 0;
 	state.fRtsControl = 0;
 	if(!SetCommState(hComm, &state)){
-		printf("failed to set COM state");
+		printf("\nfailed to set COM state");
 	}
 	CloseHandle(hComm);
 	free(recv_buffer);

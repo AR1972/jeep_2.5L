@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
 	COMMTIMEOUTS timeouts = {0};
 	DCB state = {0};
 	DWORD dwAttrib = 0;
+// change to true to force bootstrap to send 0x0000->0xFFFF
+	bool force_all = false;
 
 	if (argc != 2 || strlen(argv[1]) > 1) {
 		printf("please supply COM port number\n");
@@ -35,14 +37,14 @@ int main(int argc, char *argv[])
 
 // get some memory for buffers
 
-	recv_buffer = (unsigned char *)malloc(0xE001);
+	recv_buffer = (unsigned char *)malloc(0x10001);
 	send_buffer = (unsigned char *)malloc(0x201);
 	name_buffer = (char *)malloc(0x10);
 	save_buffer = (unsigned char *)malloc(0x10000);
 	device = (char *)malloc(0x20);
 
 //null out buffers
-	memset(recv_buffer, 0x00, 0xE001);
+	memset(recv_buffer, 0x00, 0x10001);
 	memset(name_buffer, 0x00, 0x10);
 	memset(save_buffer, 0x00, 0x10000);
 
@@ -142,7 +144,7 @@ Start:
 
 	memset(send_buffer, 0x00, 0x201);
 	memcpy(send_buffer, dump, sizeof(dump));
-	memset(recv_buffer, 0x00, 0xE001);
+	memset(recv_buffer, 0x00, 0x10001);
 
 // set the BAUD rate of the bootstrap
 	
@@ -150,6 +152,13 @@ Start:
 		send_buffer[8] = 0x33;
 	} else if (baud == 9600) {
 		send_buffer[8] = 0x30;
+	}
+
+// force download 0x0000 -> 0xFFFF
+
+	if (force_all) {
+		send_buffer[40] = 0x00;
+		send_buffer[45] = 0x00;
 	}
 
 // purge garbage from serial port buffers
@@ -225,16 +234,7 @@ Start:
 		goto Start;
 	}
 
-// bootstrap sets SCI port to 1200 BAUD,
-// reset COM port, doesn't seem nessary
-// setting this to 9600 BAUD works with
-// FTDI based USB adapters but tends to
-// lose data on 'real' serial ports, likely
-// due to the quick and dirty way we are
-// connecting to the ECU. Byte 9 of the
-// bootstrap will need to be changed from
-// 0x33 to 0x30 to set the ECU to send
-// at 9600 BAUD.
+// change comport BAUD to whatever is defined
 
 	state.DCBlength = sizeof(DCB);
 	state.BaudRate = baud;
@@ -253,8 +253,8 @@ Start:
 	send_num = 0;
 	recv_num = 0;
 
-// EPROM's can be 0x8000 or 0xE000, capture in 64 byte chunks
-// check byte count when stream stops then save buffer
+// bootstrap can send 0x8000 0xE000 or forced to send 0x10000, capture
+// in 64 byte chunks, check byte count when stream stops then save buffer
 
 	while (ReadFile(hComm, &recv_buffer[i], 0x40, &num, NULL)) {
 		i = i + num;
@@ -263,6 +263,8 @@ Start:
 			if (recv_num == 0x8000) {
 				goto Save;
 			} else if (recv_num == 0xE000) {
+				goto Save;
+			} else if (recv_num == 0x10000) {
 				goto Save;
 			} else {
 				retry_num++;

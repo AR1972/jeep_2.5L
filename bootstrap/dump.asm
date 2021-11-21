@@ -2,11 +2,13 @@
 ; placed into bootstrap mode by applying 12 volts to
 ; pin 45 until SBEC sends 0x00 on pin 25. Bootstrap
 ; checks for first 2 bytes of the Mopar part number
-; at 0x2000 if not found sets start address for the
+; at 0x2002 if not found sets start address for the
 ; download to 0x8000 then sends EPROM image of two
 ; possible sizes 0x2000 -> 0xFFFF or 0x8000 -> 0xFFFF
 
     ORG $0000
+
+DumpBegin:
 
     fcb $FF ;68HC11 wants the first byte to be 0xFF
 
@@ -60,4 +62,11 @@ WaitForSCI:
 Done:
     stop
 
+DumpEnd:
+
+; pad bootstrap to 257 total bytes
+
+ REPEAT 257-(DumpEnd-DumpBegin)
+    fcb 0x00
+ ENDR
 

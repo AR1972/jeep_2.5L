@@ -122,7 +122,7 @@ ID_MfgAndChipEnd:
 ; M28F512 - 0x02 ; Factory FCC (ST Chip algorithm)
 ; ST Mfg Code = 0x20
 
-; TC97208 - 0x?? ; Factory SBECII (Toshiba Chip algorithm)
+; TC97208 - 0x40 ; Factory SBECII (Toshiba Chip algorithm)
 ; TC97209 - 0x70 ; Factory FCC (Toshiba Chip algorithm)
 ; Toshiba Mfg Code = 0x98
 

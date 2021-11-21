@@ -28,6 +28,9 @@ CodeOrg equ $0000
          ORG    DataOrg
          ORG    CodeOrg
 
+THE_BEGIN:
+           fcb 0xFF ;68HC11 uses first byte to auto detect BAUD
+
 ;-------------------------------------------------------------------------------
 Start:     lds      #TopOfStackSTD          ;set stack pointer
            ldX      #$1000                  ;load register start index
@@ -92,4 +95,11 @@ LoopForByte:
 ;    - each command will have RAM available from $0050 - $008F for temp storage.
 ;
 ;------------------------------------------------------------------------------
+THE_END:
+
+;pad bootstrap to 257 total bytes
+
+ REPEAT 257-(THE_END-THE_BEGIN)
+ fcb 0x00
+ ENDR
 

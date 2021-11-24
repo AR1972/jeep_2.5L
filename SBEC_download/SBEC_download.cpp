@@ -311,8 +311,8 @@ Save:
 		for (i=0xB600; i<0xB800; i++) {
 			save_buffer[i] = (unsigned char) 0xFF;
 		}
-		recv_buffer = save_buffer;
 		recv_num = 0x10000;
+		memcpy(recv_buffer, save_buffer, recv_num);
 	} else if (recv_num == 0x8000) {
 
 		// clear 68HC11 EEPROM

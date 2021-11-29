@@ -1,0 +1,6 @@
+Thumbs.db
+SBEC_download.tlog
+SBEC_download.tlog/*
+*.log
+*.obj
+*.pdb

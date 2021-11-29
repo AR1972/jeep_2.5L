@@ -578,7 +578,6 @@ int main(int argc, char *argv[])
 
 	sprintf(device, "\\\\.\\COM%s", argv[1]);
 
-#ifdef USB_RELAY_BOARD
 	dev = openDevice();
 	if (!dev) {
 		printf("Error in opening relay board\n");
@@ -586,7 +585,6 @@ int main(int argc, char *argv[])
 	}
 	// turn all relays off
 	rel_onoff(dev, OFF, -4);
-#endif
 
 	// create serial port handle
 
@@ -629,32 +627,18 @@ Start:
 	state.ByteSize = 8;
 	state.Parity = NOPARITY;
 	state.StopBits = ONESTOPBIT;
-#ifndef USB_RELAY_BOARD
-	state.fDtrControl = 1; // apply 12 volts to pin 45
-	state.fRtsControl = 0; // ECU power off
-#endif
 	if (!SetCommState(hComm, &state)) {
 		printf("failed to set COM state\n");
 		goto EXIT;
 	}
 
-#ifdef USB_RELAY_BOARD
+	// power on ECU in bootstrap mode
+
 	rel_onoff(dev, BOOTSTRAP, RELAY_VSEL);
 	rel_onoff(dev, VSEL, RELAY_DATA);
-#endif
-
 	Sleep(10);
-
-#ifdef USB_RELAY_BOARD
 	rel_onoff(dev, ON, RELAY_PWR);
 	rel_onoff(dev, ON, RELAY_KEY);
-#else
-	state.fRtsControl = 1; // ECU power on
-	if (!SetCommState(hComm, &state)) {
-		printf("failed to power on ECU\n");
-		goto EXIT;
-	}
-#endif
 
 	Sleep(50);
 
@@ -679,15 +663,7 @@ Start:
 	// ECU is in bootstrap mode disconnect 12 volts
 	// from pin 45 and connect COM port TXD
 
-#ifdef USB_RELAY_BOARD
 	rel_onoff(dev, DATA, RELAY_DATA);
-#else
-	state.fDtrControl = 0; // disconnect 12 volts from pin 45
-	if (!SetCommState(hComm, &state)) {
-		printf("failed to disconnect power from pin 45\n");
-		goto EXIT;
-	}
-#endif
 
 	// bootstrap download only seems to work at 1200 BAUD
 
@@ -705,13 +681,17 @@ Start:
 	memcpy(send_buffer, bootmainall, sizeof(bootmainall));
 	memset(recv_buffer, 0x00, 0x10001);
 
-	// purge garbage from serial port buffers
+	// set voltage select relay to 20v supplied
+	// by the boost converter
+
 	rel_onoff(dev, PROGRAM, RELAY_VSEL);
+
+	// purge garbage from serial port buffers
+
 	if (!FlushFileBuffers(hComm)) {
 		printf("failed to flush file buffers\n");
 		goto EXIT;
 	}
-
 
 	// need to let the data lines settle a little after power on
 
@@ -770,7 +750,7 @@ Start:
 	// change comport BAUD to whatever is defined
 
 	state.DCBlength = sizeof(DCB);
-	state.BaudRate = 9600;
+	state.BaudRate = baud;
 	state.ByteSize = 8;
 	state.Parity = NOPARITY;
 	state.StopBits = ONESTOPBIT;
@@ -780,9 +760,9 @@ Start:
 	}
 
 	timeouts.ReadIntervalTimeout = 0;
-	timeouts.ReadTotalTimeoutConstant = 8000;
+	timeouts.ReadTotalTimeoutConstant = 500;
 	timeouts.ReadTotalTimeoutMultiplier = 0;
-	timeouts.WriteTotalTimeoutConstant = 8000;
+	timeouts.WriteTotalTimeoutConstant = 500;
 	timeouts.WriteTotalTimeoutMultiplier = 0;
 	if (!SetCommTimeouts(hComm, &timeouts)) {
 		printf("failed to set COM timeouts\n");
@@ -801,18 +781,61 @@ Start:
 		goto EXIT;
 	}
 
-	if (!ReadFile(hComm, recv_buffer, sizeof(chipid)-3, &recv_num, NULL)) {
+	// bootmainall doesn't echo back the header (first 3 bytes)
+	// third byte of the headder is the command size
+
+	if (!ReadFile(hComm, recv_buffer, chipid[2], &recv_num, NULL)) {
 		printf("failed to read from COM port\n");
 	}
 
+	printf("%d bytes sent\n%d bytes received\n", send_num, recv_num);
+	
 	rel_onoff(dev, VSEL, RELAY_DATA); // apply 20v to pin 45
 
 	if (!ReadFile(hComm, recv_buffer, 2, &recv_num, NULL)) {
 		printf("failed to read from COM port\n");
 	}
 
-	rel_onoff(dev, DATA, RELAY_DATA); // remove 20v to pin 45
-	printf("%02X%02X", recv_buffer[0], recv_buffer[1]);
+	rel_onoff(dev, DATA, RELAY_DATA); // disconnect 20v from pin 45
+	printf("chip id: %02X%02X\n", recv_buffer[0], recv_buffer[1]);
+
+	// use chip id to lookup manufacturer and chip part number
+
+	switch (recv_buffer[0]) {
+	case 0x89:
+		printf("Intel ");
+		switch (recv_buffer[1]){
+		case 0xB8:
+			printf("P28F512 (64k)");
+			break;
+		case 0xB9:
+			printf("P28F256 (32k)");
+			break;
+		}
+		break;
+	case 0x98:
+		printf("Toshiba ");
+		switch (recv_buffer[1]){
+		case 0x40:
+			printf("TC97208 (32k)");
+			break;
+		case 0x70:
+			printf("TC97209 (64k)");
+			break;
+		}
+		break;
+	case 0x20:
+		printf("ST ");
+		switch (recv_buffer[1]){
+		case 0xA8:
+			printf("M28F256 (32k)");
+			break;
+		case 0x02:
+			printf("M28F512 (64k)");
+			break;
+		}
+		break;
+	}
 
 	ret = 0;
 

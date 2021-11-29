@@ -8,10 +8,6 @@
 
     ORG $0000
 
-DumpBegin:
-
-    fcb $FF ;68HC11 wants the first byte to be 0xFF
-
 Start:
     ldS     #$FF        ; stack pointer = 0xFF
     ldX     #$1000      ; config 68HC11 registers
@@ -62,11 +58,4 @@ WaitForSCI:
 Done:
     stop
 
-DumpEnd:
-
-; pad bootstrap to 257 total bytes
-
- REPEAT 257-(DumpEnd-DumpBegin)
-    fcb 0x00
- ENDR
 

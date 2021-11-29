@@ -29,7 +29,6 @@ CodeOrg equ $0000
          ORG    CodeOrg
 
 THE_BEGIN:
-           fcb 0xFF ;68HC11 uses first byte to auto detect BAUD
 
 ;-------------------------------------------------------------------------------
 Start:     lds      #TopOfStackSTD          ;set stack pointer
@@ -99,7 +98,7 @@ THE_END:
 
 ;pad bootstrap to 257 total bytes
 
- REPEAT 257-(THE_END-THE_BEGIN)
+ REPEAT 256-(THE_END-THE_BEGIN)
  fcb 0x00
  ENDR
 

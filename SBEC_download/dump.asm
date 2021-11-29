@@ -8,8 +8,6 @@
 
     ORG $0000
 
-    fcb $FF ;68HC11 wants the first byte to be 0xFF
-
 Start:
     ldS     #$FF        ; stack pointer = 0xFF
     ldX     #$1000      ; config 68HC11 registers

@@ -511,8 +511,8 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 		}
 
 #ifdef USB_RELAY_BOARD
-		rel_onoff(dev, OFF, -4);
 		if (dev) {
+			rel_onoff(dev, OFF, -4);
 			usbhidCloseDevice(dev);
 			dev = 0;
 		}
@@ -731,6 +731,9 @@ Start:
 // need to let the data lines settle a little after power on
 
 	Sleep(2000);
+	if (ABORT) {
+		goto EXIT;
+	}
 
 // send bootstrap to ECU, ECU's that use the 68HC11E9
 // have variable length download, bootstrap length
@@ -746,6 +749,10 @@ Start:
 // ECU echos back charaters sent, check
 // if it sent 256 bytes back, if 256 bytes
 // were not received, enter retry loop
+
+	if (ABORT) {
+		goto EXIT;
+	}
 
 	if (!ReadFile(hComm, recv_buffer, 0x100, &recv_num, NULL)) {
 		printf("failed to read from COM port\n");
@@ -770,6 +777,9 @@ Start:
 		}
 		printf("retry %d\n", retry_num);
 		Sleep(2000);
+		if (ABORT) {
+			goto EXIT;
+		}
 		goto Start;
 	}
 
@@ -797,6 +807,9 @@ Start:
 		}
 		printf("retry %d\n", retry_num);
 		Sleep(2000);
+		if (ABORT) {
+			goto EXIT;
+		}
 		goto Start;
 	}
 
@@ -823,6 +836,10 @@ Start:
 	}
 
 // start capturing byte stream
+
+	if (ABORT) {
+		goto EXIT;
+	}
 
 	printf("Downloading at %d BAUD\n", baud);
 	i=0;
@@ -973,8 +990,8 @@ EXIT:
 		device = 0;
 	}
 #ifdef USB_RELAY_BOARD
-	rel_onoff(dev, OFF, -4);
 	if (dev) {
+		rel_onoff(dev, OFF, -4);
 		usbhidCloseDevice(dev);
 		dev = 0;
 	}

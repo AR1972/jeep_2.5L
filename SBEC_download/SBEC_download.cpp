@@ -26,7 +26,7 @@
 #define USB_RELAY_NAME_PREF		"USBRelay"  // + number
 #define USB_RELAY_ID_STR_LEN	5 /* length of "unique serial number" in the devices */
 
-char *device = 0 ;
+char *device = 0;
 HANDLE hComm = 0;
 HANDLE hBuff = 0;
 unsigned char *recv_buffer = 0;
@@ -541,7 +541,7 @@ int main(int argc, char *argv[])
 	const int max_retry = 30;
 	unsigned long baud = 9600;
 	DWORD dwAttrib = 0;
-// change to true to force bootstrap to send 0x0000->0xFFFF
+	// change to true to force bootstrap to send 0x0000->0xFFFF
 	bool force_all = false;
 
 	if (argc != 2 || strlen(argv[1]) > 1) {
@@ -552,7 +552,7 @@ int main(int argc, char *argv[])
 
 	SetConsoleCtrlHandler(consoleHandler, TRUE);
 
-// get some memory for buffers
+	// get some memory for buffers
 
 	recv_buffer = (unsigned char *)malloc(0x10001);
 	if (!recv_buffer){
@@ -574,12 +574,12 @@ int main(int argc, char *argv[])
 	if (!device) {
 		goto EXIT;
 	}
-//null out buffers
+	//null out buffers
 	memset(recv_buffer, 0x00, 0x10001);
 	memset(name_buffer, 0x00, 0x10);
 	memset(save_buffer, 0x00, 0x10000);
 
-	sprintf(device,"\\\\.\\COM%s", argv[1]);
+	sprintf(device, "\\\\.\\COM%s", argv[1]);
 
 #ifdef USB_RELAY_BOARD
 	dev = openDevice();
@@ -588,17 +588,21 @@ int main(int argc, char *argv[])
 		goto EXIT;
 	}
 	// turn all relays off
-	rel_onoff(dev, OFF, -4);
+	if (dev){
+		if (rel_onoff(dev, OFF, -4))
+			goto EXIT;
+	}
 #endif
 
-// create serial port handle
+	// create serial port handle
 
 	hComm = CreateFileA(device, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 
 	if (hComm == INVALID_HANDLE_VALUE) {
 		printf("Error in opening COM%s\n", argv[1]);
 		goto EXIT;
-	} else {
+	}
+	else {
 		printf("Opening COM%s successful\n", argv[1]);
 	}
 
@@ -609,7 +613,7 @@ int main(int argc, char *argv[])
 
 Start:
 
-// setup comport timeouts
+	// setup comport timeouts
 
 	timeouts.ReadIntervalTimeout = 0;
 	timeouts.ReadTotalTimeoutConstant = 5000;
@@ -621,10 +625,10 @@ Start:
 		goto EXIT;
 	}
 
-// setup serial port, ECU starts start at 7812 BAUD
-// then switches to 1200 BAUD, setup for 9600 BAUD to
-// capture the BREAK the ECU sends to signal it has
-// entered bootstrap mode.
+	// setup serial port, ECU starts start at 7812 BAUD
+	// then switches to 1200 BAUD, setup for 9600 BAUD to
+	// capture the BREAK the ECU sends to signal it has
+	// entered bootstrap mode.
 
 	state.DCBlength = sizeof(DCB);
 	state.BaudRate = 9600;
@@ -641,15 +645,27 @@ Start:
 	}
 
 #ifdef USB_RELAY_BOARD
-	rel_onoff(dev, BOOTSTRAP, RELAY_VSEL);
-	rel_onoff(dev, VSEL, RELAY_DATA);
+	if (dev){
+		if (rel_onoff(dev, BOOTSTRAP, RELAY_VSEL))
+			goto EXIT;
+	}
+	if (dev){
+		if (rel_onoff(dev, VSEL, RELAY_DATA))
+			goto EXIT;
+	}
 #endif
 
 	Sleep(10);
 
 #ifdef USB_RELAY_BOARD
-	rel_onoff(dev, ON, RELAY_PWR);
-	rel_onoff(dev, ON, RELAY_KEY);
+	if (dev){
+		if (rel_onoff(dev, ON, RELAY_PWR))
+			goto EXIT;
+	}
+	if (dev) {
+		if (rel_onoff(dev, ON, RELAY_KEY))
+			goto EXIT;
+	}
 #else
 	state.fRtsControl = 1; // ECU power on
 	if (!SetCommState(hComm, &state)) {
@@ -660,36 +676,41 @@ Start:
 
 	Sleep(50);
 
-// ECU sends 0x00 when it enters bootstrap mode
+	// ECU sends 0x00 when it enters bootstrap mode
 
 	recv_buffer[0] = 0xAA;
 
-	if(ReadFile(hComm, recv_buffer, 1, &num, NULL)) {
+	if (ReadFile(hComm, recv_buffer, 1, &num, NULL)) {
 		if (num == 1 && recv_buffer[0] == 0x00) {
 			printf("ECU sent 0x%02X\n", recv_buffer[0]);
-		} else {
+		}
+		else {
 			printf("ECU not in bootstrap mode\n");
 			goto EXIT;
 		}
-	} else {
+	}
+	else {
 		printf("ECU not in bootstrap mode\n");
 		goto EXIT;
 	}
 
-// ECU is in bootstrap mode disconnect 12 volts
-// from pin 45 and connect COM port TXD
+	// ECU is in bootstrap mode disconnect 12 volts
+	// from pin 45 and connect COM port TXD
 
 #ifdef USB_RELAY_BOARD
-	rel_onoff(dev, DATA, RELAY_DATA);
+	if (dev) {
+		if (rel_onoff(dev, DATA, RELAY_DATA))
+			goto EXIT;
+	}
 #else
 	state.fDtrControl = 0; // disconnect 12 volts from pin 45
-	if(!SetCommState(hComm, &state)) {
+	if (!SetCommState(hComm, &state)) {
 		printf("failed to disconnect power from pin 45\n");
 		goto EXIT;
 	}
 #endif
 
-// bootstrap download only seems to work at 1200 BAUD
+	// bootstrap download only seems to work at 1200 BAUD
 
 	state.DCBlength = sizeof(DCB);
 	state.BaudRate = 1200;
@@ -705,54 +726,53 @@ Start:
 	memcpy(send_buffer, dump, sizeof(dump));
 	memset(recv_buffer, 0x00, 0x10001);
 
-// set the BAUD rate of the bootstrap
-	
+	// set the BAUD rate of the bootstrap
+
 	if (baud == 1200) {
 		send_buffer[8] = 0x33;
-	} else if (baud == 9600) {
+	}
+	else if (baud == 9600) {
 		send_buffer[8] = 0x30;
 	}
 
-// force download 0x0000 -> 0xFFFF
+	// force download 0x0000 -> 0xFFFF
 
 	if (force_all) {
 		send_buffer[40] = 0x00;
 		send_buffer[45] = 0x00;
 	}
 
-// purge garbage from serial port buffers
+	// purge garbage from serial port buffers
 
-	if(!FlushFileBuffers(hComm)) {
+	if (!FlushFileBuffers(hComm)) {
 		printf("failed to flush file buffers\n");
 		goto EXIT;
 	}
 
 
-// need to let the data lines settle a little after power on
+	// need to let the data lines settle a little after power on
 
 	Sleep(2000);
-	if (ABORT) {
+	if (ABORT)
 		goto EXIT;
-	}
 
-// send bootstrap to ECU, ECU's that use the 68HC11E9
-// have variable length download, bootstrap length
-// of 257 bytes should work in all cases.
+	// send bootstrap to ECU, ECU's that use the 68HC11E9
+	// have variable length download, bootstrap length
+	// of 257 bytes should work in all cases.
 
 	printf("Sending bootstrap...\n");
-	if(!WriteFile(hComm, send_buffer, 0x101, &send_num, NULL)) {
+	if (!WriteFile(hComm, send_buffer, 0x101, &send_num, NULL)) {
 		printf("failed to send bootstrap\n");
 		goto EXIT;
 	}
 	printf("%d bytes sent\n", send_num);
 
-// ECU echos back charaters sent, check
-// if it sent 256 bytes back, if 256 bytes
-// were not received, enter retry loop
+	// ECU echos back charaters sent, check
+	// if it sent 256 bytes back, if 256 bytes
+	// were not received, enter retry loop
 
-	if (ABORT) {
+	if (ABORT)
 		goto EXIT;
-	}
 
 	if (!ReadFile(hComm, recv_buffer, 0x100, &recv_num, NULL)) {
 		printf("failed to read from COM port\n");
@@ -762,7 +782,10 @@ Start:
 		printf("%d bytes received\n", recv_num);
 		retry_num++;
 #ifdef USB_RELAY_BOARD
-		rel_onoff(dev, OFF, -4);
+		if (dev) {
+			if (rel_onoff(dev, OFF, -4))
+				goto EXIT;
+		}
 #else
 		state.fDtrControl = 0; // disconnect 12 volts from pin 45
 		state.fRtsControl = 0; // power ECU off
@@ -777,22 +800,25 @@ Start:
 		}
 		printf("retry %d\n", retry_num);
 		Sleep(2000);
-		if (ABORT) {
+		if (ABORT)
 			goto EXIT;
-		}
 		goto Start;
 	}
 
-// compare send and receive buffers, sometimes the ECU will
-// send a leading null and will cause the bootstrap corruption
-// check to fail, handle leading null and no leading null cases
+	// compare send and receive buffers, sometimes the ECU will
+	// send a leading null and will cause the bootstrap corruption
+	// check to fail, handle leading null and no leading null cases
 
-	if((memcmp(send_buffer+1, recv_buffer, sizeof(dump)) != 0) &
-		(memcmp(send_buffer+1, recv_buffer+1, sizeof(dump)) !=0)) {
+	if ((memcmp(send_buffer + 1, recv_buffer, sizeof(dump)) != 0) &
+		(memcmp(send_buffer + 1, recv_buffer + 1, sizeof(dump)) != 0)) {
 		printf("bootstrap is corrupt\n");
 		retry_num++;
 #ifdef USB_RELAY_BOARD
-		rel_onoff(dev, OFF, -4);
+		if (dev) {
+			if (rel_onoff(dev, OFF, -4))
+				goto EXIT;
+		}
+
 #else
 		state.fDtrControl = 0; // disconnect 12 volts from pin 45
 		state.fRtsControl = 0; // power ECU off
@@ -807,13 +833,12 @@ Start:
 		}
 		printf("retry %d\n", retry_num);
 		Sleep(2000);
-		if (ABORT) {
+		if (ABORT)
 			goto EXIT;
-		}
 		goto Start;
 	}
 
-// change comport BAUD to whatever is defined
+	// change comport BAUD to whatever is defined
 
 	state.DCBlength = sizeof(DCB);
 	state.BaudRate = baud;
@@ -835,19 +860,19 @@ Start:
 		goto EXIT;
 	}
 
-// start capturing byte stream
+	// start capturing byte stream
 
 	if (ABORT) {
 		goto EXIT;
 	}
 
 	printf("Downloading at %d BAUD\n", baud);
-	i=0;
+	i = 0;
 	send_num = 0;
 	recv_num = 0;
 
-// bootstrap can send 0x8000 0xE000 or forced to send 0x10000, capture
-// in 64 byte chunks, check byte count when stream stops then save buffer
+	// bootstrap can send 0x8000 0xE000 or forced to send 0x10000, capture
+	// in 64 byte chunks, check byte count when stream stops then save buffer
 
 	while (ReadFile(hComm, &recv_buffer[i], 0x40, &num, NULL)) {
 		if (ABORT) {
@@ -859,14 +884,20 @@ Start:
 		if (num != 0x40) {
 			if (recv_num == 0x8000) {
 				goto Save;
-			} else if (recv_num == 0xE000) {
+			}
+			else if (recv_num == 0xE000) {
 				goto Save;
-			} else if (recv_num == 0x10000) {
+			}
+			else if (recv_num == 0x10000) {
 				goto Save;
-			} else {
+			}
+			else {
 				retry_num++;
 #ifdef USB_RELAY_BOARD
-				rel_onoff(dev, OFF, -4);
+				if (dev) {
+					if (rel_onoff(dev, OFF, -4))
+						goto EXIT;
+				}
 #else
 				state.fDtrControl = 0; // disconnect 12 volts from pin 45
 				state.fRtsControl = 0; // power ECU off
@@ -887,6 +918,8 @@ Start:
 				}
 				printf("retry %d\n", retry_num);
 				Sleep(2000);
+				if (ABORT)
+					goto EXIT;
 				goto Start;
 			}
 		}
@@ -895,44 +928,45 @@ Start:
 	}
 Save:
 	printf("\n");
-// use ECU part number for filename
+	// use ECU part number for filename
 
-	sprintf(name_buffer, "%02X%02X%02X%02X.bin",recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5]);
+	sprintf(name_buffer, "%02X%02X%02X%02X.bin", recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5]);
 
-// special handeling for 64k EPROM's
+	// special handeling for 64k EPROM's
 
 	if (recv_num == 0xE000) {
 
 		// copy 64k EPROM to new buffer starting at offset 0x2000
 
-		for (i=0; i < recv_num; i++) {
-			save_buffer[0x2000+i] = recv_buffer[i];
+		for (i = 0; i < recv_num; i++) {
+			save_buffer[0x2000 + i] = recv_buffer[i];
 		}
 
 		// clear 68HC11 EEPROM
 
-		for (i=0xB600; i<0xB800; i++) {
-			save_buffer[i] = (unsigned char) 0xFF;
+		for (i = 0xB600; i < 0xB800; i++) {
+			save_buffer[i] = (unsigned char)0xFF;
 		}
 		recv_num = 0x10000;
 		memcpy(recv_buffer, save_buffer, recv_num);
-	} else if (recv_num == 0x8000) {
+	}
+	else if (recv_num == 0x8000) {
 
 		// clear 68HC11 EEPROM
 
-		for (i=0x3600; i<0x3800; i++) {
-			recv_buffer[i] = (unsigned char) 0xFF;
+		for (i = 0x3600; i < 0x3800; i++) {
+			recv_buffer[i] = (unsigned char)0xFF;
 		}
 	}
 
-// save EPROM image to file
+	// save EPROM image to file
 
-// check if file already exists, allow up to 99 duplicate files
+	// check if file already exists, allow up to 99 duplicate files
 
 	dwAttrib = GetFileAttributes(name_buffer);
 	if (dwAttrib != 0xFFFFFFFF && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
 		for (i = 1; i < 100; i++) {
-			sprintf(name_buffer, "%02X%02X%02X%02X (%d).bin",recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5], i);
+			sprintf(name_buffer, "%02X%02X%02X%02X (%d).bin", recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5], i);
 			dwAttrib = GetFileAttributes(name_buffer);
 			if (dwAttrib == 0xFFFFFFFF && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
 				goto SAVE_FILE;
@@ -944,7 +978,7 @@ Save:
 
 
 SAVE_FILE:
-	hBuff = CreateFile(name_buffer,GENERIC_READ|GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+	hBuff = CreateFile(name_buffer, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hBuff == INVALID_HANDLE_VALUE) {
 		printf("failed to create EPROM file\n");

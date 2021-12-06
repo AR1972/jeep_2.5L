@@ -740,7 +740,7 @@ Start:
 	}
 	printf("%d bytes sent\n", send_num);
 
-	// ECU echos back charaters sent, check
+	// ECU echos back characters sent, check
 	// if it sent 256 bytes back, if 256 bytes
 	// were not received, enter retry loop
 
@@ -782,8 +782,8 @@ Start:
 	// send a leading null and will cause the bootstrap corruption
 	// check to fail, handle leading null and no leading null cases
 
-	if ((memcmp(eeerase + 1, recv_buffer, 0x6F) != 0) &
-		(memcmp(eeerase + 1, recv_buffer + 1, 0x6F) != 0)) {
+	if ((memcmp(eeerase + 1, recv_buffer, 0x60) != 0) &
+		(memcmp(eeerase + 1, recv_buffer + 1, 0x60) != 0)) {
 		printf("EEPROM erase is corrupt\n");
 		retry_num++;
 #ifdef USB_RELAY_BOARD
@@ -824,9 +824,9 @@ Start:
 	}
 
 	timeouts.ReadIntervalTimeout = 0;
-	timeouts.ReadTotalTimeoutConstant = 2000;
+	timeouts.ReadTotalTimeoutConstant = 500;
 	timeouts.ReadTotalTimeoutMultiplier = 0;
-	timeouts.WriteTotalTimeoutConstant = 2000;
+	timeouts.WriteTotalTimeoutConstant = 500;
 	timeouts.WriteTotalTimeoutMultiplier = 0;
 	if (!SetCommTimeouts(hComm, &timeouts)) {
 		printf("failed to set COM timeouts\n");
@@ -842,7 +842,8 @@ Start:
 	send_num = 0;
 	recv_num = 0;
 
-	// bootstrap will send 0xB600 -> 0xB800, capture in 64 byte
+	// bootstrap will send 0xB600 -> 0xB800, erase 0xB600 -> 0xB800,
+	// then send 0xB600 -> 0xB800 for verification. Capture in 64 byte
 	// chunks, check byte count when stream stops then save buffer
 
 	while (ReadFile(hComm, &recv_buffer[i], 0x40, &num, NULL)) {
@@ -933,7 +934,7 @@ SAVE_FILE:
 
 	printf("backup saved to %s\n", name_buffer);
 
-ConfirmErase:
+//ConfirmErase
 
 	for (i = 200; i < 400; i++) {
 		if (recv_buffer[i] != 0xFF) {

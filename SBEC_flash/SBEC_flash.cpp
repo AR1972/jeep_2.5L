@@ -835,6 +835,17 @@ Start:
 			break;
 		}
 		break;
+	case 0x01:
+		printf("AMD ");
+		switch (recv_buffer[1]){
+		case 0xA1:
+			printf("AM28F256 (32k)");
+			break;
+		case 0x25:
+			printf("AM28F512 (64k)");
+			break;
+		}
+		break;
 	}
 
 	ret = 0;

@@ -930,7 +930,12 @@ Save:
 	printf("\n");
 	// use ECU part number for filename
 
-	sprintf(name_buffer, "%02X%02X%02X%02X.bin", recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5]);
+	if (recv_num == 0x10000) {
+		sprintf(name_buffer, "dump_all.bin");
+	}
+	else {
+		sprintf(name_buffer, "%02X%02X%02X%02X.bin", recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5]);
+	}
 
 	// special handeling for 64k EPROM's
 
@@ -966,7 +971,12 @@ Save:
 	dwAttrib = GetFileAttributes(name_buffer);
 	if (dwAttrib != 0xFFFFFFFF && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
 		for (i = 1; i < 100; i++) {
-			sprintf(name_buffer, "%02X%02X%02X%02X (%d).bin", recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5], i);
+			if (recv_num == 0x10000) {
+				sprintf(name_buffer, "dump_all (%d).bin", i);
+			}
+			else {
+				sprintf(name_buffer, "%02X%02X%02X%02X (%d).bin", recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5], i);
+			}
 			dwAttrib = GetFileAttributes(name_buffer);
 			if (dwAttrib == 0xFFFFFFFF && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
 				goto SAVE_FILE;

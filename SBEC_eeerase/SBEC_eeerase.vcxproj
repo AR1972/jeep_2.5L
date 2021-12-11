@@ -88,6 +88,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="relay.cpp" />
     <ClCompile Include="SBEC_eeerase.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

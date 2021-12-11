@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="relay.cpp" />
     <ClCompile Include="SBEC_download.cpp" />
   </ItemGroup>
   <ItemGroup>

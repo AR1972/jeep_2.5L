@@ -41,5 +41,8 @@
     <ClCompile Include="SBEC_eeerase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="relay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

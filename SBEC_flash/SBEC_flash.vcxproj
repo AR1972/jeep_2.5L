@@ -57,6 +57,8 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AddModuleNamesToAssembly>
+      </AddModuleNamesToAssembly>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -89,6 +91,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="relay.cpp" />
     <ClCompile Include="SBEC_flash.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

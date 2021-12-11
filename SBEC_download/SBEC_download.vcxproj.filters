@@ -18,6 +18,9 @@
     <ClCompile Include="SBEC_download.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="relay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dump.h">

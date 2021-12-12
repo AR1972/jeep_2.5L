@@ -33,6 +33,7 @@ DCB state = { 0 };
 static USBDEVHANDLE dev = 0;
 bool ABORT = false;
 
+
 BOOL WINAPI consoleHandler(DWORD signal) {
 	ABORT = true;
 	if (signal == CTRL_C_EVENT) {
@@ -92,6 +93,7 @@ int main(int argc, char *argv[])
 	const int max_retry = 30;
 	unsigned long baud = 9600;
 	DWORD dwAttrib = 0;
+	unsigned long part_no = 0x00;
 	// change to true to force bootstrap to send 0x0000->0xFFFF
 	bool force_all = false;
 
@@ -440,6 +442,15 @@ Start:
 				goto Save;
 			}
 			else if (recv_num == 0x10000) {
+				// part number isn't at the beggining of the buffer
+				// check a few places for the part number before 
+				// using the default file name
+				if (recv_buffer[0x2002] == 0x56) {
+					part_no = 0x2000;
+				}
+				else if (recv_buffer[0x8002] == 0x56) {
+					part_no = 0x8000;
+				}
 				goto Save;
 			}
 			else {
@@ -479,13 +490,19 @@ Start:
 	}
 Save:
 	printf("\n");
+
 	// use ECU part number for filename
 
-	if (recv_num == 0x10000) {
+	if (recv_num == 0x10000 && part_no == 0) {
 		sprintf(name_buffer, "dump_all.bin");
 	}
+	else if (recv_num == 0x10000 && part_no >= 0x2000) {
+		sprintf(name_buffer, "%02X%02X%02X%02X_all.bin", recv_buffer[part_no + 2],
+			recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5]);
+	}
 	else {
-		sprintf(name_buffer, "%02X%02X%02X%02X.bin", recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5]);
+		sprintf(name_buffer, "%02X%02X%02X%02X.bin", recv_buffer[part_no + 2],
+			recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5]);
 	}
 
 	// special handeling for 64k EPROM's
@@ -522,11 +539,16 @@ Save:
 	dwAttrib = GetFileAttributes(name_buffer);
 	if (dwAttrib != 0xFFFFFFFF && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
 		for (i = 1; i < 100; i++) {
-			if (recv_num == 0x10000) {
+			if (recv_num == 0x10000 && part_no == 0) {
 				sprintf(name_buffer, "dump_all (%d).bin", i);
 			}
+			else if (recv_num == 0x10000 && part_no >= 0x2000) {
+				sprintf(name_buffer, "%02X%02X%02X%02X_all (%d).bin", recv_buffer[part_no + 2],
+					recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5], i);
+			}
 			else {
-				sprintf(name_buffer, "%02X%02X%02X%02X (%d).bin", recv_buffer[2], recv_buffer[3], recv_buffer[4], recv_buffer[5], i);
+				sprintf(name_buffer, "%02X%02X%02X%02X (%d).bin", recv_buffer[part_no + 2],
+					recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5], i);
 			}
 			dwAttrib = GetFileAttributes(name_buffer);
 			if (dwAttrib == 0xFFFFFFFF && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {

@@ -405,7 +405,7 @@ Start:
 		i = i + num;
 		recv_num = recv_num + num;
 		if (num != 0x40) {
-			if (recv_num == 0x400) {
+			if (recv_num >= 0x400) {
 				goto Save;
 			}
 			else {
@@ -487,7 +487,7 @@ SAVE_FILE:
 
 //ConfirmErase
 
-	for (i = 200; i < 400; i++) {
+	for (i = 0x200; i < 0x400; i++) {
 		if (recv_buffer[i] != 0xFF) {
 			printf("EEPROM erase failed\n");
 			goto EXIT;

@@ -31,11 +31,11 @@ char *name_buffer = 0;
 COMMTIMEOUTS timeouts = { 0 };
 DCB state = { 0 };
 static USBDEVHANDLE dev = 0;
-bool ABORT = false;
+BOOL ABORT = FALSE;
 
 
 BOOL WINAPI consoleHandler(DWORD signal) {
-	ABORT = true;
+	ABORT = TRUE;
 	if (signal == CTRL_C_EVENT) {
 		if (hBuff){
 			CloseHandle(hBuff);
@@ -85,7 +85,6 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 int main(int argc, char *argv[])
 {
 	int ret = 1;
-	unsigned long i = 0;
 	int retry_num = 0;
 	unsigned long send_num = 0;
 	unsigned long recv_num = 0;
@@ -95,7 +94,7 @@ int main(int argc, char *argv[])
 	DWORD dwAttrib = 0;
 	unsigned long part_no = 0x00;
 	// change to true to force bootstrap to send 0x0000->0xFFFF
-	bool force_all = false;
+	BOOL force_all = FALSE;
 
 	if (argc != 2 || strlen(argv[1]) > 1) {
 		printf("please supply COM port number\n");
@@ -318,7 +317,7 @@ Start:
 		printf("failed to send bootstrap\n");
 		goto EXIT;
 	}
-	printf("%d bytes sent\n", send_num);
+	printf("0x%02X bytes sent\n", send_num);
 
 	// ECU echos back charaters sent, check
 	// if it sent 256 bytes back, if 256 bytes
@@ -332,7 +331,7 @@ Start:
 	}
 
 	if (recv_num != 0x100) {
-		printf("%d bytes received\n", recv_num);
+		printf("0x%02X bytes received\n", recv_num);
 		retry_num++;
 #ifdef USB_RELAY_BOARD
 		if (dev) {
@@ -420,19 +419,17 @@ Start:
 	}
 
 	printf("Downloading at %d BAUD\n", baud);
-	i = 0;
 	send_num = 0;
 	recv_num = 0;
 
 	// bootstrap can send 0x8000 0xE000 or forced to send 0x10000, capture
 	// in 64 byte chunks, check byte count when stream stops then save buffer
 
-	while (ReadFile(hComm, &recv_buffer[i], 0x40, &num, NULL)) {
+	while (ReadFile(hComm, &recv_buffer[recv_num], 0x40, &num, NULL)) {
 		if (ABORT) {
 			printf("\n");
 			goto EXIT;
 		}
-		i = i + num;
 		recv_num = recv_num + num;
 		if (num != 0x40) {
 			if (recv_num == 0x8000) {
@@ -478,7 +475,7 @@ Start:
 				if (baud != 1200) {
 					baud = 1200;
 				}
-				printf("retry %d\n", retry_num);
+				printf("\nretry %d\n", retry_num);
 				Sleep(2000);
 				if (ABORT)
 					goto EXIT;
@@ -511,13 +508,13 @@ Save:
 
 		// copy 64k EPROM to new buffer starting at offset 0x2000
 
-		for (i = 0; i < recv_num; i++) {
+		for (unsigned int i = 0; i < recv_num; i++) {
 			save_buffer[0x2000 + i] = recv_buffer[i];
 		}
 
 		// clear 68HC11 EEPROM
 
-		for (i = 0xB600; i < 0xB800; i++) {
+		for (int i = 0xB600; i < 0xB800; i++) {
 			save_buffer[i] = (unsigned char)0xFF;
 		}
 		recv_num = 0x10000;
@@ -527,7 +524,7 @@ Save:
 
 		// clear 68HC11 EEPROM
 
-		for (i = 0x3600; i < 0x3800; i++) {
+		for (int i = 0x3600; i < 0x3800; i++) {
 			recv_buffer[i] = (unsigned char)0xFF;
 		}
 	}
@@ -538,7 +535,7 @@ Save:
 
 	dwAttrib = GetFileAttributes(name_buffer);
 	if (dwAttrib != 0xFFFFFFFF && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
-		for (i = 1; i < 100; i++) {
+		for (int i = 1; i < 100; i++) {
 			if (recv_num == 0x10000 && part_no == 0) {
 				sprintf(name_buffer, "dump_all (%d).bin", i);
 			}

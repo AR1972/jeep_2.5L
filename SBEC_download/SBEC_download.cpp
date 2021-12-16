@@ -18,6 +18,10 @@ USBDEVHANDLE openDevice(void);
 #define PROGRAM		1
 #define DATA		0
 #define VSEL		1
+#define RECV_BUFF   0x10100
+#define NAME_BUFF   0x40
+#define SEND_BUFF   0x201
+#define EE_BUFF     0x201
 
 #define USB_RELAY_BOARD
 
@@ -27,12 +31,21 @@ HANDLE hBuff = 0;
 unsigned char *recv_buffer = 0;
 unsigned char *send_buffer = 0;
 unsigned char *save_buffer = 0;
+unsigned char *ee_buffer = 0;
+char *ee_name_buffer = 0;
 char *name_buffer = 0;
 COMMTIMEOUTS timeouts = { 0 };
 DCB state = { 0 };
 static USBDEVHANDLE dev = 0;
 BOOL ABORT = FALSE;
 
+void usage() {
+	printf("\nSBEC_download /C:[1-9] /A /S\n");
+	printf("\n/C:[1-9] COM port 1 to 9\n");
+	printf("/A force download 0x0000->0xFFFF\n");
+	printf("/S save MCU eeprom to seperate file\n");
+	return;
+}
 
 BOOL WINAPI consoleHandler(DWORD signal) {
 	ABORT = TRUE;
@@ -53,6 +66,10 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 			free(name_buffer);
 			name_buffer = 0;
 		}
+		if (ee_name_buffer){
+			free(ee_name_buffer);
+			ee_name_buffer = 0;
+		}
 		if (save_buffer) {
 			free(save_buffer);
 			save_buffer = 0;
@@ -60,6 +77,10 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 		if (device) {
 			free(device);
 			device = 0;
+		}
+		if (ee_buffer) {
+			free(ee_buffer);
+			ee_buffer = 0;
 		}
 
 #ifdef USB_RELAY_BOARD
@@ -93,32 +114,73 @@ int main(int argc, char *argv[])
 	unsigned long baud = 9600;
 	DWORD dwAttrib = 0;
 	unsigned long part_no = 0x00;
-	// change to true to force bootstrap to send 0x0000->0xFFFF
 	BOOL force_all = FALSE;
+	char com[] = {'0',0,0,0,0};
+	BOOL save_eeprom = FALSE;
 
-	if (argc != 2 || strlen(argv[1]) > 1) {
-		printf("please supply COM port number\n");
-		printf("correct value is 1 through 9\n");
+
+	if (argc < 2){
+		usage();
 		return ret;
+	}
+
+	for (int i = 1; i < argc; i++)
+	{
+		if (argv[i][0] == '/')
+		{
+
+			if (argv[i][1] == 'c' || 
+			    argv[i][1] == 'C')
+			{
+				if (argv[i][2] == ':')
+				{
+					if (strlen(argv[i]) != 4) {
+						printf("Incorrect argument\nCorrect value is a number 1-9\nExample: /C:5");
+						return ret;
+					}
+					if (argv[i][3] < '1' || argv[i][3] > '9') {
+						printf("Please supply a valid COM port number\n");
+						printf("correct value is a number 1-9\n");
+						return ret;
+					}
+					com[0] = argv[i][3];
+				}
+			}
+			if (argv[i][1] == 'a' ||
+				argv[i][1] == 'A')
+			{
+				printf("Force downloading 0x0000->0xFFFF\n");
+				force_all = TRUE;
+			}
+			if (argv[i][1] == 's' ||
+				argv[i][1] == 'S') {
+				printf("Saving MCU eeprom\n");
+				save_eeprom = TRUE;
+			}
+		}
 	}
 
 	SetConsoleCtrlHandler(consoleHandler, TRUE);
 
 	// get some memory for buffers
 
-	recv_buffer = (unsigned char *)malloc(0x10001);
+	recv_buffer = (unsigned char *)malloc(RECV_BUFF);
 	if (!recv_buffer){
 		goto EXIT;
 	}
-	send_buffer = (unsigned char *)malloc(0x201);
+	send_buffer = (unsigned char *)malloc(SEND_BUFF);
 	if (!send_buffer){
 		goto EXIT;
 	}
-	name_buffer = (char *)malloc(0x10);
+	name_buffer = (char *)malloc(NAME_BUFF);
 	if (!name_buffer){
 		goto EXIT;
 	}
-	save_buffer = (unsigned char *)malloc(0x10000);
+	ee_name_buffer = (char *)malloc(NAME_BUFF);
+	if (!ee_name_buffer){
+		goto EXIT;
+	}
+	save_buffer = (unsigned char *)malloc(RECV_BUFF);
 	if (!save_buffer){
 		goto EXIT;
 	}
@@ -126,12 +188,18 @@ int main(int argc, char *argv[])
 	if (!device) {
 		goto EXIT;
 	}
+	ee_buffer = (unsigned char *)malloc(EE_BUFF);
+	if (!ee_buffer) {
+		goto EXIT;
+	}
 	//null out buffers
-	memset(recv_buffer, 0x00, 0x10001);
-	memset(name_buffer, 0x00, 0x10);
-	memset(save_buffer, 0x00, 0x10000);
+	memset(recv_buffer, 0x00, RECV_BUFF);
+	memset(name_buffer, 0x00, NAME_BUFF);
+	memset(ee_name_buffer, 0x00, NAME_BUFF);
+	memset(save_buffer, 0x00, RECV_BUFF);
+	memset(ee_buffer, 0x00, EE_BUFF);
 
-	sprintf(device, "\\\\.\\COM%s", argv[1]);
+	sprintf(device, "\\\\.\\COM%s", com);
 
 #ifdef USB_RELAY_BOARD
 	dev = openDevice();
@@ -151,11 +219,11 @@ int main(int argc, char *argv[])
 	hComm = CreateFileA(device, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 
 	if (hComm == INVALID_HANDLE_VALUE) {
-		printf("Error in opening COM%s\n", argv[1]);
+		printf("Error in opening COM%s\n", com);
 		goto EXIT;
 	}
 	else {
-		printf("Opening COM%s successful\n", argv[1]);
+		printf("Opening COM%s successful\n", com);
 	}
 
 	if (!GetCommState(hComm, &state)) {
@@ -207,7 +275,7 @@ Start:
 	}
 #endif
 
-	Sleep(10);
+	Sleep(100);
 
 #ifdef USB_RELAY_BOARD
 	if (dev){
@@ -226,7 +294,7 @@ Start:
 	}
 #endif
 
-	Sleep(50);
+	Sleep(100);
 
 	// ECU sends 0x00 when it enters bootstrap mode
 
@@ -274,9 +342,9 @@ Start:
 		goto EXIT;
 	}
 
-	memset(send_buffer, 0x00, 0x201);
+	memset(send_buffer, 0x00, SEND_BUFF);
 	memcpy(send_buffer, dump, sizeof(dump));
-	memset(recv_buffer, 0x00, 0x10001);
+	memset(recv_buffer, 0x00, RECV_BUFF);
 
 	// set the BAUD rate of the bootstrap
 
@@ -433,9 +501,11 @@ Start:
 		recv_num = recv_num + num;
 		if (num != 0x40) {
 			if (recv_num == 0x8000) {
+				memcpy(ee_buffer, recv_buffer + 0x3600, 0x200);
 				goto Save;
 			}
 			else if (recv_num == 0xE000) {
+				memcpy(ee_buffer, recv_buffer + 0x9600, 0x200);
 				goto Save;
 			}
 			else if (recv_num == 0x10000) {
@@ -448,6 +518,7 @@ Start:
 				else if (recv_buffer[0x8002] == 0x56) {
 					part_no = 0x8000;
 				}
+				memcpy(ee_buffer, recv_buffer + 0xB600, 0x200);
 				goto Save;
 			}
 			else {
@@ -501,6 +572,8 @@ Save:
 		sprintf(name_buffer, "%02X%02X%02X%02X.bin", recv_buffer[part_no + 2],
 			recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5]);
 	}
+	sprintf(ee_name_buffer, "%02X%02X%02X%02X_eeprom.bin", recv_buffer[part_no + 2],
+		recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5]);
 
 	// special handeling for 64k EPROM's
 
@@ -523,7 +596,6 @@ Save:
 	else if (recv_num == 0x8000) {
 
 		// clear 68HC11 EEPROM
-
 		for (int i = 0x3600; i < 0x3800; i++) {
 			recv_buffer[i] = (unsigned char)0xFF;
 		}
@@ -549,6 +621,22 @@ Save:
 			}
 			dwAttrib = GetFileAttributes(name_buffer);
 			if (dwAttrib == 0xFFFFFFFF && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
+				goto SAVE_EEPROM;
+			}
+		}
+		printf("file exists");
+		goto EXIT;
+	}
+
+SAVE_EEPROM:
+	
+	dwAttrib = GetFileAttributes(ee_name_buffer);
+	if (dwAttrib != 0xFFFFFFFF && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
+		for (int i = 1; i < 100; i++) {
+			sprintf(ee_name_buffer, "%02X%02X%02X%02X_eeprom (%d).bin", recv_buffer[part_no + 2],
+				recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5], i);
+			dwAttrib = GetFileAttributes(ee_name_buffer);
+			if (dwAttrib == 0xFFFFFFFF && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
 				goto SAVE_FILE;
 			}
 		}
@@ -558,6 +646,7 @@ Save:
 
 
 SAVE_FILE:
+
 	hBuff = CreateFile(name_buffer, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hBuff == INVALID_HANDLE_VALUE) {
@@ -576,6 +665,28 @@ SAVE_FILE:
 	}
 
 	printf("EPROM saved to %s", name_buffer);
+	
+	if (save_eeprom) {
+		printf("\n");
+		hBuff = CreateFile(ee_name_buffer, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+
+		if (hBuff == INVALID_HANDLE_VALUE) {
+			printf("failed to create EPROM file\n");
+			goto EXIT;
+		}
+
+		if (!WriteFile(hBuff, ee_buffer, 0x200, &num, NULL)) {
+			printf("failed to write EPROM to file\n");
+			goto EXIT;
+		}
+
+		if (!CloseHandle(hBuff)) {
+			printf("failed to close file handle\n");
+			goto EXIT;
+		}
+		printf("EEPROM saved to %s", ee_name_buffer);
+	}
+	
 	ret = 0;
 
 EXIT:
@@ -595,6 +706,10 @@ EXIT:
 		free(name_buffer);
 		name_buffer = 0;
 	}
+	if (ee_name_buffer){
+		free(ee_name_buffer);
+		ee_name_buffer = 0;
+	}
 	if (save_buffer) {
 		free(save_buffer);
 		save_buffer = 0;
@@ -602,6 +717,10 @@ EXIT:
 	if (device) {
 		free(device);
 		device = 0;
+	}
+	if (ee_buffer) {
+		free(ee_buffer);
+		ee_buffer = 0;
 	}
 #ifdef USB_RELAY_BOARD
 	if (dev) {

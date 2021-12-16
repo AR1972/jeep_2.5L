@@ -252,7 +252,7 @@ Start:
 	}
 #endif
 
-	Sleep(10);
+	Sleep(100);
 
 #ifdef USB_RELAY_BOARD
 	if (dev){
@@ -271,7 +271,7 @@ Start:
 	}
 #endif
 
-	Sleep(50);
+	Sleep(100);
 
 	// ECU sends 0x00 when it enters bootstrap mode
 

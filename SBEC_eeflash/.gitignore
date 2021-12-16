@@ -1,0 +1,9 @@
+Thumbs.db
+SBEC_eeflash.tlog
+SBEC_eeflash.tlog/*
+*.log
+*.obj
+*.pdb
+*.sdf
+*.opensdf
+SBEC_eeflash.sdf

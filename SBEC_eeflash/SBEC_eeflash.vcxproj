@@ -87,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="eeflash.h" />
-    <ClInclude Include="eeprom.h" />
     <ClInclude Include="hiddata.h" />
     <ClInclude Include="hidusb-tool.h" />
     <ClInclude Include="stdafx.h" />

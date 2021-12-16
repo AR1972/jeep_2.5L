@@ -5,7 +5,6 @@
 #include<malloc.h>
 #include "eeflash.h"
 #include "hidusb-tool.h"
-#include "eeprom.h"
 
 int rel_onoff(USBDEVHANDLE dev, int is_on, int relaynum);
 USBDEVHANDLE openDevice(void);
@@ -27,11 +26,19 @@ char *device = 0;
 HANDLE hComm = 0;
 HANDLE hBuff = 0;
 unsigned char *recv_buffer = 0;
+unsigned char *file_buffer = 0;
 char *name_buffer = 0;
 COMMTIMEOUTS timeouts = { 0 };
 DCB state = { 0 };
 static USBDEVHANDLE dev = 0;
 BOOL ABORT = FALSE;
+
+void usage() {
+	printf("\nSBEC_eeflash /C:[1-9] /F:[filename]\n");
+	printf("\n/C:[1-9] COM port 1 to 9\n");
+	printf("/F:[filename] 512 byte eeprom file\n");
+	return;
+}
 
 BOOL WINAPI consoleHandler(DWORD signal) {
 	ABORT = TRUE;
@@ -43,6 +50,10 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 		if (recv_buffer){
 			free(recv_buffer);
 			recv_buffer = 0;
+		}
+		if (file_buffer){
+			free(file_buffer);
+			file_buffer = 0;
 		}
 		if (name_buffer){
 			free(name_buffer);
@@ -73,8 +84,6 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 	return 1;
 }
 
-
-
 int main(int argc, char *argv[])
 {
 	int ret = 1;
@@ -85,11 +94,54 @@ int main(int argc, char *argv[])
 	const int max_retry = 30;
 	unsigned long baud = 9600;
 	DWORD dwAttrib = 0;
+	char com[] = { '0', 0, 0, 0, 0 };
 
-	if (argc != 2 || strlen(argv[1]) > 1) {
-		printf("please supply COM port number\n");
-		printf("correct value is 1 through 9\n");
+	if (argc < 3){
+		usage();
 		return ret;
+	}
+
+	for (int i = 1; i < argc; i++)
+	{
+		if (argv[i][0] == '/')
+		{
+
+			if (argv[i][1] == 'c' ||
+				argv[i][1] == 'C')
+			{
+				if (argv[i][2] == ':')
+				{
+					if (strlen(argv[i]) != 4) {
+						printf("Incorrect argument\nCorrect value is a number 1-9\nExample: /C:5");
+						return ret;
+					}
+					if (argv[i][3] < '1' || argv[i][3] > '9') {
+						printf("Please supply a valid COM port number\n");
+						printf("Correct value is a number 1-9\n");
+						return ret;
+					}
+					com[0] = argv[i][3];
+				}
+
+			}
+			if (argv[i][1] == 'f' ||
+				argv[i][1] == 'F')
+			{
+				if (argv[i][2] == ':')
+				{
+					hBuff = CreateFileA(&argv[i][3], GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+					if (hBuff == INVALID_HANDLE_VALUE)
+					{
+						printf("Can't open file %s\n", &argv[i][3]);
+						return ret;
+					}
+					if (GetFileSize(hBuff, NULL) != 0x200){
+						printf("Wrong file size\n");
+						return ret;
+					}
+				}
+			}
+		}
 	}
 
 	SetConsoleCtrlHandler(consoleHandler, TRUE);
@@ -100,6 +152,10 @@ int main(int argc, char *argv[])
 	if (!recv_buffer){
 		goto EXIT;
 	}
+	file_buffer = (unsigned char *)malloc(0x800);
+	if (!file_buffer){
+		goto EXIT;
+	}
 	name_buffer = (char *)malloc(0x40);
 	if (!name_buffer){
 		goto EXIT;
@@ -108,11 +164,19 @@ int main(int argc, char *argv[])
 	if (!device) {
 		goto EXIT;
 	}
+
+
 	//null out buffers
 	memset(recv_buffer, 0x00, 0x800);
+	memset(file_buffer, 0x00, 0x800);
 	memset(name_buffer, 0x00, 0x40);
 
-	sprintf(device, "\\\\.\\COM%s", argv[1]);
+	sprintf(device, "\\\\.\\COM%s", com);
+	if (!ReadFile(hBuff, file_buffer, 0x200, &num, NULL)){
+		printf("Read of eeprom file failed\n");
+		goto EXIT;
+	}
+
 
 #ifdef USB_RELAY_BOARD
 	dev = openDevice();
@@ -132,11 +196,11 @@ int main(int argc, char *argv[])
 	hComm = CreateFileA(device, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 
 	if (hComm == INVALID_HANDLE_VALUE) {
-		printf("Error in opening COM%s\n", argv[1]);
+		printf("Error in opening COM%s\n", com);
 		goto EXIT;
 	}
 	else {
-		printf("Opening COM%s successful\n", argv[1]);
+		printf("Opening COM%s successful\n", com);
 	}
 
 	if (!GetCommState(hComm, &state)) {
@@ -390,10 +454,13 @@ Start:
 	if (ABORT) {
 		goto EXIT;
 	}
+	
+	Sleep(500); // 68hc11e9 ECU's need this
+	
 	printf("Uploading at %d BAUD\n", baud);
 	num = 0;
 	for (int i = 0; i < 8; i++){
-		if (!WriteFile(hComm, eeprom+num, 0x40, &send_num, NULL)) {
+		if (!WriteFile(hComm, file_buffer+num, 0x40, &send_num, NULL)) {
 			printf("failed to send data\n");
 			goto EXIT;
 		}
@@ -430,7 +497,7 @@ Start:
 	}
 Save:
 	printf("\n");
-	if (memcmp(eeprom, recv_buffer, sizeof(eeprom))){
+	if (memcmp(file_buffer, recv_buffer, 0x200)){
 		printf("EEPROM flash failed\n");
 		goto EXIT;
 	}
@@ -445,6 +512,10 @@ EXIT:
 	if (recv_buffer){
 		free(recv_buffer);
 		recv_buffer = 0;
+	}
+	if (file_buffer){
+		free(file_buffer);
+		file_buffer = 0;
 	}
 	if (name_buffer){
 		free(name_buffer);

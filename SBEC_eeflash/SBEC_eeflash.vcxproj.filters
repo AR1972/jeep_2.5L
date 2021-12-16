@@ -33,9 +33,6 @@
     <ClInclude Include="eeflash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="eeprom.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

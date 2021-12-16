@@ -29,10 +29,10 @@ char *name_buffer = 0;
 COMMTIMEOUTS timeouts = { 0 };
 DCB state = { 0 };
 static USBDEVHANDLE dev = 0;
-bool ABORT = false;
+BOOL ABORT = FALSE;
 
 BOOL WINAPI consoleHandler(DWORD signal) {
-	ABORT = true;
+	ABORT = TRUE;
 	if (signal == CTRL_C_EVENT) {
 		if (hBuff){
 			CloseHandle(hBuff);
@@ -74,7 +74,6 @@ BOOL WINAPI consoleHandler(DWORD signal) {
 int main(int argc, char *argv[])
 {
 	int ret = 1;
-	unsigned long i = 0;
 	int retry_num = 0;
 	unsigned long send_num = 0;
 	unsigned long recv_num = 0;
@@ -289,7 +288,7 @@ Start:
 		printf("failed to send EEPROM erase\n");
 		goto EXIT;
 	}
-	printf("%d bytes sent\n", send_num);
+	printf("0x%02X bytes sent\n", send_num);
 
 	// ECU echos back characters sent, check
 	// if it sent 256 bytes back, if 256 bytes
@@ -303,7 +302,7 @@ Start:
 	}
 
 	if (recv_num != 0x100) {
-		printf("%d bytes received\n", recv_num);
+		printf("0x%02X bytes received\n", recv_num);
 		retry_num++;
 #ifdef USB_RELAY_BOARD
 		if (dev) {
@@ -389,7 +388,6 @@ Start:
 	}
 
 	printf("Downloading at %d BAUD\n", baud);
-	i = 0;
 	send_num = 0;
 	recv_num = 0;
 
@@ -397,12 +395,11 @@ Start:
 	// then send 0xB600 -> 0xB800 for verification. Capture in 64 byte
 	// chunks, check byte count when stream stops then save buffer
 
-	while (ReadFile(hComm, &recv_buffer[i], 0x40, &num, NULL)) {
+	while (ReadFile(hComm, &recv_buffer[recv_num], 0x40, &num, NULL)) {
 		if (ABORT) {
 			printf("\n");
 			goto EXIT;
 		}
-		i = i + num;
 		recv_num = recv_num + num;
 		if (num != 0x40) {
 			if (recv_num >= 0x400) {
@@ -454,7 +451,7 @@ Save:
 
 	dwAttrib = GetFileAttributesA(name_buffer);
 	if (dwAttrib != 0xFFFFFFFF && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
-		for (i = 1; i < 100; i++) {
+		for (int i = 1; i < 100; i++) {
 			sprintf(name_buffer, "eeprom_bak (%d).bin", i);
 			dwAttrib = GetFileAttributesA(name_buffer);
 			if (dwAttrib == 0xFFFFFFFF && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
@@ -487,7 +484,7 @@ SAVE_FILE:
 
 //ConfirmErase
 
-	for (i = 0x200; i < 0x400; i++) {
+	for (int i = 0x200; i < 0x400; i++) {
 		if (recv_buffer[i] != 0xFF) {
 			printf("EEPROM erase failed\n");
 			goto EXIT;

@@ -43,7 +43,7 @@ void usage() {
 	printf("\nSBEC_download /C:[1-9] /A /S\n");
 	printf("\n/C:[1-9] COM port 1 to 9\n");
 	printf("/A force download 0x0000->0xFFFF\n");
-	printf("/S save MCU eeprom to seperate file\n");
+	printf("/S save MCU eeprom to separate file\n");
 	return;
 }
 

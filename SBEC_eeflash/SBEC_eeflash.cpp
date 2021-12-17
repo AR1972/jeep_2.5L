@@ -493,7 +493,7 @@ Start:
 			}
 		}
 		printf("\r");
-		printf("0x%02X bytes received", num);
+		printf("0x%02X bytes received", recv_num);
 	}
 Save:
 	printf("\n");

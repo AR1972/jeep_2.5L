@@ -94,7 +94,8 @@ int main(int argc, char *argv[])
 	const int max_retry = 30;
 	unsigned long baud = 9600;
 	DWORD dwAttrib = 0;
-	char com[] = { '0', 0, 0, 0, 0 };
+	char com[] = "0\0\0\0";
+	BOOL clear_codes = FALSE;
 
 	if (argc < 3){
 		usage();
@@ -141,6 +142,11 @@ int main(int argc, char *argv[])
 					}
 				}
 			}
+			if (argv[i][1] == 'e' ||
+				argv[i][1] == 'E')
+			{
+				clear_codes = TRUE;
+			}
 		}
 	}
 
@@ -177,6 +183,9 @@ int main(int argc, char *argv[])
 		goto EXIT;
 	}
 
+	if (clear_codes) {
+		memset(&file_buffer[10], 0xFF, 0x50);
+	}
 
 #ifdef USB_RELAY_BOARD
 	dev = openDevice();

@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (clear_codes) {
-		memset(&file_buffer[10], 0xFF, 0x50);
+		memset(&file_buffer[20], 0xFF, 0x40);
 	}
 
 #ifdef USB_RELAY_BOARD

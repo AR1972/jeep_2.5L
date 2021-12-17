@@ -575,34 +575,6 @@ Save:
 	sprintf(ee_name_buffer, "%02X%02X%02X%02X_eeprom.bin", recv_buffer[part_no + 2],
 		recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5]);
 
-	// special handeling for 64k EPROM's
-
-	if (recv_num == 0xE000) {
-
-		// copy 64k EPROM to new buffer starting at offset 0x2000
-
-		for (unsigned int i = 0; i < recv_num; i++) {
-			save_buffer[0x2000 + i] = recv_buffer[i];
-		}
-
-		// clear 68HC11 EEPROM
-
-		for (int i = 0xB600; i < 0xB800; i++) {
-			save_buffer[i] = (unsigned char)0xFF;
-		}
-		recv_num = 0x10000;
-		memcpy(recv_buffer, save_buffer, recv_num);
-	}
-	else if (recv_num == 0x8000) {
-
-		// clear 68HC11 EEPROM
-		for (int i = 0x3600; i < 0x3800; i++) {
-			recv_buffer[i] = (unsigned char)0xFF;
-		}
-	}
-
-	// save EPROM image to file
-
 	// check if file already exists, allow up to 99 duplicate files
 
 	dwAttrib = GetFileAttributes(name_buffer);
@@ -646,6 +618,33 @@ SAVE_EEPROM:
 
 
 SAVE_FILE:
+
+	// special handeling for 64k EPROM's
+
+	if (recv_num == 0xE000) {
+
+		// copy 64k EPROM to new buffer starting at offset 0x2000
+
+		for (unsigned int i = 0; i < recv_num; i++) {
+			save_buffer[0x2000 + i] = recv_buffer[i];
+		}
+
+		// clear 68HC11 EEPROM
+
+		for (int i = 0xB600; i < 0xB800; i++) {
+			save_buffer[i] = (unsigned char)0xFF;
+		}
+		recv_num = 0x10000;
+		memcpy(recv_buffer, save_buffer, recv_num);
+	}
+	else if (recv_num == 0x8000) {
+
+		// clear 68HC11 EEPROM
+		for (int i = 0x3600; i < 0x3800; i++) {
+			recv_buffer[i] = (unsigned char)0xFF;
+		}
+	}
+
 
 	hBuff = CreateFile(name_buffer, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 

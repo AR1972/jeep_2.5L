@@ -11,6 +11,8 @@ BaseAddr equ $6400
 ;automatic transmission, MTX for manual transmission.
 TransType equ MTX
 ;
+NOEMR equ 0
+;
  ORG $8000
 #include data.inc
  ORG $9400
@@ -893,7 +895,9 @@ loc_9A8E:
 loc_9A99:
 		jsr	sub_9BBE
 		jsr	sub_9B32
+	IF NOEMR == 0
 		jsr	sub_E95C
+	ENDIF
 		jsr	sub_A18C
 		jsr	sub_A2BB
 		jsr	sub_DB43
@@ -922,7 +926,9 @@ loc_9AB1:
 		jsr	sub_DA31
 
 loc_9AE7:
+	IF NOEMR == 0
 		jsr	sub_9EDC
+	ENDIF
 		jsr	sub_CA29
 		jsr	sub_CC78
 		jsr	sub_CE70
@@ -1516,6 +1522,8 @@ loc_9ED8:
 locret_9EDB:
 		rts
 
+	IF NOEMR == 0
+
 sub_9EDC:
 		brset	<IPL1 $40 loc_9EE6
 		brset	<BitFlags6a_t3 4 loc_9EF3
@@ -1623,6 +1631,8 @@ loc_9F94:
 
 locret_9F99:
 		rts
+
+	ENDIF
 
 loc_9F9A:
 		ldaa	DRBOffsetStored_HB
@@ -11767,9 +11777,6 @@ loc_E935:
 		bcs	loc_E930
 		rts
 
-;>>>>>>>>>>>>>>>>>>>>>>>>>>fix me<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-;unreachable code???
- ORG $E93C
 		ldaa	#$16
 		bsr	sub_E942
 		ldaa	#2
@@ -11789,7 +11796,8 @@ loc_E94F:
 		clra
 		staa	PPROG_EEPROMControlReg
 		rts
-
+	
+	IF NOEMR == 0
 sub_E95C:
 		brset	<BitFlags6a_t3 $40 loc_E963
 		jmp	loc_E9EC
@@ -11880,6 +11888,8 @@ loc_E9EC:
 loc_E9ED:
 		staa	PPROG_EEPROMControlReg
 		rts
+
+	ENDIF
 
 sub_E9F1:
 		ldx	#$B610

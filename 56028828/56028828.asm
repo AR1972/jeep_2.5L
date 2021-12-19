@@ -89,8 +89,8 @@ loc_9468:
 
 __RESET:
 		sei
-		lds	#TopOfStack
-		ldd	#$2A9
+		lds     #TopOfStack
+		ldd	    #$2A9
 		staa	TMSK2_TimerInterruptMask2
 		stab	OPTION_SysConfigOptionReg
 		ldaa	#$F8
@@ -98,43 +98,43 @@ __RESET:
 		clra
 		clrb
 		staa	Temp0
-		std	Temp1
-		ldd	<Counter_SpeedSensorInterrupt_HB
+		std	    Temp1
+		ldd	    <Counter_SpeedSensorInterrupt_HB
 		tba
 		comb
 		xgdy
-		jsr	sub_E92B
-		cpd	<MinimumTimerCountBeforeMainloopCanContinue
-		beq	loc_949C
-		ldy	#0
+		jsr	    sub_E92B
+		cpd	    <MinimumTimerCountBeforeMainloopCanContinue
+		beq	    loc_949C
+		ldy	    #0
 
 loc_949C:
-		sty	<MinimumTimerCountBeforeMainloopCanContinue
+		sty	    <MinimumTimerCountBeforeMainloopCanContinue
 		bset	<Ram_05	$A
 
 loc_94A2:
-		jsr	sub_E7D6
+		jsr	    sub_E7D6
 		ldaa	#$90
 		tap
 		ldab	#$F
 		ldaa	byte_8015
 		bita	#8
-		beq	loc_94B3
+		beq	    loc_94B3
 		ldab	#6
 
 loc_94B3:
 		stab	HPRIO_HighPriorityInterruptMask
-		clr	OC1M_OutputCompare1Mask
-		clr	OC1D_OutputCompare1D
-		ldd	#$FF
+		clr	    OC1M_OutputCompare1Mask
+		clr	    OC1D_OutputCompare1D
+		ldd	    #$FF
 		staa	TMSK1_TimerInterruptMask1
 		stab	TFLG1_TimerInterruptFlag1
 		ldaa	#$1A
 		staa	TCTL2_TimerControlReg2
-		ldd	#$AA78
+		ldd	    #$AA78
 		staa	TCTL1_TimerControlReg1
 		stab	CFORC_TimerForceCompare
-		ldd	#$7520
+		ldd	    #$7520
 		staa	PIA3_Buffer_2_t3
 		staa	<PIA3_Buffer_t3
 		stab	PORTD_PortD
@@ -142,11 +142,10 @@ loc_94B3:
 		staa	SwitchPortAccessReg1
 		ldab	TL_IDENT1
 		cmpb	#$11
-		beq	loc_94F1
+		beq	    loc_94F1
 		ldab	#$8F
 		stab	PIA_Ctrl_1
-		bra	loc_94F6
-
+		bra	    loc_94F6
 
 loc_94F1:
 		ldab	#$F
@@ -1632,8 +1631,6 @@ loc_9F94:
 locret_9F99:
 		rts
 
-	ENDIF
-
 loc_9F9A:
 		ldaa	DRBOffsetStored_HB
 		adda	#2
@@ -1685,6 +1682,8 @@ loc_9FE1:
 
 locret_9FEC:
 		rts
+
+	ENDIF
 
 sub_9FED:
 		ldaa	byte_8016

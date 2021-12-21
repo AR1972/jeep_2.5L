@@ -1,0 +1,9 @@
+Thumbs.db
+SBEC_on.tlog
+SBEC_on.tlog/*
+*.log
+*.obj
+*.pdb
+*.sdf
+*.opensdf
+SBEC_on.sdf

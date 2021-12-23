@@ -79,7 +79,6 @@ TL_RPMCellLookupTable:
         fcb $0F, $A0, $14, $50, $17, $70, $20, $D0, $23, $F0, $2E, $E0, $3E, $80, $4E, $20
         fcb $5D, $C0, $6D, $60, $7D, $00, $8C, $A0, $9C, $40
 
- ORG $8053
 TL_RPM3DInputModifierFromRPM:
 unk_8053:
         fcb $06
@@ -90,7 +89,6 @@ unk_8053:
         fcb $4E, $B0, $01, $03
         fcb $9C, $FF
 
- ORG $806A
 TL_TL_806a: fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
 word_8072:  fdb $0262
@@ -108,7 +106,6 @@ byte_8080:  fcb $02
 byte_8081:  fcb $0C
 byte_8082:  fcb $04
 
- ORG $8083
 ; North America
 TL_Spark1A_RPMMAP:
 unk_8083:
@@ -179,10 +176,8 @@ unk_811F:
         fcb $1C, $38, $40, $5C, $48, $42, $3E, $34, $20
         fcb $1C, $38, $40, $56, $4C, $44, $3C, $34, $28
 
- ORG $81BB
 byte_81BB:  fcb $03
 
- ORG $81BC
 TL_Spark2A_RPMMAP:
 unk_81BC:
         fcb $11
@@ -338,7 +333,6 @@ unk_842B:
         fcb $C6, $13, $FF, $D8
         fcb $FF, $0A
 
- ORG $843E
 tl_tl_843e:
 unk_843E:
         fcb $08

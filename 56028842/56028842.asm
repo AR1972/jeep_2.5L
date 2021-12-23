@@ -1,21 +1,55 @@
- DCB.B $8000, $00 ; null bytes for 64k EEPROM
+;
+; Data_start: address defines where the EPROM begins, in the
+; memory map, 4 and 6 cylinder ECU's this should be set to
+; $8000, for 8 cylinder ECU's this should be set to $2000.
+;
+Data_start equ $8000
+;
+; Code_start: address defines where the executable code begins,
+; 4 and 6 cylinder ECU's this is set to $9400, 8 cylinder ECU's
+; this is set to $4000.
+;
+ IF Data_start == $2000
+Code_start equ $4000
+ ELIF Data_start == $8000
+Code_start equ $9400
+ ENDIF
+;
+; this setting defines where the 68HC11 internal EEPROM
+; is located in the memory map, this setting should remain
+; at $B600, unless you have changed the memory map.
+;
+MCU_eeprom equ $B600
+;
+; null bytes for 64k EEPROM
+;
+ DCB.B Data_start, $00
+;
 #include defines.inc
 ;
-;base address for TI chip, correct values are $0400 for 94
-;and later 8 cylinder ECU's, $6400 for 94 and later 4,6
-;cylinder ECU's and $6000 for 93 and earlier ECU's.
-BaseAddr equ $6400
+; base address for TI chip, correct values are $0400 for 94
+; and later 8 cylinder ECU's, $6400 for 94 and later 4,6
+; cylinder ECU's and $6000 for 93 and earlier ECU's.
 ;
-;config for transmission type, correct values are ATX for
-;automatic transmission, MTX for manual transmission.
+ IF Data_start == $2000
+BaseAddr equ $0400
+ ELIF Data_start == $8000
+BaseAddr equ $6400
+ ENDIF
+;
+; config for transmission type, correct values are ATX for
+; automatic transmission, MTX for manual transmission.
+;
 TransType equ MTX
 ;
-;1 to remove emissions maintenance reminder code
+; 1 to remove emissions maintenance reminder code
+;
 NOEMR equ 0
 ;
- ORG $8000
+ ORG Data_start
 #include data.inc
- ORG $9400
+
+ ORG Code_start
 XIRQ:
         ldab    #$01
         bra     loc_9416
@@ -59,7 +93,7 @@ loc_9416:
 
 CME:
         sei
-		lds     #TopOfStack
+        lds     #TopOfStack
         ldd     #$02A9
         staa    TMSK2_TimerInterruptMask2
         stab    OPTION_SysConfigOptionReg
@@ -515,7 +549,7 @@ loc_9767:
         bset    <Ram_EC $A0
 
 loc_97C1:
-        ldx     #$B616
+        ldx     #MCU_eeprom + $16
         ldaa    $00,x
         cmpa    #$4A
         bne     loc_97D2
@@ -525,7 +559,7 @@ loc_97C1:
         bset    <BitFlags2d $04
 
 loc_97D2:
-        ldx     #$B6E1
+        ldx     #MCU_eeprom + $E1
         ldaa    $00,x
         cmpa    #$4A
         bne     loc_97E3
@@ -535,7 +569,7 @@ loc_97D2:
         bset    <BitFlags21 $02
 
 loc_97E3:
-        ldx     #$B6E3
+        ldx     #MCU_eeprom + $E3
         ldaa    $00,x
         cmpa    #$4A
         bne     loc_97F4
@@ -621,7 +655,7 @@ loc_987A:
         jsr     sub_C343
         jsr     sub_BFD7
         ldd     TCNT_Counter_FreeRunning16bit
-        addd    #$3E8
+        addd    #$03E8
         std     TOC1_Counter_OC1
         jsr     sub_ED8B
         ldaa    <PIA3_Buffer_t3
@@ -1537,7 +1571,7 @@ sub_9EDC:
 
 loc_9EE6:
         brset   <BitFlags6a_t3 $40 locret_9F30
-        ldd     $B610
+        ldd     MCU_eeprom + $10
         cpd     #$5AA5
         beq     loc_9EF8
 
@@ -1592,8 +1626,8 @@ loc_9F44:
         ldd     #$0000
         std     Temp4
         staa    DRBOffsetStored_HB
-        ldx     #$B600
-        ldy     #$B60E
+        ldx     #MCU_eeprom
+        ldy     #MCU_eeprom + $0E
 
 loc_9F54:
         ldd     $00,x
@@ -1610,13 +1644,13 @@ loc_9F54:
         staa    DRBOffsetStored_HB
 
 loc_9F70:
-        cpx     #$B60E
+        cpx     #MCU_eeprom + $0E
         beq     loc_9F87
         inx
         inx
-        cpy     #$B60E
+        cpy     #MCU_eeprom + $0E
         bne     loc_9F81
-        ldy     #$B5FE
+        ldy     #MCU_eeprom - $02
 
 loc_9F81:
         iny
@@ -1674,7 +1708,7 @@ loc_9FCE:
         rts
 
 sub_9FD5:
-        ldx     #$B600
+        ldx     #MCU_eeprom
         ldab    DRBOffsetStored_HB
         subb    #$02
         bpl     loc_9FE1
@@ -1691,8 +1725,6 @@ locret_9FEC:
         rts
 
  ENDIF
-
- ORG $9FED
 
 sub_9FED:
         ldaa    byte_8016
@@ -4067,10 +4099,15 @@ loc_AF1D:
         std     $00,y
         rts
 
- ORG $B600
+;>>>>>>>>>>>>>>>>MCU eeprom<<<<<<<<<<<<<<<<<<
+ IF Data_start == $8000
+
+ ORG MCU_eeprom
  DCB.B $200, $FF
 
- ORG $B800
+ ENDIF
+;>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
+
 sub_B800:
         ldab    <Counter_MainLoop
         bitb    #$07
@@ -4881,9 +4918,9 @@ sub_BCF2:
 
 loc_BD08:
         staa    <BodyComputerBatteryVoltsOutput
-        ldaa    $B615
+        ldaa    MCU_eeprom + $15
         coma
-        cmpa    $B614
+        cmpa    MCU_eeprom + $14
         beq     loc_BD16
         clra
         bra     loc_BD22
@@ -7311,12 +7348,12 @@ SetupATM:
         bcs     loc_CD13
         cmpa    #$4E
         bhi     loc_CD13
-        ldx     #$CDDB
+        ldx     #ATMFunctionTable - $02
         ldab    <DRBPointer2
         aslb
         abx
         ldd     $00,x
-        cpd     #$D09C
+        cpd     #ATM_SerialOut_0
         beq     loc_CD13
         ldaa    <DRBPointer2
         brset   <BitFlags27 $01 loc_CD0B
@@ -7462,6 +7499,7 @@ loc_CDD0:
         clra
         bra     loc_CDBB
 
+ATMFunctionTable:
         fdb ATM_IgnitionCoil1
         fdb ATM_SerialOut_0
         fdb ATM_SerialOut_0
@@ -7502,7 +7540,7 @@ loc_CDD0:
         fdb ATM_SerialOut_0
         fcb $CE
 
-unk_CE2A:
+Byt_DRBMemoryTable:
         fcb $DF
         fcb $FF
         fcb $53
@@ -7593,7 +7631,7 @@ loc_CE91:
         jmp     ATM_SerialOut_0
 
 loc_CE97:
-        ldx     #$CDDB
+        ldx     #ATMFunctionTable - $02
         aslb
         abx
         ldx     $00,x
@@ -7788,24 +7826,39 @@ loc_CFC8:
         ldab    #$08
         stab    CFORC_TimerForceCompare
         ldd     TCNT_Counter_FreeRunning16bit
-        addd    #$6D6
+        addd    #$06D6
         std     TOC5_Counter_OC5_Dwell
         ldaa    TCTL1_TimerControlReg1
         anda    #$FE
         staa    TCTL1_TimerControlReg1
         cli
         jmp     ATM_SerialOut_0
-        nega
-        nega
-        sts     TCTL1_TimerControlReg1
-        stx     $04,x
-        sba
-        addb    $1227
-        sba
-        fdiv
+
+AtmToggleOC2:
+        fcb $40
+AtmToggleOC2_ForceCompare:
+        fcb $40
+AtmClrOC2SetOC3SetOC4SetOC5:
+        fcb $BF
+AtmToggleOC3:
+        fcb $10
+AtmToggleOC3_ForceCompare:
+        fcb $20
+AtmSetOC2ClrOC3SetOC4SetOC5:
+        fcb $EF
+AtmToggleOC4:
+        fcb $04
+AtmToggleOC4_ForceCompare:
+        fcb $10
+AtmSetOC2SetOC3ClrOC4SetOC5:
+        fcb $FB
+
+loc_CFF4:
+        brset   <BitFlags27 $10 loc_CFFB
         jmp     ATM_SerialOut_0
+loc_CFFB:
         ldx     #TOC4_Counter_OC4
-        ldy     #$CFF1
+        ldy     #AtmToggleOC4
         bra     loc_D02B
         brset   <BitFlags27 $10 loc_D00B
         jmp     ATM_SerialOut_0
@@ -7819,7 +7872,7 @@ Lcfa2:
 
 loc_D014:
         ldx     #TOC3_Counter_OC3
-        ldy     #$CFEE
+        ldy     #AtmToggleOC3
         bra     loc_D02B
 
 Lcfb2:
@@ -7828,7 +7881,7 @@ Lcfb2:
 
 loc_D024:
         ldx     #TOC2_Counter_OC2
-        ldy     #$CFEB
+        ldy     #AtmToggleOC2
 
 loc_D02B:
         bclr    <PIA2_Buffer_t3 $10
@@ -7916,7 +7969,7 @@ loc_D0A7:
         beq     locret_D0A6
         cmpb    #$2D
         bhi     locret_D0A6
-        ldx     #unk_CE2A
+        ldx     #Byt_DRBMemoryTable
         clra
         abx
         ldab    $00,x
@@ -8064,7 +8117,7 @@ loc_D16B:
         bra     loc_D16B
 
 sub_D185:
-        cpx     #$B600
+        cpx     #MCU_eeprom
         bne     loc_D193
         inc     Temp0
         inc     Temp0
@@ -8134,7 +8187,7 @@ loc_D1E5:
         bmi     loc_D21A
         cmpb    #$08
         bcs     loc_D201
-        ldx     #$B618
+        ldx     #MCU_eeprom + $18
         abx
         brset   $00,x $FF loc_D266
         bra     loc_D208
@@ -8188,7 +8241,7 @@ loc_D235:
         cmpb    #$08
         bcs     loc_D24A
         brset   <DRBPointer2 $80 loc_D26F
-        ldx     #$B618
+        ldx     #MCU_eeprom + $18
         abx
         brset   $00,x $FF loc_D266
         bra     loc_D251
@@ -8430,7 +8483,7 @@ loc_D36F:
         bset    <BitFlags6a_t3 $40
         cli
         staa    DRBOffsetStored_LB
-        ldx     #$B61F
+        ldx     #MCU_eeprom + $1F
 
 loc_D392:
         inx
@@ -8440,7 +8493,7 @@ loc_D392:
         incb
         bne     loc_D392
         xgdx
-        subd    #$B600
+        subd    #MCU_eeprom
         stab    DRBOffsetStored_HB
         sec
         rts
@@ -8827,9 +8880,9 @@ loc_D640:
         ldaa    PPROG_EEPROMControlReg
         bita    #$02
         bne     loc_D665
-        ldd     #$B618
+        ldd     #MCU_eeprom + $18
         tba
-        ldab    $B618
+        ldab    MCU_eeprom + $18
         beq     loc_D665
         decb
         staa    DRBOffsetStored_HB
@@ -9593,7 +9646,7 @@ sub_DB43:
         bita    #$60
         bne     loc_DB74
         bset    <BitFlags2d $08
-        ldx     #$B613
+        ldx     #MCU_eeprom + $13
         ldaa    $00,x
         inca
         beq     loc_DB74
@@ -9614,7 +9667,7 @@ loc_DB74:
 loc_DB76:
         sei
         brset   <BitFlags6a_t3 $40 loc_DBF9
-        ldx     #$B616
+        ldx     #MCU_eeprom + $16
         brclr   <BitFlags2d $10 loc_DBBA
         brset   <BitFlags2d $01 loc_DBBA
         ldaa    #$16
@@ -9697,7 +9750,7 @@ sub_DBFB:
         bita    #$60
         bne     loc_DC2C
         bset    <BitFlags21 $04
-        ldx     #$B6E0
+        ldx     #MCU_eeprom + $E0
         ldaa    $00,x
         inca
         beq     loc_DC2C
@@ -9718,7 +9771,7 @@ loc_DC2C:
 loc_DC2E:
         sei
         brset   <BitFlags6a_t3 $40 loc_DCAE
-        ldx     #$B6E1
+        ldx     #MCU_eeprom + $E1
         brclr   <BitFlags2d $10 loc_DC6F
         brset   <BitFlags21 $01 loc_DC6F
         ldaa    #$E1
@@ -9799,7 +9852,7 @@ sub_DCB0:
 loc_DCBB:
         sei
         brset   <BitFlags6a_t3 $40 loc_DD38
-        ldx     #$B6E3
+        ldx     #MCU_eeprom + $E3
         brclr   <BitFlags2d $10 loc_DCF9
         brset   <BitFlags24 $04 loc_DCF9
         ldaa    #$E3
@@ -10225,7 +10278,7 @@ loc_DF98:
 loc_DF9D:
         sei
         ldy     FDRVar3
-        cpy     #$9400
+        cpy     #Code_start
         bcc     loc_DFB5
         stab    $00,y
 
@@ -10237,20 +10290,21 @@ loc_DFAB:
 
 loc_DFB5:
         ldx     #UNk_64D0
-        ldy     #$DFD8
+        ldy     #loc_DFD8
 
 loc_DFBC:
         ldaa    $00,y
         staa    $00,x
         inx
         iny
-        cpy     #$DFF5
+        cpy     #loc_DFF5
         bne     loc_DFBC
         ldx     #UNk_64D0
         ldy     FDRVar3
         jsr     $00,x
         ldx     #FDRVar0
         bra     loc_DFAB
+loc_DFD8:
         ldaa    #$AA
         staa    $D555
         lsra
@@ -10356,13 +10410,13 @@ sub_E06A:
 sub_E070:
         pshx
         ldx     FDRVar3
-        cpx     #$8000
+        cpx     #Data_start
         bcs     loc_E088
         cpx     #$FFFF
         bhi     loc_E088
-        cpx     #$B600
+        cpx     #MCU_eeprom
         bcs     loc_E091
-        cpx     #$B800
+        cpx     #MCU_eeprom + $200
         bcc     loc_E091
 
 loc_E088:
@@ -10579,7 +10633,7 @@ loc_E1FC:
         bita    #$02
         bne     loc_E210
         bclr    <CCDFlags4_tsbec $20
-        ldaa    $B612
+        ldaa    MCU_eeprom + $12
         bita    #$01
         beq     loc_E210
         bset    <CCDFlags4_tsbec $20
@@ -10596,7 +10650,7 @@ loc_E210:
         ldaa    <BitFlags6a_t3
         bita    #$60
         bne     loc_E275
-        ldaa    $B612
+        ldaa    MCU_eeprom + $12
         bita    #$02
         beq     loc_E275
         anda    #$FD
@@ -10622,7 +10676,7 @@ loc_E24F:
         ldaa    <BitFlags6a_t3
         bita    #$60
         bne     loc_E275
-        ldaa    $B612
+        ldaa    MCU_eeprom + $12
         bita    #$02
         bne     loc_E275
         bset    <CCDFlags6 $80
@@ -10659,7 +10713,7 @@ loc_E289:
         ldaa    <BitFlags6a_t3
         bita    #$60
         bne     locret_E2D9
-        ldaa    $B612
+        ldaa    MCU_eeprom + $12
         bita    #$01
         bne     loc_E2A4
         bita    #$02
@@ -10781,7 +10835,7 @@ CCD_TargetIdleSPeed:
         jmp     CCD_CCDBusOutputStatus
 
 loc_E344:
-        ldd     $B600
+        ldd     MCU_eeprom
         lsld
         lsld
         staa    Temp3
@@ -10825,7 +10879,7 @@ CCD_AlarmStatus:
         ldaa    PPROG_EEPROMControlReg
         bita    #$02
         bne     loc_E3AD
-        ldx     #$B672
+        ldx     #MCU_eeprom + $72
         ldab    <CCDFlags4_tsbec
         tba
         incb
@@ -11372,9 +11426,9 @@ sub_E721:
         rts
 
 sub_E72F:
-        ldy     #$E7A4
+        ldy     #loc_E7A4
         brclr   $02,x $FF loc_E73B
-        ldy     #$E7A0
+        ldy     #loc_E7A0
 
 loc_E73B:
         pshy
@@ -11435,8 +11489,12 @@ loc_E762:
         pulx
         pulx
         rts
+
+loc_E7A0:
         blt loc_E7AC
+loc_E7A2:
         bra loc_E7A6
+loc_E7A4:
         bcs loc_E7AC
 
 loc_E7A6:
@@ -11444,7 +11502,6 @@ loc_E7A6:
         adca    #$00
         nega
         bra     loc_E7B0
-
 
 loc_E7AC:
         nega
@@ -11510,8 +11567,8 @@ loc_E7EA:
 
 sub_E806:
         ldx     #$0001
-    
-loc_E809:   
+
+loc_E809:
         ldy     #$0242
         jsr     sub_E7E0
 
@@ -11527,7 +11584,7 @@ loc_E819:
         clc
         dey
         bne     loc_E810
-        dex 
+        dex
         bne     loc_E809
         rts
 
@@ -11739,7 +11796,7 @@ loc_E97F:
         staa    CountdownTimerFromKeyOn
 
 loc_E991:
-        ldx     #$B600
+        ldx     #MCU_eeprom
         ldab    DRBOffsetStored_HB
         abx
         ldab    DRBOffsetStored_LB
@@ -11799,15 +11856,13 @@ loc_E9ED:
 
  ENDIF
 
- ORG $E9F1
-
 sub_E9F1:
-        ldx     #$B610
+        ldx     #MCU_eeprom + $10
 
 loc_E9F4:
         ldab    #$10
         abx
-        cpx     #$B650
+        cpx     #MCU_eeprom + $50
         bhi     locret_EA05
         ldaa    $00,x
         inca
@@ -11843,10 +11898,10 @@ IC2I:
         std     Temp5_t3
         jsr     sub_EB0F
         beq     loc_EA41
-        fdiv    
+        fdiv
         jsr     sub_EB0F
         beq     loc_EA41
-        fdiv    
+        fdiv
         jsr     sub_EB0F
         beq     loc_EA41
         jmp     loc_EAFC
@@ -12263,7 +12318,7 @@ loc_ECD5:
         bra     loc_ECE6
 
 loc_ECDD:
-        ldx     #$ED05
+        ldx     #FastDataOutputAddressTable - $02
         aslb
         abx
         ldx     $00,x
@@ -12294,6 +12349,7 @@ loc_ECFE:
         staa    TMSK1_TimerInterruptMask1
         rts
 
+FastDataOutputAddressTable:
         fdb ErrorBitRegisterStored3
         fdb ErrorBitRegister0
         fdb ErrorCodeUpdateKeyOnCount
@@ -13024,9 +13080,14 @@ off_F227:
         fdb InjectorPulsewidth_HB_Cyl4
         fdb TOC2_Counter_OC2
         fdb InjectorPulsewidth_HB_Cyl2
-        fdb $1020
-        fdb $EF40
-        fdb $40BF
+ToggleOC3:
+        fcb $10
+        fcb $20
+        fcb $EF
+ToggleOC2:
+        fcb $40
+        fcb $40
+        fcb $BF
 
 loc_F239:
         brclr   <Ram_EC $80 loc_F250
@@ -13060,10 +13121,10 @@ loc_F268:
         aslb
         abx
         ldx     $00,x
-        ldy     #$F233
+        ldy     #ToggleOC3
         cpx     #TOC3_Counter_OC3
         beq     loc_F28F
-        ldy     #$F236
+        ldy     #ToggleOC2
         cpx     #TOC2_Counter_OC2
         beq     loc_F28F
         ldd     <InjectorPulsewidth_HB
@@ -13450,7 +13511,6 @@ locret_F52F:
 
 CrankInterrupt_CalculateFuel:
         brset   <IPL1 $01 loc_F546
-plus3:
         ldaa    TCTL1_TimerControlReg1
         anda    #$FE
         staa    TCTL1_TimerControlReg1
@@ -13920,6 +13980,17 @@ loc_F865:
         staa    PIA_Ctrl_4
         rti
 
+
+;>>>>>>>>>>>>>>>>MCU eeprom<<<<<<<<<<<<<<<<<<
+ IF Data_start == $2000
+
+ ORG MCU_eeprom
+ DCB.B $200, $FF
+
+ ENDIF
+;>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
+
+
  ORG $FFA1
         fcb     $FF
         fcb     $FF
@@ -13971,6 +14042,4 @@ RESERVFFD5: fcb $FF
             fdb NOCOP
             fdb CME
             fdb __RESET
-
- end
 

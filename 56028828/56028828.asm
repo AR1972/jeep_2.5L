@@ -7538,6 +7538,8 @@ ATMFunctionTable:
         fdb ATM_SerialOut_0
         fdb ATM_SerialOut_0
         fdb ATM_SerialOut_0
+        ;fdb loc_D004 ; included in V8 function table
+        ;fdb loc_CFF4 ; included in V8 function table
         fcb $CE
 
 Byt_DRBMemoryTable:
@@ -7853,13 +7855,16 @@ AtmToggleOC4_ForceCompare:
 AtmSetOC2SetOC3ClrOC4SetOC5:
         fcb $FB
 
-loc_CFF4:
+loc_CFF4: ; found in V8 ATMFunctionTable #38
         brset   <BitFlags27 $10 loc_CFFB
         jmp     ATM_SerialOut_0
+
 loc_CFFB:
         ldx     #TOC4_Counter_OC4
         ldy     #AtmToggleOC4
         bra     loc_D02B
+
+loc_D004: ; found in V8 ATMFunctionTable #37
         brset   <BitFlags27 $10 loc_D00B
         jmp     ATM_SerialOut_0
 

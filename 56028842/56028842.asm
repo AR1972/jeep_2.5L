@@ -9,7 +9,7 @@ Data_start equ $8000
 ; 4 and 6 cylinder ECU's this is set to $9400, 8 cylinder ECU's
 ; this is set to $4000.
 ;
- IF Data_start == $2000
+ IF Data_start <= $2000
 Code_start equ $4000
  ELIF Data_start == $8000
 Code_start equ $9400
@@ -31,7 +31,7 @@ MCU_eeprom equ $B600
 ; and later 8 cylinder ECU's, $6400 for 94 and later 4,6
 ; cylinder ECU's and $6000 for 93 and earlier ECU's.
 ;
- IF Data_start == $2000
+ IF Data_start <= $2000
 BaseAddr equ $0400
  ELIF Data_start == $8000
 BaseAddr equ $6400
@@ -13987,7 +13987,7 @@ loc_F865:
 
 
 ;>>>>>>>>>>>>>>>>MCU eeprom<<<<<<<<<<<<<<<<<<
- IF Data_start == $2000
+ IF Data_start <= $2000
 
  ORG MCU_eeprom
  DCB.B $200, $FF

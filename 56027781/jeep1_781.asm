@@ -6647,6 +6647,8 @@ Wrd_CD72: .word ATM_IgnitionCoil1
           .word ATM_SerialOut
           .word ATM_SerialOut
           .word ATM_SerialOut
+         ;.word Lfc99
+         ;.word ATM_38
 Mis_CDBE: .byte 0xCE ;1-1
 Byt_DRBMemoryTable:
           .byte 0x74 ;(AmbientAirTempVolts)     1-1
@@ -6902,7 +6904,10 @@ AtmToggleOC4:
 AtmToggleOC4_ForceCompare:
           .byte 0x10 ;1-1
 AtmSetOC2SetOC3ClrOC4SetOC5:
-          .byte 0xFB, 0x12, 0x27, 0x10, 0x03, 0x7E, 0xD0, 0x31 ;1-8
+          .byte 0xFB
+ATM_38:
+          brset   *BitFlags27, #b4_27_bt4, Lcf90
+          jmp     ATM_SerialOut
 Lcf90:    ldx     #TOC4_Counter_OC4                        ;Load Index Register X
           ldy     #AtmToggleOC4                            ;Load Index Register Y
           bra     ATM_IgnitionCoil2                        ;Branch Always
@@ -8707,7 +8712,7 @@ Lbl_DEBD: ldaa    0x00, Y                                  ;Load Accumulator A
           staa    0x00, X                                  ;Store Accumulator A
           inx                                              ;Increment Index Register X
           iny                                              ;Increment Index Register Y
-          cpy     #0xDEF6                                  ;Compare Y to Memory 16-Bit
+          cpy     #Lbl_DEF6                                ;Compare Y to Memory 16-Bit
           bne     Lbl_DEBD                                 ;Branch if Not = Zero
           ldx     #0x64D0                                  ;Load Index Register X
           ldy     FDRVar3                                  ;Load Index Register Y

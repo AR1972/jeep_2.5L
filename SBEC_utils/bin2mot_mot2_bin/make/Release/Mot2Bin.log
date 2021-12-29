@@ -1,0 +1,16 @@
+﻿Build started 12/28/2021 6:47:27 PM.
+     1>Project "C:\Users\Adam\Desktop\jeep_2.5L\SBEC_utils\bin2mot_mot2_bin\make\Mot2Bin.vcxproj" on node 3 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt ..\src\main_m2b.c ..\src\MotBinBinMot.c
+         main_m2b.c
+         MotBinBinMot.c
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Adam\Desktop\jeep_2.5L\SBEC_utils\Release\Mot2Bin.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Adam\Desktop\jeep_2.5L\SBEC_utils\Release\Mot2Bin.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Adam\Desktop\jeep_2.5L\SBEC_utils\Release\Mot2Bin.lib" /MACHINE:X86 /SAFESEH Release\main_m2b.obj
+         Release\MotBinBinMot.obj
+         Mot2Bin.vcxproj -> C:\Users\Adam\Desktop\jeep_2.5L\SBEC_utils\Release\Mot2Bin.exe
+     1>Done Building Project "C:\Users\Adam\Desktop\jeep_2.5L\SBEC_utils\bin2mot_mot2_bin\make\Mot2Bin.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.42

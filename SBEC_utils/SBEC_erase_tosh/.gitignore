@@ -1,0 +1,9 @@
+Thumbs.db
+SBEC_erase_tosh.tlog
+SBEC_erase_tosh.tlog/*
+*.log
+*.obj
+*.pdb
+*.sdf
+*.opensdf
+SBEC_erase_tosh.sdf

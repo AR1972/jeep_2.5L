@@ -1,0 +1,9 @@
+Thumbs.db
+SBEC_chipid.tlog
+SBEC_chipid.tlog/*
+*.log
+*.obj
+*.pdb
+*.sdf
+*.opensdf
+SBEC_chipid.sdf

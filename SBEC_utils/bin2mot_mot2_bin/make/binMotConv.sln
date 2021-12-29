@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bin2Mot", "Bin2Mot.vcxproj", "{E38BDC8A-E794-4FF8-8AEC-0142C5FF2EFD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A0FD0518-6CC4-4994-995D-D85CC6656BD4} = {A0FD0518-6CC4-4994-995D-D85CC6656BD4}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Mot2Bin", "Mot2Bin.vcxproj", "{A0FD0518-6CC4-4994-995D-D85CC6656BD4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E38BDC8A-E794-4FF8-8AEC-0142C5FF2EFD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E38BDC8A-E794-4FF8-8AEC-0142C5FF2EFD}.Debug|Win32.Build.0 = Debug|Win32
+		{E38BDC8A-E794-4FF8-8AEC-0142C5FF2EFD}.Release|Win32.ActiveCfg = Release|Win32
+		{E38BDC8A-E794-4FF8-8AEC-0142C5FF2EFD}.Release|Win32.Build.0 = Release|Win32
+		{A0FD0518-6CC4-4994-995D-D85CC6656BD4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A0FD0518-6CC4-4994-995D-D85CC6656BD4}.Debug|Win32.Build.0 = Debug|Win32
+		{A0FD0518-6CC4-4994-995D-D85CC6656BD4}.Release|Win32.ActiveCfg = Release|Win32
+		{A0FD0518-6CC4-4994-995D-D85CC6656BD4}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

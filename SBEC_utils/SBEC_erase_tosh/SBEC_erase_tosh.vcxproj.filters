@@ -24,12 +24,24 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="erase_tosh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hiddata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hidusb-tool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SBEC_erase_tosh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="relay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

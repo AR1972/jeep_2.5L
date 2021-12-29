@@ -1,6 +1,6 @@
 Downloads EPROM from SBEC
 
-This is a quick and dirty method of getitng
+This is a quick and dirty method of getting
 an EPROM image off an SBEC with minimal parts
 and little to no soldering
 
@@ -13,7 +13,7 @@ file extension.
 
 a serial port breakout board and relay board
 are suggested, but not required as you can 
-switch the 12 volts and serial port wire manualy
-but stuborn ECU's can take 12-15 tries to establish
+switch the 12 volts and serial port wire manually
+but stubborn ECU's can take 12-15 tries to establish
 a connection and begin downloading.
 

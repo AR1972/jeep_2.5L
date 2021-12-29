@@ -16,11 +16,11 @@ Start:
                         ; configures SCI for 1200 BAUD
     staB    $2D,X       ; store value in register B ($0C) in 0x1000 + 0x002D
                         ; configures SCI for TXD/RXD
-    sei                 ; disable interupts
+    sei                 ; disable interrupts
     ldD     #$6001      ; load D register with 0x6001
     staA    $3C,X       ; store value in register A ($60) in 0x1000 + 0x003C
                         ; enables Special Mode
-    staB    $3F,X       ; store valie in register B ($01) in 0x1000 + 0x003F
+    staB    $3F,X       ; store value in register B ($01) in 0x1000 + 0x003F
                         ; System Config Register
 
 ; give receiver around 200ms to prepare for byte stream
@@ -30,14 +30,14 @@ Delay:
     deX
     bne     Delay
 
-; this section tries to determin a 64k EPROM by checking
+; this section tries to determine a 64k EPROM by checking
 ; for the first two bytes of the part number that should
 ; be located at 0x2002
 
     ldX     #$2000
     ldD     $02,X
     cpD     #$5602      ; check for the part number
-    bne     ThirtyTwoK  ; assume a 32k EEPROM if part num not found
+    bne     ThirtyTwoK  ; assume a 32k EEPROM if part number not found
     ldX     #$2000      ; looks like a 64k EEPROM 0x2000 is the start address
     bra     SendByte
 

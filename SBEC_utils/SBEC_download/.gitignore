@@ -7,3 +7,5 @@ SBEC_download.tlog/*
 *.sdf
 *.opensdf
 SBEC_download.sdf
+Release
+Release/*

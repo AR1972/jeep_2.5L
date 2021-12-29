@@ -1,9 +1,11 @@
 Thumbs.db
-SBEC_download.tlog
-SBEC_download.tlog/*
+SBEC_erase_st.tlog
+SBEC_erase_st.tlog/*
 *.log
 *.obj
 *.pdb
 *.sdf
 *.opensdf
-SBEC_download.sdf
+SBEC_erase_st.sdf
+Release
+Release/*

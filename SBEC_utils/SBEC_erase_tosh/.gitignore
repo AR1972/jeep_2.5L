@@ -7,3 +7,5 @@ SBEC_erase_tosh.tlog/*
 *.sdf
 *.opensdf
 SBEC_erase_tosh.sdf
+Release
+Release/*

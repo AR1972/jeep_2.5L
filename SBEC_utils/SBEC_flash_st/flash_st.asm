@@ -13,11 +13,11 @@ Start:
                         ; configures SCI for 1200 BAUD
     staB    $2D,X       ; store value in register B ($0C) in 0x1000 + 0x002D
                         ; configures SCI for TXD/RXD
-    sei                 ; disable interupts
+    sei                 ; disable interrupts
     ldD     #$6001      ; load D register with 0x6001
     staA    $3C,X       ; store value in register A ($60) in 0x1000 + 0x003C
                         ; enables Special Mode
-    staB    $3F,X       ; store valie in register B ($01) in 0x1000 + 0x003F
+    staB    $3F,X       ; store value in register B ($01) in 0x1000 + 0x003F
                         ; System Config Register
 
 ; give receiver around 100ms
@@ -26,10 +26,74 @@ Start:
 Delay:
     deX
     bne     Delay
+           
+    ldX     #$8000              
 
+Next64ByteBlock:
+    ldY     #Buffer             
 
-Done:
+LoopToFillRAM:
+    ldD     $102E
+    bitA    #%00100000                
+    beq     LoopToFillRAM       
+    staB    $00,Y              
+    inY                         
+    cpY     #LenBuffer
+    bne     LoopToFillRAM       
+    ldaB    #$C8                
+    bsr     ShortDelayLoop      
+    ldY     #Buffer             
+
+InitRetryCounter:
+    ldaA    #$19         
+    staA    RetryCounter
+
+ProgramBytes:
+    ldaA    #$40             
+    staA    $00,X           
+    ldaA    $00,Y           
+    staA    $00,X           
+    ldaB    #$28             
+    bsr     ShortDelayLoop   
+    ldaB    #$C0             
+    staB    $00,X           
+    ldaB    #$02             
+    bsr     ShortDelayLoop   
+    cmpA    $00,X           
+    beq     ByteVerified     
+    dec     RetryCounter     
+    bne     ProgramBytes     
+
+Finished:
+   
     stop
+
+ByteVerified:
+ResetEEPROM:
+    ldaB    #$FF             
+    staB    $00,X           
+    staB    $00,X           
+    ldaB    #$64             
+    bsr     ShortDelayLoop   
+    inX                      
+    inY                      
+    cpY     LenBuffer
+    bne     InitRetryCounter 
+
+SkipEEPROM:
+    cpX     #$B600
+    bne     Skip                       ; branch if not equal (not zero)
+    ldX     #$B800                     ; load index with value
+            
+Skip:       
+    cpX     #$0000
+    bne     Next64ByteBlock
+    bra     Finished                   ; branch if not equal (not zero)
+
+ShortDelayLoop:
+    decB
+    bne     ShortDelayLoop             ; branch if not equal (not zero)
+    rts                              ; return from subroutine
 
 RetryCounter:
     fcb   $19
@@ -40,7 +104,9 @@ Buffer:
 LenBuffer:
 THE_END:
 
-                             ; pad bootstrap to 256 total bytes
+                        ; pad bootstrap to 256 total bytes
  REPEAT 256-(THE_END-THE_BEGIN)
     fcb 0x00
  ENDR
+ 
+ 

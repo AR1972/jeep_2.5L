@@ -125,6 +125,13 @@
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;Setupapi.lib;hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Program Files\Windows Kits\8.1\Lib\winv6.3\um\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PreBuildEvent>
+      <Command>..\..\bin\asm11 -nologo dump.asm
+..\..\bin\mot2bin dump.s19 dump.bin
+..\..\bin\bin2h dump.bin dump.h -id=dump
+IF EXIST dump.bin DEL dump.bin
+IF EXIST dump.s19 DEL dump.s19</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="relay.cpp" />

@@ -76,6 +76,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>..\..\bin\asm11 chipid.asm -nologo
+..\..\bin\mot2bin chipid.s19 chipid.bin
+..\..\bin\bin2h chipid.bin chipid.h -id=chipid
+IF EXIST chipid.bin DEL chipid.bin
+IF EXIST chipid.s19 DEL chipid.s19</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

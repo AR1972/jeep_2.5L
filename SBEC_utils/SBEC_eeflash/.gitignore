@@ -7,3 +7,5 @@ SBEC_eeflash.tlog/*
 *.sdf
 *.opensdf
 SBEC_eeflash.sdf
+Release
+Release/*

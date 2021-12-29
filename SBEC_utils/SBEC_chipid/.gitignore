@@ -7,3 +7,5 @@ SBEC_chipid.tlog/*
 *.sdf
 *.opensdf
 SBEC_chipid.sdf
+Release
+Release/*

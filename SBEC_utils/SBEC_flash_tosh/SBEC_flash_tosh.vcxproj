@@ -74,6 +74,13 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PreBuildEvent>
+      <Command>..\..\bin\asm11 -nologo flash_tosh.asm
+..\..\bin\mot2bin flash_tosh.s19 flash_tosh.bin
+..\..\bin\bin2h flash_tosh.bin flash_tosh.h -id=flash_tosh
+IF EXIST flash_tosh.bin DEL flash_tosh.bin
+IF EXIST flash_tosh.s19 DEL flash_tosh.s19</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

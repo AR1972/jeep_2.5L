@@ -82,6 +82,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>..\..\bin\asm11 -nologo eeflash.asm
+..\..\bin\mot2bin eeflash.s19 eeflash.bin
+..\..\bin\bin2h eeflash.bin eeflash.h -id=eeflash
+IF EXIST eeflash.bin DEL eeflash.bin
+IF EXIST eeflash.s19 DEL eeflash.s19</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

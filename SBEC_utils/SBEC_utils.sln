@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SBEC_download", "SBEC_download\SBEC_download.vcxproj", "{CE5B5B3F-18C3-4B57-A12E-39EBCC5DC901}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A0FD0518-6CC4-4994-995D-D85CC6656BD4} = {A0FD0518-6CC4-4994-995D-D85CC6656BD4}
+		{E62A641A-0EE1-4E07-B1EA-A84D1A505098} = {E62A641A-0EE1-4E07-B1EA-A84D1A505098}
+		{C01A8BD4-3EC3-4FA2-8DAD-3CE1E08B874D} = {C01A8BD4-3EC3-4FA2-8DAD-3CE1E08B874D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SBEC_eeflash", "SBEC_eeflash\SBEC_eeflash.vcxproj", "{A4E29D52-304D-4240-864C-49AE6E0074B0}"
 EndProject
@@ -24,6 +29,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bin2h", "bin2h\bin2h.vcxproj", "{C01A8BD4-3EC3-4FA2-8DAD-3CE1E08B874D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Mot2Bin", "bin2mot_mot2_bin\make\Mot2Bin.vcxproj", "{A0FD0518-6CC4-4994-995D-D85CC6656BD4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "32k", "32k\32k.vcxproj", "{E62A641A-0EE1-4E07-B1EA-A84D1A505098}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +82,10 @@ Global
 		{A0FD0518-6CC4-4994-995D-D85CC6656BD4}.Debug|Win32.Build.0 = Debug|Win32
 		{A0FD0518-6CC4-4994-995D-D85CC6656BD4}.Release|Win32.ActiveCfg = Release|Win32
 		{A0FD0518-6CC4-4994-995D-D85CC6656BD4}.Release|Win32.Build.0 = Release|Win32
+		{E62A641A-0EE1-4E07-B1EA-A84D1A505098}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E62A641A-0EE1-4E07-B1EA-A84D1A505098}.Debug|Win32.Build.0 = Debug|Win32
+		{E62A641A-0EE1-4E07-B1EA-A84D1A505098}.Release|Win32.ActiveCfg = Release|Win32
+		{E62A641A-0EE1-4E07-B1EA-A84D1A505098}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

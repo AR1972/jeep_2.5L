@@ -75,6 +75,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>..\..\bin\asm11 -nologo erase_st.asm
+..\..\bin\mot2bin erase_st.s19 erase_st.bin
+..\..\bin\bin2h erase_st.bin erase_st.h -id=erase_st
+IF EXIST erase_st.bin DEL erase_st.bin
+IF EXIST erase_st.s19 DEL erase_st.s19</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

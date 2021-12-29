@@ -1,0 +1,11 @@
+Thumbs.db
+bin2h.tlog
+bin2h.tlog/*
+*.log
+*.obj
+*.pdb
+*.sdf
+*.opensdf
+bin2h.sdf
+Release
+Release/*

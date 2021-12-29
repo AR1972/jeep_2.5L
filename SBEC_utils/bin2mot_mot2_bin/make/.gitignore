@@ -1,0 +1,11 @@
+Thumbs.db
+mot2bin.tlog
+mot2bin.tlog/*
+*.log
+*.obj
+*.pdb
+*.sdf
+*.opensdf
+mot2bin.sdf
+Release
+Release/*

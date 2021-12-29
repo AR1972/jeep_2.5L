@@ -180,10 +180,10 @@ int _tmain(int argc, _TCHAR* argv[])
 		out.write(out_buffer, sprintf_count);
 	}
 
-	out << "[]=\n{\n\t";
+	out << "[]=\n{\n\t0xFF,";
 
 	//stream the data through
-	int restart = 0;
+	int restart = 1;
 	unsigned i = 0;
 	for(i=0; i<filesize; )
 	{

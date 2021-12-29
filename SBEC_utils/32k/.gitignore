@@ -1,0 +1,11 @@
+Thumbs.db
+32k.tlog
+32k.tlog/*
+*.log
+*.obj
+*.pdb
+*.sdf
+*.opensdf
+32k.sdf
+Release
+Release/*

@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{AFBF04F1-7E68-4DE8-A0D1-ADD5EB8E588D}</ProjectGuid>
+    <ProjectGuid>{3B94CCD7-BCAE-4664-A3B2-66A37FE58B17}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>SBEC_erase_st</RootNamespace>
+    <RootNamespace>SBEC_eebackup</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -51,11 +51,12 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -67,6 +68,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ExceptionHandling>false</ExceptionHandling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -76,25 +81,27 @@
       <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>..\..\bin\asm11 -nologo erase_st.asm
-..\..\bin\mot2bin erase_st.s19 erase_st.bin
-..\..\bin\bin2h erase_st.bin erase_st.h -id=erase_st
-IF EXIST erase_st.bin DEL erase_st.bin
-IF EXIST erase_st.s19 DEL erase_st.s19</Command>
+      <Command>..\..\bin\asm11 -nologo eebackup.asm
+..\..\bin\mot2bin eebackup.s19 eebackup.bin
+..\..\bin\bin2h eebackup.bin eebackup.h -id=eebackup
+IF EXIST eebackup.bin DEL eebackup.bin
+IF EXIST eebackup.s19 DEL eebackup.s19</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="erase_st.h" />
+    <ClInclude Include="eebackup.h" />
+    <ClInclude Include="hiddata.h" />
+    <ClInclude Include="hidusb-tool.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="relay.cpp" />
-    <ClCompile Include="SBEC_erase_st.cpp" />
+    <ClCompile Include="SBEC_eebackup.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="erase_st.asm" />
+    <None Include="eebackup.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

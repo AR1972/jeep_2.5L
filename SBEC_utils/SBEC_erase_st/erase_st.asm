@@ -13,11 +13,11 @@ Start:
                         ; configures SCI for 1200 BAUD
     staB    $2D,X       ; store value in register B ($0C) in 0x1000 + 0x002D
                         ; configures SCI for TXD/RXD
-    sei                 ; disable interupts
+    sei                 ; disable interrupts
     ldD     #$6001      ; load D register with 0x6001
     staA    $3C,X       ; store value in register A ($60) in 0x1000 + 0x003C
                         ; enables Special Mode
-    staB    $3F,X       ; store valie in register B ($01) in 0x1000 + 0x003F
+    staB    $3F,X       ; store value in register B ($01) in 0x1000 + 0x003F
                         ; System Config Register
 
 ; give receiver around 100ms to apply 20 volts to pin 45
@@ -27,49 +27,49 @@ Delay:
     deX
     bne     Delay
 
-    ldY     #$0BB8                  
-    ldX     #$8000                  
+    ldY     #$0BB8
+    ldX     #$8000
 
 SendEraseCommand:
-    ldaA    #$20                    
-    staA    $00,X                   
-    staA    $00,X                   
-    pshX                            
+    ldaA    #$20
+    staA    $00,X
+    staA    $00,X
+    pshX
 
 Delay120ms:
-    ldX     #$0FA0                  
+    ldX     #$0FA0
 
 LongDelayLoop:
-    deX                             
-    bne     LongDelayLoop           
-    pulX                            
-    ldaA    #$FF                    
+    deX
+    bne     LongDelayLoop
+    pulX
+    ldaA    #$FF
 
 EraseConfirmLoop:
-    ldaB    #$A0                    
-    staB    $00,X                   
+    ldaB    #$A0
+    staB    $00,X
 
-    ldaB    #$02                    
+    ldaB    #$02
 wait:
     decB
     bne     wait
-    cmpa    $00,X               
-    bne     CheckEraseRetryCounter  
-    inx                             
+    cmpa    $00,X
+    bne     CheckEraseRetryCounter
+    inx
 
 SkipEEPROM:
     cpx     #$b600
     bne     Skip3                      ; branch if not equal (not zero)
     ldx     #$b800                     ; load index with value
 
-Skip3:  
+Skip3:
     cpx     #$0000
-    bne     EraseConfirmLoop        
-    bra     JumpToStart             
+    bne     EraseConfirmLoop
+    bra     JumpToStart
 
 CheckEraseRetryCounter:
-    deY                             
-    bne     SendEraseCommand        
+    deY
+    bne     SendEraseCommand
 
 JumpToStart:
     ldX     #$8000      ; load the start address in register X

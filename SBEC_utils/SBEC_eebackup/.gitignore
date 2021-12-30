@@ -1,0 +1,11 @@
+Thumbs.db
+SBEC_eebackup.tlog
+SBEC_eebackup.tlog/*
+*.log
+*.obj
+*.pdb
+*.sdf
+*.opensdf
+SBEC_eebackup.sdf
+Release
+Release/*

@@ -91,9 +91,6 @@ IF EXIST eeflash.s19 DEL eeflash.s19</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="eeflash.h" />
     <ClInclude Include="hiddata.h" />
     <ClInclude Include="hidusb-tool.h" />
@@ -104,6 +101,9 @@ IF EXIST eeflash.s19 DEL eeflash.s19</Command>
     <ClCompile Include="relay.cpp" />
     <ClCompile Include="SBEC_eeflash.cpp" />
     <ClCompile Include="stdafx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="eeflash.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

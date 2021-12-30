@@ -21,9 +21,9 @@ Start:
     staB    $3F,X       ; store value in register B ($01) in 0x1000 + 0x003F
                         ; System Config Register
 
-; give receiver around 100ms too apply 20 volts to pin 45
+; give receiver around 50ms too apply 20 volts to pin 45
 
-   ldX      #$7E00      ;100ms
+   ldX      #$4119      ; 50ms
    jsr      wait
 
    ldD      #$AA90
@@ -32,11 +32,20 @@ Start:
    staA     $AAAA       ; store $55 in address $AAAA
    staB     $D555       ; store $90 in address $D555
 
-   ldX      #$014D      ; 1msec
+   ldX      #$0D05      ; 10ms
    jsr      wait
 
    ldD      $A000       ; ID should now be at $A000
    stD      mfg_id      ; copy ID from address to ram
+
+   ldD      #$AAF0
+   staA     $D555
+   comA
+   staA     $AAAA
+   staB     $D555
+   
+   ldX      #$0D05      ; 10ms
+   jsr      wait
 
    ldaB     mfg_id      ; send manufacture id to PC
    jsr      send

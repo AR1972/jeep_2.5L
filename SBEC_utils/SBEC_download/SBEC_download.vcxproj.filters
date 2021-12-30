@@ -30,4 +30,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="dump.asm">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

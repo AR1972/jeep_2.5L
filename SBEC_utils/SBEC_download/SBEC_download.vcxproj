@@ -141,6 +141,9 @@ IF EXIST dump.s19 DEL dump.s19</Command>
     <ClInclude Include="dump.h" />
     <ClInclude Include="hidusb-tool.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="dump.asm" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

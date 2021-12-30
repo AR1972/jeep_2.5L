@@ -81,11 +81,36 @@ int main(int argc, char *argv[])
 	const int max_retry = 30;
 	unsigned long baud = 9600;
 	DWORD dwAttrib = 0;
+	char com[] = "0\0\0\0";
 
-	if (argc != 2 || strlen(argv[1]) > 1) {
-		printf("please supply COM port number\n");
-		printf("correct value is 1 through 9\n");
+	if (argc < 2){
+		usage();
 		return ret;
+	}
+
+	for (int i = 1; i < argc; i++)
+	{
+		if (argv[i][0] == '/')
+		{
+
+			if (argv[i][1] == 'c' ||
+				argv[i][1] == 'C')
+			{
+				if (argv[i][2] == ':')
+				{
+					if (strlen(argv[i]) != 4) {
+						printf("Incorrect argument\nCorrect value is a number 1-9\nExample: /C:5");
+						return ret;
+					}
+					if (argv[i][3] < '1' || argv[i][3] > '9') {
+						printf("Please supply a valid COM port number\n");
+						printf("Correct value is a number 1-9\n");
+						return ret;
+					}
+					com[0] = argv[i][3];
+				}
+			}
+		}
 	}
 
 	SetConsoleCtrlHandler(consoleHandler, TRUE);
@@ -108,7 +133,7 @@ int main(int argc, char *argv[])
 	memset(recv_buffer, 0x00, 0x800);
 	memset(name_buffer, 0x00, 0x40);
 
-	sprintf(device, "\\\\.\\COM%s", argv[1]);
+	sprintf(device, "\\\\.\\COM%s", com);
 
 #ifdef USB_RELAY_BOARD
 	dev = openDevice();
@@ -128,11 +153,11 @@ int main(int argc, char *argv[])
 	hComm = CreateFileA(device, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 
 	if (hComm == INVALID_HANDLE_VALUE) {
-		printf("Error in opening COM%s\n", argv[1]);
+		printf("Error in opening COM%s\n", com);
 		goto EXIT;
 	}
 	else {
-		printf("Opening COM%s successful\n", argv[1]);
+		printf("Opening COM%s successful\n", com);
 	}
 
 	if (!GetCommState(hComm, &state)) {
@@ -425,7 +450,7 @@ Start:
 					goto EXIT;
 				}
 
-				// seems like we are losing some data 1200 BAUD usualy works
+				// seems like we are losing some data 1200 BAUD usually works
 
 				if (baud != 1200) {
 					baud = 1200;

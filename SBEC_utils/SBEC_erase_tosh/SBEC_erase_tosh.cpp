@@ -29,7 +29,7 @@ static USBDEVHANDLE dev = 0;
 BOOL ABORT = FALSE;
 
 void usage() {
-	printf("\nSBEC_chipid /C:[1-9]\n");
+	printf("\nSBEC_erase_tosh /C:[1-9]\n");
 	printf("\n/C:[1-9] COM port 1 to 9\n");
 	return;
 }
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 	DWORD dwAttrib = 0;
 	char com[] = "0\0\0\0";
 
-	if (argc < 1){
+	if (argc < 2){
 		usage();
 		return ret;
 	}
@@ -241,7 +241,7 @@ Start:
 	state.Parity = NOPARITY;
 	state.StopBits = ONESTOPBIT;
 	if (!SetCommState(hComm, &state)) {
-		printf("failed to set COM state for chipid\n");
+		printf("failed to set COM state\n");
 		goto EXIT;
 	}
 
@@ -287,16 +287,16 @@ Start:
 	if (ABORT)
 		goto EXIT;
 
-	// 68HC11E9 based ECU's need this, seems like veriable
+	// 68HC11E9 based ECU's need this, seems like variable
 	// length download sends a 0x00 to signal it has jumped
 	// to the code we sent?? catch the 0x00 now or it ends
-	// up in our buffer later, trggering a bug hunt.
+	// up in our buffer later, triggering a bug hunt.
 
 	Sleep(585);
 
 	// the bootstrap sits in a loop for about 100ms to give us
 	// time to apply 20 volts to pin 45, if 20 volts isn't 
-	// appled in time the chip id function will fail.
+	// applied in time the chip id function will fail.
 
 	if (!ReadFile(hComm, recv_buffer, 0x100, &recv_num, NULL)) {
 		printf("failed to read from COM port\n");
@@ -403,8 +403,12 @@ Start:
 Save:
 	printf("\n");
 	for (int i = 0; i < 0x8000; i++){
-		if (recv_buffer[1] != 0xFF){
-			printf("EPROM erase failed\n");
+		// skip the MCU eeprom
+		if (i == 0x3600){
+			i = 0x3800;
+		}
+		if (recv_buffer[i] != 0xFF){
+			printf("EPROM erase failed @ 0x%04X\n", i);
 			goto EXIT;
 		}
 	}

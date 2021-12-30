@@ -21,13 +21,13 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="eebackup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="hiddata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hidusb-tool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="eeflash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SBEC_eeflash.cpp">
+    <ClCompile Include="SBEC_eebackup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="relay.cpp">
@@ -43,7 +43,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="eeflash.asm">
+    <None Include="eebackup.asm">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

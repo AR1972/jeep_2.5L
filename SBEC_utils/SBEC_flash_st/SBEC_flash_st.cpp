@@ -444,6 +444,7 @@ Start:
 		}
 		Sleep(100);
 	}
+	printf("\n");
 	/*
 	printf("\n");
 	printf("Downloading at %d BAUD\n", baud);

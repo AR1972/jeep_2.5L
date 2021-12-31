@@ -21,14 +21,34 @@ Start:
                         ; System Config Register
 	       
     ldX     #$8000
- 
+
 Next64ByteBlock:
+	ldD     $102E
+	bitA    #%00100000
+	beq     Next64ByteBlock
+	cpX     #$8000
+	bne     check_2
+	cmpB	#$00
+	bne     continue
+	staB    Buffer-1
+	jmp     continue
+check_2:
+	cpX     #$8040
+	bne     continue
+	cmpB    #$00
+	staB    Buffer-1
+
+continue:
     ldY     #Buffer
+	jmp     LoopToFillRam
+
+jump:
+   jmp      Next64ByteBlock   
               
 LoopToFillRAM:
     ldD     $102E
-    bitA    #%00100110                
-    beq     LoopToFillRAM       
+    bitA    #%00100000                
+    beq     LoopToFillRAM   
     staB    $00,Y       
 	inY                        
     cpY     #Buffer + 64
@@ -81,7 +101,7 @@ SkipEEPROM:
             
 Skip:       
     cpX     #$0000
-    bne     Next64ByteBlock
+    bne     jump
     bra     Finished                   ; branch if not equal (not zero)
 
 ShortDelayLoop:

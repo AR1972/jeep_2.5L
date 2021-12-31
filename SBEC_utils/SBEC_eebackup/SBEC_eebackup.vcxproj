@@ -81,7 +81,8 @@
       <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>..\..\bin\asm11 -nologo eebackup.asm
+      <Command>IF EXIST eebackup.h DEL eebackup.h
+..\..\bin\asm11 -nologo eebackup.asm
 ..\..\bin\mot2bin eebackup.s19 eebackup.bin
 ..\..\bin\bin2h eebackup.bin eebackup.h -id=eebackup
 IF EXIST eebackup.bin DEL eebackup.bin

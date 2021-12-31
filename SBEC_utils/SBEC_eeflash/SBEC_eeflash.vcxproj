@@ -83,7 +83,8 @@
       <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>..\..\bin\asm11 -nologo eeflash.asm
+      <Command>IF EXIST eeflash.h DEL eeflash.h
+..\..\bin\asm11 -nologo eeflash.asm
 ..\..\bin\mot2bin eeflash.s19 eeflash.bin
 ..\..\bin\bin2h eeflash.bin eeflash.h -id=eeflash
 IF EXIST eeflash.bin DEL eeflash.bin

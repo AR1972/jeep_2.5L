@@ -73,9 +73,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>..\..\bin\asm11 -nologo flash_st.asm
+      <Command>IF EXIST flash_st.h DEL flash_st.h
+..\..\bin\asm11 -nologo flash_st.asm
 ..\..\bin\mot2bin flash_st.s19 flash_st.bin
 ..\..\bin\bin2h flash_st.bin flash_st.h -id=flash_st
 IF EXIST flash_st.bin DEL flash_st.bin
@@ -84,10 +86,13 @@ IF EXIST flash_st.s19 DEL flash_st.s19</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="flash_st.h" />
+    <ClInclude Include="hiddata.h" />
+    <ClInclude Include="hidusb-tool.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="relay.cpp" />
     <ClCompile Include="SBEC_flash_st.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

@@ -76,7 +76,8 @@
       <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>..\..\bin\asm11 -nologo erase_tosh.asm
+      <Command>IF EXIST erase_tosh.h DEL erase_tosh.h
+..\..\bin\asm11 -nologo erase_tosh.asm
 ..\..\bin\mot2bin erase_tosh.s19 erase_tosh.bin
 ..\..\bin\bin2h erase_tosh.bin erase_tosh.h -id=erase_tosh
 IF EXIST erase_tosh.bin DEL erase_tosh.bin

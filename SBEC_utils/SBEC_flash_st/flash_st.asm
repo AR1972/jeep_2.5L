@@ -19,30 +19,25 @@ Start:
                         ; enables Special Mode
     staB    $3F,X       ; store value in register B ($01) in 0x1000 + 0x003F
                         ; System Config Register
-
-; give receiver around 100ms
-
-    ldX     #$7E00
-Delay:
-    deX
-    bne     Delay
-           
-    ldX     #$8000              
-
+	       
+    ldX     #$8000
+ 
 Next64ByteBlock:
-    ldY     #Buffer             
-
+    ldY     #Buffer
+              
 LoopToFillRAM:
     ldD     $102E
-    bitA    #%00100000                
+    bitA    #%00100110                
     beq     LoopToFillRAM       
-    staB    $00,Y              
-    inY                         
-    cpY     #LenBuffer
+    staB    $00,Y       
+	inY                        
+    cpY     #Buffer + 64
     bne     LoopToFillRAM       
-    ldaB    #$C8                
-    bsr     ShortDelayLoop      
-    ldY     #Buffer             
+    ldY     #$4119      ; 50ms
+wait_0:
+	deY
+	bne     wait_0  
+    ldY     #Buffer
 
 InitRetryCounter:
     ldaA    #$19         
@@ -65,7 +60,6 @@ ProgramBytes:
     bne     ProgramBytes     
 
 Finished:
-   
     stop
 
 ByteVerified:
@@ -77,7 +71,7 @@ ResetEEPROM:
     bsr     ShortDelayLoop   
     inX                      
     inY                      
-    cpY     LenBuffer
+    cpY     #Buffer + 64
     bne     InitRetryCounter 
 
 SkipEEPROM:
@@ -97,11 +91,11 @@ ShortDelayLoop:
 
 RetryCounter:
     fcb   $19
+	fcb 0x00
 Buffer:
  REPEAT $40
     fcb 0x00
  ENDR
-LenBuffer:
 THE_END:
 
                         ; pad bootstrap to 256 total bytes

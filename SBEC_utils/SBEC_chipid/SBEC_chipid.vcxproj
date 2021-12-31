@@ -68,6 +68,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
+      <MultiProcessorCompilation>
+      </MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -77,7 +79,8 @@
       <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>..\..\bin\asm11 chipid.asm -nologo
+      <Command>IF EXIST chipid.h DEL chipid.h
+..\..\bin\asm11 chipid.asm -nologo
 ..\..\bin\mot2bin chipid.s19 chipid.bin
 ..\..\bin\bin2h chipid.bin chipid.h -id=chipid
 IF EXIST chipid.bin DEL chipid.bin

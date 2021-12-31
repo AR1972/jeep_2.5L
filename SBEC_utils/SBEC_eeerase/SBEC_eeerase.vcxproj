@@ -81,7 +81,8 @@
       <AdditionalDependencies>SetupApi.lib;Hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>..\..\bin\asm11 -nologo eeerase.asm
+      <Command>IF EXIST eeerase.h DEL eeerase.h
+..\..\bin\asm11 -nologo eeerase.asm
 ..\..\bin\mot2bin eeerase.s19 eeerase.bin
 ..\..\bin\bin2h eeerase.bin eeerase.h -id=eeerase
 IF EXIST eeerase.bin DEL eeerase.bin

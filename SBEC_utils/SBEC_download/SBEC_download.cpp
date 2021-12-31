@@ -692,7 +692,7 @@ SAVE_FILE:
         }
         printf("EEPROM saved to %s", ee_name_buffer);
     }
-
+	printf("\n");
     ret = 0;
 
 EXIT:

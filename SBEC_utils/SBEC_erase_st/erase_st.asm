@@ -22,11 +22,14 @@ Start:
 
 ; give receiver around 100ms to apply 20 volts to pin 45
 
-    ldX     #$7E00
-Delay:
-    deX
-    bne     Delay
+; each time programming voltage is disconnected
+; we receive a 0x00, this helps us to time our
+; loop wait until it is received and discard it
 
+wait_for_it:
+    ldD     $102E
+    bitA    #%00100000
+    beq     wait_for_it
     ldY     #$0BB8
     ldX     #$8000
 
@@ -72,6 +75,14 @@ CheckEraseRetryCounter:
     bne     SendEraseCommand
 
 JumpToStart:
+
+; each time programming voltage is disconnected
+; we receive a 0x00, this helps us to time our
+; loop wait until it is received and discard it
+
+    ldD     $102E
+    bitA    #%00100000
+    beq     JumpToStart
     ldX     #$8000      ; load the start address in register X
 
 SendByte:
@@ -84,7 +95,10 @@ WaitForSCI:
     staB    $102F       ; send byte to SCI
     inX                 ; point X to next byte
     bne     SendByte    ; loop until X = 0x0000
+
+XXX:
     stop
+    jmp     XXX
 
 THE_END:
 

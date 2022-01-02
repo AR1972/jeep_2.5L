@@ -19,99 +19,116 @@ Start:
                         ; enables Special Mode
     staB    $3F,X       ; store value in register B ($01) in 0x1000 + 0x003F
                         ; System Config Register
-	       
+
     ldX     #$8000
 
 Next64ByteBlock:
-	ldD     $102E
-	bitA    #%00100000
-	beq     Next64ByteBlock
-	cpX     #$8000
-	bne     check_2
-	cmpB	#$00
-	bne     continue
-	staB    Buffer-1
-	jmp     continue
-check_2:
-	cpX     #$8040
-	bne     continue
-	cmpB    #$00
-	staB    Buffer-1
 
-continue:
+; each time programming voltage is disconnected
+; we receive a 0x00, this helps us to time our
+; loop wait until it is received and discard it
+
+    ldD     $102E
+    bitA    #%00100000
+    beq     Next64ByteBlock
     ldY     #Buffer
-	jmp     LoopToFillRam
 
-jump:
-   jmp      Next64ByteBlock   
-              
 LoopToFillRAM:
     ldD     $102E
-    bitA    #%00100000                
-    beq     LoopToFillRAM   
-    staB    $00,Y       
-	inY                        
+    bitA    #%00100000
+    beq     LoopToFillRAM
+    staB    $00,Y
+    inY
     cpY     #Buffer + 64
-    bne     LoopToFillRAM       
+    bne     LoopToFillRAM
     ldY     #$4119      ; 50ms
 wait_0:
-	deY
-	bne     wait_0  
+    deY
+    bne     wait_0
     ldY     #Buffer
 
 InitRetryCounter:
-    ldaA    #$19         
+    ldaA    #$19
     staA    RetryCounter
 
 ProgramBytes:
-    ldaA    #$40             
-    staA    $00,X           
-    ldaA    $00,Y           
-    staA    $00,X           
-    ldaB    #$28             
-    bsr     ShortDelayLoop   
-    ldaB    #$C0             
-    staB    $00,X           
-    ldaB    #$02             
-    bsr     ShortDelayLoop   
-    cmpA    $00,X           
-    beq     ByteVerified     
-    dec     RetryCounter     
-    bne     ProgramBytes     
+    ldaA    #$40
+    staA    $00,X
+    ldaA    $00,Y
+    staA    $00,X
+    ldaB    #$28
+    bsr     ShortDelayLoop
+    ldaB    #$C0
+    staB    $00,X
+    ldaB    #$02
+    bsr     ShortDelayLoop
+    cmpA    $00,X
+    beq     ByteVerified
+    dec     RetryCounter
+    bne     ProgramBytes
 
 Finished:
+    staB    $00,X
+    ldaA    #$19
+    staA    RetryCounter
+
+wait_1:
+    ldY     #$1A0A      ; 20ms
+
+wait_2:
+    deY
+    bne     wait_2
+    dec     RetryCounter
+    bne     wait_1
+    ldX     #$8000      ; load the start address in register X
+
+SendByte:
+    ldaB    0,X         ; load byte at address X+0
+
+WaitForSCI:
+    ldaA    $102E       ; check SCI status
+    andA    #%10000000  ; check if ready to send
+    beq     WaitForSCI  ; loop until ready
+    staB    $102F       ; send byte to SCI
+    inX                 ; point X to next byte
+    bne     SendByte    ; loop until X = 0x0000
+
+XXX:
     stop
+    jmp     XXX
 
 ByteVerified:
 ResetEEPROM:
-    ldaB    #$FF             
-    staB    $00,X           
-    staB    $00,X           
-    ldaB    #$64             
-    bsr     ShortDelayLoop   
-    inX                      
-    inY                      
+    ldaB    #$FF
+    staB    $00,X
+    staB    $00,X
+    clrB
+    staB    $00,X
+    ldaB    #$64
+    bsr     ShortDelayLoop
+    inX
+    inY
     cpY     #Buffer + 64
-    bne     InitRetryCounter 
+    bne     InitRetryCounter
 
 SkipEEPROM:
     cpX     #$B600
     bne     Skip                       ; branch if not equal (not zero)
     ldX     #$B800                     ; load index with value
-            
-Skip:       
+
+Skip:
     cpX     #$0000
-    bne     jump
-    bra     Finished                   ; branch if not equal (not zero)
+    beq     Finished
+    ldY     #Next64ByteBlock
+    jmp     $00,Y
 
 ShortDelayLoop:
     decB
-    bne     ShortDelayLoop             ; branch if not equal (not zero)
+    bne     ShortDelayLoop           ; branch if not equal (not zero)
     rts                              ; return from subroutine
 
 RetryCounter:
     fcb   $19
-	fcb 0x00
 Buffer:
  REPEAT $40
     fcb 0x00
@@ -122,5 +139,4 @@ THE_END:
  REPEAT 256-(THE_END-THE_BEGIN)
     fcb 0x00
  ENDR
- 
- 
+

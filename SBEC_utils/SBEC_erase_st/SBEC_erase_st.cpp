@@ -373,9 +373,16 @@ Start:
     }
 
     rel_onoff(dev, VSEL, RELAY_DATA); // apply 20v to pin 45
+	Sleep(10);
+	rel_onoff(dev, DATA, RELAY_DATA); // apply 20v to pin 45
+	Sleep(10);
+	rel_onoff(dev, VSEL, RELAY_DATA); // apply 20v to pin 45
 
     Sleep(1000);
-    printf("Downloading at %d BAUD\n", baud);
+
+	rel_onoff(dev, DATA, RELAY_DATA); // apply 20v to pin 45
+    
+	printf("Downloading at %d BAUD\n", baud);
     num = 0;
     send_num = 0;
     recv_num = 0;

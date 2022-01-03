@@ -435,9 +435,8 @@ Start:
         goto EXIT;
     }
 
-    if (ABORT) {
+    if (ABORT)
         goto EXIT;
-    }
 
     printf("Downloading MCU EEPROM\n");
 

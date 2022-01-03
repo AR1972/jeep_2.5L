@@ -488,13 +488,17 @@ Start:
     printf("Flashing MCU EEPROM\n");
 
     num = 0;
+    send_num = 0;
+    recv_num = 0;
+
+    Sleep(500);
 
     for (int i = 0; i < 8; i++){
-        if (!WriteFile(hComm, file_buffer+num, 0x40, &send_num, NULL)) {
-            printf("failed to send data\n");
+        if (!WriteFile(hComm, &file_buffer[num], 0x40, &send_num, NULL)) {
+            printf("\nfailed to send data\n");
             goto EXIT;
         }
-        num = num + send_num;
+        num += send_num;
         printf("\r");
         printf("Bytes TX: 0x%02X", num);
         Sleep(650);
@@ -512,13 +516,13 @@ Start:
             printf("\n");
             goto EXIT;
         }
-        recv_num = recv_num + num;
+        recv_num += num;
         if (num != 0x40) {
             if (recv_num >= 0x200) {
                 goto Save;
             }
             else {
-                printf("ERROR: downloading MCU EEPROM for verification\n");
+                printf("\nERROR: downloading MCU EEPROM for verification\n");
                 goto EXIT;
             }
         }

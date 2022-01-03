@@ -52,7 +52,7 @@ FillBuffer:
     beq    FillBuffer        ; loop if no
     staB   $00,Y             ; store byte in buffer
     inY                      ; point to next byte in buffer
-    cpY    #LenBuffer        ; check if buffer is full
+    cpY    #Buffer + 64      ; check if buffer is full
     bne    FillBuffer        ; get next byte
     pshX
     ldX    #$c8
@@ -86,6 +86,7 @@ ProgramBytes:
     beq    ByteVerified      ; branch if equal (zero)
     dec    RetryCounter      ; decrement memory contents
     bne    ProgramBytes      ; branch if not equal (not zero)
+    jmp    ByteVerified
 
 Finished:
     ldX    #$FFFF            ; give receiver about 200ms
@@ -115,7 +116,7 @@ Delay:
 ByteVerified:
     inX                      ; increment eeprom address (X)
     inY                      ; increment write buffer (Y)
-    cpY   #LenBuffer
+    cpY   #Buffer + 64
     bne   InitRetryCounter
     cpX   #$B800
     bne   Next64ByteBlock
@@ -127,7 +128,6 @@ Buffer:
  REPEAT $40
     fcb 0x00
  ENDR
-LenBuffer:
 THE_END:
 
                              ; pad bootstrap to 256 total bytes

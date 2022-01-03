@@ -468,7 +468,7 @@ Start:
                 state.fDtrControl = 0; // disconnect 12 volts from pin 45
                 state.fRtsControl = 0; // power ECU off
                 if (!SetCommState(hComm, &state)) {
-                    printf("ERROR: setting COM state\n");
+                    printf("\nERROR: setting COM state\n");
                     goto EXIT;
                 }
 #endif

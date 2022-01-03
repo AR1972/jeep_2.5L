@@ -459,14 +459,16 @@ Start:
     the ECU receives a 0x00, the bootstrap is sitting
     in a loop waiting to receive it */
 
-    rel_onoff(dev, VSEL, RELAY_DATA);
-    Sleep(80);
+    //rel_onoff(dev, VSEL, RELAY_DATA);
+    //Sleep(80);
+
+    WriteFile(hComm, &file_buffer[0x10001], 1, &send_num, NULL);
 
     for (int i = 0; i < (eeprom_size/0x40); i++){
         rel_onoff(dev, DATA, RELAY_DATA);
         Sleep(80);
         if (!WriteFile(hComm, &file_buffer[num], 0x40, &send_num, NULL)) {
-            printf("ERROR: sending data\n");
+            printf("\ERROR: sending data\n");
             goto EXIT;
         }
         Sleep(80);
@@ -510,7 +512,7 @@ Start:
                 goto Check;
             }
             else {
-                printf("ERROR: downloading EEPROM for verification\n");
+                printf("\nERROR: downloading EEPROM for verification\n");
                 goto EXIT;
             }
         }

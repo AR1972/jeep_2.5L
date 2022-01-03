@@ -282,7 +282,7 @@ Start:
     // have variable length download, bootstrap length
     // of 257 bytes should work in all cases.
 
-    printf("Sending EEPROM id program\n");
+    printf("Sending EPROM id program\n");
     if (!WriteFile(hComm, chipid, sizeof(chipid), &send_num, NULL)) {
         printf("ERROR: sending id program\n");
         goto EXIT;

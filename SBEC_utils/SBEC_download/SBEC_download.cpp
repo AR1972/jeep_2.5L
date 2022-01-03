@@ -394,7 +394,7 @@ Start:
     // have variable length download, bootstrap length
     // of 257 bytes should work in all cases.
 
-    printf("Sending EEPROM download program\n");
+    printf("Sending EPROM download program\n");
     if (!WriteFile(hComm, send_buffer, 0x101, &send_num, NULL)) {
         printf("ERROR: sending download program\n");
         goto EXIT;
@@ -565,7 +565,7 @@ Start:
                 state.fDtrControl = 0; // disconnect 12 volts from pin 45
                 state.fRtsControl = 0; // power ECU off
                 if (!SetCommState(hComm, &state)) {
-                    printf("ERROR: setting COM state\n");
+                    printf("\nERROR: setting COM state\n");
                     goto EXIT;
                 }
 #endif

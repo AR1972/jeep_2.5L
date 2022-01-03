@@ -21,7 +21,7 @@ Start:
                         ; enables Special Mode
     staB   $3F,X        ; store value in register B ($01) in 0x1000 + 0x003F
                         ; System config Register
-    ldaA   #%00010000   ; disable write protection for $B600->$B800
+    ;ldaA   #%00010000   ; disable write protection for $B600->$B800
     staA   $35,X
 
     ldX    #$FFFF       ; give PC about 200ms to prepare for byte stream

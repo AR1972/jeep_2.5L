@@ -22,6 +22,10 @@ Start:
 
     ldX     #$8000
 
+    ; 68HC11E9 special handling
+    ;ldY     #Buffer
+    ;jmp     LoopToFillRAM
+
 Next64ByteBlock:
 
 ; each time programming voltage is disconnected

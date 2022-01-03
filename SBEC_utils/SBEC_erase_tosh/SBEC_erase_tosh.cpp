@@ -355,7 +355,7 @@ Start:
         }
 
         if (retry_num >= max_retry) {
-            printf("Erase Tosh failed after %d attempts\n", retry_num);
+            printf("ERROR: erase failed after %d attempts\n", retry_num);
             goto EXIT;
         }
 
@@ -394,10 +394,8 @@ Start:
     if (ABORT)
         goto EXIT;
 
-    rel_onoff(dev, VSEL, RELAY_DATA); // apply 20v to pin 45
-    Sleep(10);
-    rel_onoff(dev, DATA, RELAY_DATA); // disconnect 20v to pin 45
-    Sleep(10);
+    WriteFile(hComm, &recv_buffer[0x10001], 1, &send_num, NULL);
+
     rel_onoff(dev, VSEL, RELAY_DATA); // apply 20v to pin 45
 
     printf("Erasing EEPROM\n");
@@ -423,7 +421,7 @@ Start:
                 goto Save;
             }
             else {
-                printf("ERROR: downloading EEPROM for verification\n");
+                printf("\nERROR: downloading EEPROM for verification\n");
                 goto EXIT;
             }
         }

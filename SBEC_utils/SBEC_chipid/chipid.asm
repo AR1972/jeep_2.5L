@@ -27,7 +27,7 @@ Start:
    jsr      wait
 
    ldD      #$AA90
-   staA     $D555       ; store $AA at address $D555 
+   staA     $D555       ; store $AA at address $D555
    comA                 ; $AA is now $55
    staA     $AAAA       ; store $55 in address $AAAA
    staB     $D555       ; store $90 in address $D555
@@ -43,7 +43,7 @@ Start:
    comA
    staA     $AAAA
    staB     $D555
-   
+
    ldX      #$0D05      ; 10ms
    jsr      wait
 

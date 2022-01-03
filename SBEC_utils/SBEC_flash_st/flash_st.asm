@@ -25,13 +25,11 @@ Start:
 Next64ByteBlock:
 
 ; each time programming voltage is disconnected
-; we receive a 0x00, this helps us to time our
-; loop wait until it is received and discard it
+; we receive a 0x00, write this byte before the
+; buffer so it doesn't get written to the EEPROM
 
-    ldD     $102E
-    bitA    #%00100000
-    beq     Next64ByteBlock
     ldY     #Buffer
+    deY
 
 LoopToFillRAM:
     ldD     $102E
@@ -129,6 +127,7 @@ ShortDelayLoop:
 
 RetryCounter:
     fcb   $19
+    fcb   $00
 Buffer:
  REPEAT $40
     fcb 0x00

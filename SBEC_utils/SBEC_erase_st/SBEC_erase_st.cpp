@@ -18,6 +18,7 @@ USBDEVHANDLE openDevice(void);
 #define PROGRAM     1
 #define DATA        0
 #define VSEL        1
+#define BUFF_SIZE   0x10001
 
 char *device = 0;
 HANDLE hComm = 0;
@@ -108,7 +109,7 @@ int main(int argc, char *argv[])
 
     // get some memory for buffers
 
-    recv_buffer = (unsigned char *)malloc(0x10001);
+    recv_buffer = (unsigned char *)malloc(BUFF_SIZE);
     if (!recv_buffer){
         goto EXIT;
     }
@@ -119,13 +120,13 @@ int main(int argc, char *argv[])
 
 
     //null out buffers
-    memset(recv_buffer, 0x00, 0x10001);
+    memset(recv_buffer, 0x00, BUFF_SIZE);
 
     sprintf(device, "\\\\.\\COM%s", com);
 
     dev = openDevice();
     if (!dev) {
-        printf("Error in opening relay board\n");
+        printf("ERROR: opening relay board\n");
         goto EXIT;
     }
     // turn all relays off
@@ -139,15 +140,15 @@ int main(int argc, char *argv[])
     hComm = CreateFileA(device, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 
     if (hComm == INVALID_HANDLE_VALUE) {
-        printf("Error in opening COM%s\n", com);
+        printf("ERROR: opening COM%s\n", com);
         goto EXIT;
     }
     else {
-        printf("Opening COM%s successful\n", com);
+        printf("Success opening COM%s\n", com);
     }
 
     if (!GetCommState(hComm, &state)) {
-        printf("failed to get COM state\n");
+        printf("ERROR: getting COM state\n");
         goto EXIT;
     }
 
@@ -161,7 +162,7 @@ Start:
     timeouts.WriteTotalTimeoutConstant = 5000;
     timeouts.WriteTotalTimeoutMultiplier = 0;
     if (!SetCommTimeouts(hComm, &timeouts)) {
-        printf("failed to set COM timeouts\n");
+        printf("ERROR: setting COM timeouts\n");
         goto EXIT;
     }
 
@@ -177,7 +178,7 @@ Start:
     state.StopBits = ONESTOPBIT;
 
     if (!SetCommState(hComm, &state)) {
-        printf("failed to set COM state\n");
+        printf("ERROR: setting COM state\n");
         goto EXIT;
     }
 
@@ -209,15 +210,15 @@ Start:
 
     if (ReadFile(hComm, recv_buffer, 1, &num, NULL)) {
         if (num == 1 && recv_buffer[0] == 0x00) {
-            printf("ECU sent 0x%02X\n", recv_buffer[0]);
+            printf("Received: 0x%02X\nECU is in bootstrap mode\n", recv_buffer[0]);
         }
         else {
-            printf("ECU not in bootstrap mode\n");
+            printf("Received: 0x%02X\nERROR: ECU not in bootstrap mode\n", recv_buffer[0]);
             goto EXIT;
         }
     }
     else {
-        printf("ECU not in bootstrap mode\n");
+        printf("Received: 0x%02X\nERROR: ECU not in bootstrap mode\n", recv_buffer[0]);
         goto EXIT;
     }
 
@@ -228,10 +229,18 @@ Start:
         if (rel_onoff(dev, DATA, RELAY_DATA))
             goto EXIT;
     }
+
+    Sleep(100);
+
     if (dev){
         if (rel_onoff(dev, PROGRAM, RELAY_VSEL))
             goto EXIT;
     }
+
+    // when bootstrap voltage is disconnected we will
+    // receive a 0x00, wait up to 5 seconds for it.
+
+    ReadFile(hComm, recv_buffer, 1, &recv_num, NULL);
 
     // bootstrap download only seems to work at 1200 BAUD
 
@@ -241,11 +250,11 @@ Start:
     state.Parity = NOPARITY;
     state.StopBits = ONESTOPBIT;
     if (!SetCommState(hComm, &state)) {
-        printf("failed to set COM state\n");
+        printf("ERROR: setting COM state\n");
         goto EXIT;
     }
 
-    memset(recv_buffer, 0x00, 0x10001);
+    memset(recv_buffer, 0x00, BUFF_SIZE);
 
     // set the BAUD rate of the bootstrap
 
@@ -259,7 +268,7 @@ Start:
     // purge garbage from serial port buffers
 
     if (!FlushFileBuffers(hComm)) {
-        printf("failed to flush file buffers\n");
+        printf("ERROR: flushing file buffers\n");
         goto EXIT;
     }
 
@@ -273,12 +282,12 @@ Start:
     // have variable length download, bootstrap length
     // of 257 bytes should work in all cases.
 
-    printf("Sending erase ST\n");
+    printf("Sending EEPROM erase program\n");
     if (!WriteFile(hComm, erase_st, sizeof(erase_st), &send_num, NULL)) {
-        printf("failed to send erase st\n");
+        printf("ERROR: sending erase program\n");
         goto EXIT;
     }
-    printf("0x%02X bytes sent\n", send_num);
+    printf("Bytes TX: 0x%02X\n", send_num);
 
     // ECU echos back characters sent, check
     // if it sent 256 bytes back, if 256 bytes
@@ -299,13 +308,19 @@ Start:
     // applied in time the chip id function will fail.
 
     if (!ReadFile(hComm, recv_buffer, 0x100, &recv_num, NULL)) {
-        printf("failed to read from COM port\n");
+        printf("ERROR: reading from COM port\n");
     }
 
-    FlushFileBuffers(hComm);
+    // purge garbage from serial port buffers
+
+    if (!FlushFileBuffers(hComm)) {
+        printf("failed to flush file buffers\n");
+        goto EXIT;
+    }
+
+    printf("Bytes RX: 0x%02X\n", recv_num);
 
     if (recv_num != 0x100) {
-        printf("0x%02X bytes received\n", recv_num);
         retry_num++;
 
         if (dev) {
@@ -313,11 +328,13 @@ Start:
                 goto EXIT;
         }
         if (retry_num >= max_retry) {
-            printf("Erase ST failed after %d attempts\n", retry_num);
+            printf("ERROR: erase failed after %d attempts\n", retry_num);
             goto EXIT;
         }
         printf("retry %d\n", retry_num);
+
         Sleep(2000);
+
         if (ABORT)
             goto EXIT;
         goto Start;
@@ -327,22 +344,28 @@ Start:
     // send a leading null and will cause the bootstrap corruption
     // check to fail, handle leading null and no leading null cases
 
-    if ((memcmp(erase_st + 1, recv_buffer, 0x4F) != 0) &
-        (memcmp(erase_st + 1, recv_buffer + 1, 0x4F) != 0)) {
-        printf("Erase ST is corrupt\n");
+    if ((memcmp(erase_st + 1, recv_buffer, 0xFF) != 0) &
+        (memcmp(erase_st + 1, recv_buffer + 1, 0xFF) != 0)) {
+        printf("ERROR: erase program is corrupt\n");
         retry_num++;
+
         if (dev) {
             if (rel_onoff(dev, OFF, -4))
                 goto EXIT;
         }
+
         if (retry_num >= max_retry) {
-            printf("Erase ST failed after %d attempts\n", retry_num);
+            printf("ERROR: erase failed after %d attempts\n", retry_num);
             goto EXIT;
         }
+
         printf("retry %d\n", retry_num);
+
         Sleep(2000);
+
         if (ABORT)
             goto EXIT;
+
         goto Start;
     }
 
@@ -354,7 +377,7 @@ Start:
     state.Parity = NOPARITY;
     state.StopBits = ONESTOPBIT;
     if (!SetCommState(hComm, &state)) {
-        printf("failed to set COM state\n");
+        printf("ERROR: setting COM state\n");
         goto EXIT;
     }
 
@@ -364,25 +387,25 @@ Start:
     timeouts.WriteTotalTimeoutConstant = 500;
     timeouts.WriteTotalTimeoutMultiplier = 0;
     if (!SetCommTimeouts(hComm, &timeouts)) {
-        printf("failed to set COM timeouts\n");
+        printf("ERROR: setting COM timeouts\n");
         goto EXIT;
     }
 
-    if (ABORT) {
+    if (ABORT)
         goto EXIT;
-    }
 
     rel_onoff(dev, VSEL, RELAY_DATA); // apply 20v to pin 45
-	Sleep(10);
-	rel_onoff(dev, DATA, RELAY_DATA); // apply 20v to pin 45
-	Sleep(10);
-	rel_onoff(dev, VSEL, RELAY_DATA); // apply 20v to pin 45
+    Sleep(10);
+    rel_onoff(dev, DATA, RELAY_DATA); // disconnect 20v to pin 45
+    Sleep(10);
+    rel_onoff(dev, VSEL, RELAY_DATA); // apply 20v to pin 45
 
+    printf("Erasing EEPROM\n");
     Sleep(1000);
 
-	rel_onoff(dev, DATA, RELAY_DATA); // apply 20v to pin 45
-    
-	printf("Downloading at %d BAUD\n", baud);
+    rel_onoff(dev, DATA, RELAY_DATA); // disconnect 20v to pin 45
+
+    printf("Erase verification\n");
     num = 0;
     send_num = 0;
     recv_num = 0;
@@ -394,20 +417,22 @@ Start:
             printf("\n");
             goto EXIT;
         }
-        recv_num = recv_num + num;
+        recv_num += num;
         if (num != 0x40) {
             if (recv_num >= 0x8000) {
                 goto Save;
             }
             else {
-                printf("An error occurred while downloading EPROM for verification\n");
+                printf("ERROR: downloading EEPROM for verification\n");
                 goto EXIT;
             }
         }
         printf("\r");
-        printf("0x%02X bytes received", recv_num);
+        printf("Bytes RX: 0x%02X", recv_num);
     }
+
 Save:
+
     printf("\n");
     for (int i = 0; i < 0x8000; i++){
         // skip the MCU eeprom
@@ -419,9 +444,8 @@ Save:
             goto EXIT;
         }
     }
-    printf("EPROM erase success\n");
 
-    rel_onoff(dev, DATA, RELAY_DATA); // disconnect 20v from pin 45
+    printf("EPROM erase success\n");
 
     ret = 0;
 

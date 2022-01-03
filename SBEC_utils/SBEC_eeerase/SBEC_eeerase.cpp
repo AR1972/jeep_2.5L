@@ -357,8 +357,8 @@ Start:
 	// send a leading null and will cause the bootstrap corruption
 	// check to fail, handle leading null and no leading null cases
 
-	if ((memcmp(eeerase + 1, recv_buffer, 0x60) != 0) &
-		(memcmp(eeerase + 1, recv_buffer + 1, 0x60) != 0)) {
+	if ((memcmp(eeerase + 1, recv_buffer, 0xFF) != 0) &
+		(memcmp(eeerase + 1, recv_buffer + 1, 0xFF) != 0)) {
 		printf("EEPROM erase is corrupt\n");
 		retry_num++;
 #ifdef USB_RELAY_BOARD

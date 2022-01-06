@@ -22,18 +22,13 @@ Start:
 
     ldX     #$8000
 
-    ; 68HC11E9 special handling
-    ;ldY     #Buffer
-    ;jmp     LoopToFillRAM
-
 Next64ByteBlock:
 
 ; each time programming voltage is disconnected
 ; we receive a 0x00, write this byte before the
 ; buffer so it doesn't get written to the EEPROM
 
-    ldY     #Buffer
-    deY
+    ldY     #Buffer-1
 
 LoopToFillRAM:
     ldD     $102E

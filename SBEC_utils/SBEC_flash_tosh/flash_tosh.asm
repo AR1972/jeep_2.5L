@@ -20,98 +20,109 @@ Start:
     staB    $3F,X       ; store value in register B ($01) in 0x1000 + 0x003F
                         ; System Config Register
 
-; give receiver around 100ms
-
-    ldX     #$7E00
-Delay:
-    deX
-    bne     Delay
-
-    ldx   #$8000               ; load index with value
+    ldX   #$8000        ; load index with value
 
 Next64ByteBlock:
-           ldy   #Buffer               ; load index with value
+    ldY   #Buffer-1     ; load index with value
+    cpX   #$B600
+    bne   LoopToFillRAM
+    ldX   #$B800
 
 LoopToFillRAM:
-           ldd   $102E
-           bita  #%00100000                       ;  -00100000-
-           beq   LoopToFillRAM              ; branch if equal (zero)
-           stab  $00,Y                    ;  -00000000-
-           iny                              ; increment index (x=x+1)
-           cpy   #LenBuffer
-           bne   LoopToFillRAM              ; branch if not equal (not zero)
-           ldab  #$C8                      ; load b with value -11001000-
-           jsr   ShortDelayLoop
-           ldy   #Buffer               ; load index with value
+    ldD   $102E
+    bitA  #%00100000       ; -00100000-
+    beq   LoopToFillRAM    ; branch if equal (zero)
+    staB  $00,Y            ; -00000000-
+    inY                    ; increment index (x=x+1)
+    cpY   #Buffer+$40
+    bne   LoopToFillRAM    ; branch if not equal (not zero)
 
-InitRetryCounter:
-           ldab  #$19                       ; load b with value -00011001-
-           stab  RetryCounter               ; store b into memory
+    ldY   #$4119           ; 50ms
+wait_0:
+    deY
+    bne   wait_0
+    
+    ldY   #Buffer                    ; load index with value
 
-ProgramBytes:
-           ldD   #$AAA0                    ; load d (a&b) with value
-           staA  $D555
-           comA
-           staA  $AAAA
-           staA  $D555                      ; store b into memory
-           clrB                             ; b = 0
-           staB  $A000                      ; store b into memory
-           ldaB  $00,Y                    ; load b with memory at index + value -00000000-
-           staB  $00,X                    ;  -00000000-
-           ldaB  #$50                      ; load b with value -01010000-
-           bra   ShortDelayLoop             ; branch
-; not sure what all this is about, but it's different from the FCC version. Needed?
-;           ldab  0x00, Y                   ; load b with memory at index + value -00000000-
-;           stab  0x00, X                   ;  -00000000-
-;           nop                             ; no operation
-;           nop                             ; no operation
+pgm_sector:    
+    ldD   #$AAA0                    ; load d (a&b) with value
+    staA  $D555
+    comA
+    staA  $AAAA
+    staB  $D555                      ; store b into memory
+    clrB                             ; b = 0
+    staB  $A000                      ; store b into memory
 
-VerifyByte:
-           ldaA  $00,X                    ; load b with memory at index + value -00000000-
-;           ldaa  LAAAA                     ; load a with memory contents
-;           ldaa  LD555                     ; load a with memory contents
-;           ldaa  CPU_SerialStatus          ; load a with memory contents
-;           ldaa  CPU_SerialData            ; load a with memory contents
-           cmpa  $00,Y                    ;  -00000000-
-           beq   ByteVerified               ; branch if equal (zero)
-VerifyFailed:
-           dec   RetryCounter               ; decrement memory contents
-           bne   ProgramBytes               ; branch if not equal (not zero)
+pgm_even:
+    ldaA  $00,Y            ; load a with value from temp RAM
+    staA  $00,X
+    inY
+    inX
+    ldaB  #$0A
+    bsr   ShortDelayLoop
+    cpY   #Buffer+$40
+    bne   pgm_even
+
+reset:
+    xgdx
+    subD  #$40
+    xgdx
+    ldY   #Buffer
+
+pgm_odd:
+    ldaA  $01,Y
+    staA  $01,X
+    inY
+    inX
+    ldaB  #$0A
+    bsr   ShortDelayLoop
+    cpY   #Buffer+$40
+    bne   pgm_odd
+    cpX   #$0000  
+    bne   Next64ByteBlock
 
 Finished:
+    staB    $00,X
+    ldaA    #$19
+    staA    RetryCounter
 
-          stop
+wait_1:
+    ldY     #$4119      ; 50ms
 
-ByteVerified:
-           inX                              ; increment index (x=x+1)
-           inY                              ; increment index (x=x+1)
-           cpY   #LenBuffer
-           bne   InitRetryCounter           ; branch if not equal (not zero)
+wait_2:
+    deY
+    bne     wait_2
+    dec     RetryCounter
+    bne     wait_1
+    ldX     #$8000      ; load the start address in register X
 
-SkipEEPROM:
-           cpX   #$b600
-           bne   Skip                       ; branch if not equal (not zero)
-           ldX   #$b800                    ; load index with value
+SendByte:
+    ldaB    0,X         ; load byte at address X+0
 
-Skip:   
-           cpX   #$0000
-           bne   Next64ByteBlock
-           bra   Finished                   ; branch if not equal (not zero)
+WaitForSCI:
+    ldaA    $102E       ; check SCI status
+    andA    #%10000000  ; check if ready to send
+    beq     WaitForSCI  ; loop until ready
+    staB    $102F       ; send byte to SCI
+    inX                 ; point X to next byte
+    bne     SendByte    ; loop until X = 0x0000
+
+XXX:
+    stop
+    jmp     XXX
 
 ShortDelayLoop:
-           decB
-           bne   ShortDelayLoop             ; branch if not equal (not zero)
-           rts                              ; return from subroutine
-Done:
-    stop
+    decB
+    bne   ShortDelayLoop             ; branch if not equal (not zero)
+    rts                              ; return from subroutine
 
 RetryCounter:
-    fcb   $19
+    fcb $19
+    fcb $00  
 Buffer:
  REPEAT $40
     fcb 0x00
  ENDR
-LenBuffer:
 THE_END:
 
                              ; pad bootstrap to 256 total bytes

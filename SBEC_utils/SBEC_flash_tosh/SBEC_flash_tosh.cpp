@@ -468,7 +468,7 @@ Start:
         rel_onoff(dev, DATA, RELAY_DATA);
         Sleep(80);
         if (!WriteFile(hComm, &file_buffer[num], 0x40, &send_num, NULL)) {
-            printf("\ERROR: sending data\n");
+            printf("\nERROR: sending data\n");
             goto EXIT;
         }
         Sleep(80);
@@ -480,10 +480,10 @@ Start:
             num += 0x200;
             i += (0x200/0x40);
         }
-        Sleep(100);
+        Sleep(300);
     }
 
-    Sleep(500);
+    Sleep(1000);
     rel_onoff(dev, DATA, RELAY_DATA);
 
     // purge garbage from serial port buffers

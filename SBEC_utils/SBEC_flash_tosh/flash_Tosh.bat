@@ -1,0 +1,11 @@
+@ECHO OFF
+SETLOCAL
+SBEC_chipid.exe /c:1
+IF %ERRORLEVEL% NEQ 38976 GOTO QUIT
+SBEC_erase_tosh.exe /c:1
+IF %ERRORLEVEL% NEQ 0 GOTO QUIT
+SBEC_flash_tosh.exe /c:1 /f:..\..\56028828\56028828.bin
+IF %ERRORLEVEL% NEQ 0 GOTO QUIT
+SBEC_eeflash.exe /C:1 /F:..\..\MCU_eeprom\56028828_eeprom.bin /e
+:QUIT
+PAUSE

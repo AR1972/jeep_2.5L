@@ -51,7 +51,8 @@ pgm_sector:
     staA    $AAAA
     staB    $D555
     clrB
-    staB    $A000
+    ;staB    $A000 ; works for some Toshiba chips
+    staB    $8000 ; works for both discoverd variants Toshiba chips
 
 pgm_even:
     ldaA    $00,Y

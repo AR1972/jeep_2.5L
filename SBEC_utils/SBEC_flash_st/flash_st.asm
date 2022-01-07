@@ -65,7 +65,6 @@ ProgramBytes:
     bne     ProgramBytes
 
 Finished:
-    staB    $00,X
     ldaA    #$19
     staA    RetryCounter
 

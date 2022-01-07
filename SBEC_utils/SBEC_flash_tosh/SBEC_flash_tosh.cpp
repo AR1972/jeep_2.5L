@@ -483,7 +483,7 @@ Start:
         Sleep(300);
     }
 
-    Sleep(1000);
+    Sleep(200);
     rel_onoff(dev, DATA, RELAY_DATA);
 
     // purge garbage from serial port buffers

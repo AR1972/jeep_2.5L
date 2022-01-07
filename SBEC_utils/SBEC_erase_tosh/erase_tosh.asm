@@ -20,9 +20,9 @@ Start:
     staB    $3F,X       ; store valie in register B ($01) in 0x1000 + 0x003F
                         ; System Config Register
 
-; give receiver around 100ms to apply 20 volts to pin 45
+; give receiver around 50ms to apply 20 volts to pin 45
 
-    ldX     #$7E00
+    ldX     #$4119
 wait_1:
     deX
     bne     wait_1

@@ -20,105 +20,103 @@ Start:
     staB    $3F,X       ; store value in register B ($01) in 0x1000 + 0x003F
                         ; System Config Register
 
-    ldX   #$8000        ; load index with value
+    ldX     #$8000        ; load index with value
 
 Next64ByteBlock:
-    ldY   #Buffer-1     ; load index with value
-    cpX   #$B600
-    bne   LoopToFillRAM
-    ldX   #$B800
+    ldY     #Buffer-1
+    cpX     #$B600
+    bne     LoopToFillRAM
+    ldX     #$B800
 
 LoopToFillRAM:
-    ldD   $102E
-    bitA  #%00100000       ; -00100000-
-    beq   LoopToFillRAM    ; branch if equal (zero)
-    staB  $00,Y            ; -00000000-
-    inY                    ; increment index (x=x+1)
-    cpY   #Buffer+$40
-    bne   LoopToFillRAM    ; branch if not equal (not zero)
+    ldD     $102E
+    bitA    #%00100000
+    beq     LoopToFillRAM
+    staB    $00,Y
+    inY
+    cpY     #Buffer+$40
+    bne     LoopToFillRAM
 
-    ldY   #$4119           ; 50ms
+    ldY     #$4119           ; 50ms
 wait_0:
     deY
-    bne   wait_0
-    
-    ldY   #Buffer                    ; load index with value
+    bne     wait_0
 
-pgm_sector:    
-    ldD   #$AAA0                    ; load d (a&b) with value
-    staA  $D555
+    ldY     #Buffer
+
+pgm_sector:
+    ldD     #$AAA0
+    staA    $D555
     comA
-    staA  $AAAA
-    staB  $D555                      ; store b into memory
-    clrB                             ; b = 0
-    staB  $A000                      ; store b into memory
+    staA    $AAAA
+    staB    $D555
+    clrB
+    staB    $A000
 
 pgm_even:
-    ldaA  $00,Y            ; load a with value from temp RAM
-    staA  $00,X
+    ldaA    $00,Y
+    staA    $00,X
     inY
     inX
-    ldaB  #$0A
-    bsr   ShortDelayLoop
-    cpY   #Buffer+$40
-    bne   pgm_even
+    ldaB    #$0C
+    bsr     ShortDelayLoop
+    cpY     #Buffer+$40
+    bne     pgm_even
 
 reset:
     xgdx
-    subD  #$40
+    subD    #$40
     xgdx
-    ldY   #Buffer
+    ldY     #Buffer
 
 pgm_odd:
-    ldaA  $01,Y
-    staA  $01,X
+    ldaA    $01,Y
+    staA    $01,X
     inY
     inX
-    ldaB  #$0A
-    bsr   ShortDelayLoop
-    cpY   #Buffer+$40
-    bne   pgm_odd
-    cpX   #$0000  
-    bne   Next64ByteBlock
+    ldaB    #$0C
+    bsr     ShortDelayLoop
+    cpY     #Buffer+$40
+    bne     pgm_odd
+    cpX     #$0000
+    bne     Next64ByteBlock
 
 Finished:
-    staB    $00,X
     ldaA    #$19
     staA    RetryCounter
 
 wait_1:
-    ldY     #$4119      ; 50ms
+    ldY     #$0D05*2   ; 10ms x 2
 
 wait_2:
     deY
     bne     wait_2
     dec     RetryCounter
     bne     wait_1
-    ldX     #$8000      ; load the start address in register X
+    ldX     #$8000
 
 SendByte:
-    ldaB    0,X         ; load byte at address X+0
+    ldaB    0,X
 
 WaitForSCI:
-    ldaA    $102E       ; check SCI status
-    andA    #%10000000  ; check if ready to send
-    beq     WaitForSCI  ; loop until ready
-    staB    $102F       ; send byte to SCI
-    inX                 ; point X to next byte
-    bne     SendByte    ; loop until X = 0x0000
+    ldaA    $102E
+    andA    #%10000000
+    beq     WaitForSCI
+    staB    $102F
+    inX
+    bne     SendByte
 
 XXX:
     stop
-    jmp     XXX
 
 ShortDelayLoop:
     decB
-    bne   ShortDelayLoop             ; branch if not equal (not zero)
-    rts                              ; return from subroutine
+    bne     ShortDelayLoop
+    rts
 
 RetryCounter:
     fcb $19
-    fcb $00  
+    fcb $00
 Buffer:
  REPEAT $40
     fcb 0x00

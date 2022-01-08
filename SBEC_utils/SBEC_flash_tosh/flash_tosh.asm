@@ -20,10 +20,11 @@ Start:
     staB    $3F,X       ; store value in register B ($01) in 0x1000 + 0x003F
                         ; System Config Register
 
-    ldX     #$8000        ; load index with value
+    ldX     #$8000      ; load index with value
 
 Next64ByteBlock:
     ldY     #Buffer-1
+    clr     Odd
     cpX     #$B600
     bne     LoopToFillRAM
     ldX     #$B800
@@ -51,10 +52,10 @@ pgm_sector:
     staA    $AAAA
     staB    $D555
     clrB
-    ;staB    $A000 ; works for some Toshiba chips
-    staB    $8000 ; works for both discoverd variants Toshiba chips
+    ;staB    $A000      ; works for some Toshiba chips
+    staB    $8000       ; works for both discoverd variants of Toshiba chips
 
-pgm_even:
+ld_bytes:
     ldaA    $00,Y
     staA    $00,X
     inY
@@ -62,23 +63,11 @@ pgm_even:
     ldaB    #$0C
     bsr     ShortDelayLoop
     cpY     #Buffer+$40
-    bne     pgm_even
-
-reset:
-    xgdx
-    subD    #$40
-    xgdx
-    ldY     #Buffer
-
-pgm_odd:
-    ldaA    $01,Y
-    staA    $01,X
-    inY
+    bne     ld_bytes
+    brclr   Odd,$00000001,reset
+    deX
+    bsr     VerifyWriteComplete
     inX
-    ldaB    #$0C
-    bsr     ShortDelayLoop
-    cpY     #Buffer+$40
-    bne     pgm_odd
     cpX     #$0000
     bne     Next64ByteBlock
 
@@ -115,6 +104,26 @@ ShortDelayLoop:
     bne     ShortDelayLoop
     rts
 
+reset:
+    xgdx
+    subD    #$40-1
+    xgdx
+    ldY     #Buffer+1
+    inc     Odd
+    bra     ld_bytes
+
+VerifyWriteComplete:                
+    ldaB    0,X
+    pshA
+    andA    #%10000000
+    andB    #%10000000
+    cBA
+    pulA
+    bne     VerifyWriteComplete
+    rts
+
+Odd:
+    fcb $00
 RetryCounter:
     fcb $19
     fcb $00

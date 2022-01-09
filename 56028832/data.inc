@@ -862,7 +862,7 @@ TL_LowerLimitForPTUUnlock:
             fcb $03
             fcb $46, $1E, $00, $00
             fcb $46, $03, $00, $00
-            fcb $96, $03  
+            fcb $96, $03
 
  DCB.B $04, $FF ; 8 bytes of 0xFF
 

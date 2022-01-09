@@ -22,7 +22,7 @@ Start:
 
 ; give receiver around 100ms
 
-    ldX     #$7E00
+    ldX     #$0D05 * 10
 Delay:
     deX
     bne     Delay

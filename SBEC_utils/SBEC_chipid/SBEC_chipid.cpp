@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
     unsigned long baud = 9600;
     DWORD dwAttrib = 0;
     char com[] = "0\0\0\0";
+    BOOL big_eeprom = FALSE;
 
     if (argc < 2){
         usage();
@@ -100,6 +101,18 @@ int main(int argc, char *argv[])
                     }
                     com[0] = argv[i][3];
                 }
+            }
+            if (argv[i][1] == 'b' ||
+                argv[i][1] == 'B')
+            {
+                big_eeprom = TRUE;
+                chipid[0x1E + 1] -= 0x80;
+                chipid[0x22 + 1] -= 0x80;
+                chipid[0x25 + 1] -= 0x80;
+                chipid[0x2D + 1] -= 0x80;
+                chipid[0x35 + 1] -= 0x80;
+                chipid[0x39 + 1] -= 0x80;
+                chipid[0x3C + 1] -= 0x80;
             }
         }
     }
@@ -302,7 +315,7 @@ Start:
     // to the code we sent?? catch the 0x00 now or it ends
     // up in our buffer later, triggering a bug hunt.
 
-    Sleep(585);
+    Sleep(600);
 
     // the bootstrap sits in a loop for about 100ms to give us
     // time to apply 20 volts to pin 45, if 20 volts isn't

@@ -23,7 +23,7 @@ Start:
 
 ; give receiver around 50ms too apply 20 volts to pin 45
 
-   ldX      #$4119      ; 50ms
+   ldX      #$014D*50   ; 50ms
    jsr      wait
 
    ldD      #$AA90
@@ -32,7 +32,7 @@ Start:
    staA     $AAAA       ; store $55 in address $AAAA
    staB     $D555       ; store $90 in address $D555
 
-   ldX      #$0D05      ; 10ms
+   ldX      #$014D*10   ; 10ms
    jsr      wait
 
    ldD      $A000       ; ID should now be at $A000
@@ -44,7 +44,7 @@ Start:
    staA     $AAAA
    staB     $D555
 
-   ldX      #$0D05      ; 10ms
+   ldX      #$014D*10   ; 10ms
    jsr      wait
 
    ldaB     mfg_id      ; send manufacture id to PC

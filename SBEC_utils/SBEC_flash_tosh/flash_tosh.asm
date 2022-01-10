@@ -149,9 +149,8 @@ VerifyWriteComplete:
     rts
 
 Odd:
-    fcb $00
 Delay:
-    fcb $19
+    fcb $00
     fcb $00
 Buffer:
  REPEAT $40

@@ -35,6 +35,7 @@ void usage() {
     printf("\nSBEC_flash_tosh /C:[1-9] /F:[filename]\n");
     printf("\n/C:[1-9] COM port 1 to 9\n");
     printf("/F:[filename] 32 kilobyte eeprom file\n");
+    printf("/B flash 64k Toshiba EEPROM\n");
     return;
 }
 
@@ -140,6 +141,10 @@ int main(int argc, char *argv[])
             {
                 big_eeprom = TRUE;
                 eeprom_size = 0x10000;
+                flash_tosh[0x41 + 1] -= 0x80;
+                flash_tosh[0x4D + 1] -= 0x80;
+                flash_tosh[0x50 + 1] -= 0x80;
+                flash_tosh[0x54 + 1] = 0x20;
             }
         }
     }

@@ -32,6 +32,7 @@ BOOL ABORT = FALSE;
 void usage() {
     printf("\nSBEC_erase_tosh /C:[1-9]\n");
     printf("\n/C:[1-9] COM port 1 to 9\n");
+    printf("\n/B erase 64k eeproms\n");
     return;
 }
 
@@ -74,6 +75,7 @@ int main(int argc, char *argv[])
     unsigned long baud = 9600;
     DWORD dwAttrib = 0;
     char com[] = "0\0\0\0";
+    BOOL big_eeprom = FALSE;
 
     if (argc < 2){
         usage();
@@ -101,6 +103,17 @@ int main(int argc, char *argv[])
                     }
                     com[0] = argv[i][3];
                 }
+            }
+            if (argv[i][1] == 'b' ||
+                argv[i][1] == 'B')
+            {
+                big_eeprom = TRUE;
+                erase_tosh[0x1F + 1] -= 0x80;
+                erase_tosh[0x23 + 1] -= 0x80;
+                erase_tosh[0x26 + 1] -= 0x80;
+                erase_tosh[0x2A + 1] -= 0x80;
+                erase_tosh[0x38 + 1] -= 0x80;
+                erase_tosh[0x3B + 1] -= 0x80;
             }
         }
     }

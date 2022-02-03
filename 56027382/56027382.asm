@@ -4506,7 +4506,7 @@ sub_B914:                               ; __RESET+579↑P
                 subd    Temp4
                 std     <VehicleSpeed_HB
                 cli
-                bra     *+2
+                bra     loc_B92D
 ; ---------------------------------------------------------------------------
 
 loc_B92D:                               ; sub_B914↑j sub_B914+17↑j
@@ -8371,7 +8371,7 @@ loc_CF17:                               ; RESERVED:CC7D↑o
                 eora    #2
                 staa    <PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
-                bra     *+2
+                bra     ATM_SerialOut_0
 ; ---------------------------------------------------------------------------
 
 ATM_SerialOut_0:                        ; sub_CCF6+D↑J sub_CCF6+24↑J ...
@@ -14109,7 +14109,7 @@ loc_F136:                               ; ROM:F131↑j
                 staa    Counter_SomethingWithDistributor
 
 loc_F13F:                               ; ROM:F13A↑j
-                jmp     *+3
+                jmp     locret_F142
 ; ---------------------------------------------------------------------------
 
 locret_F142:                            ; ROM:loc_F13F↑J
@@ -14128,7 +14128,7 @@ loc_F143:                               ; ROM:EB88↑o
 ; ---------------------------------------------------------------------------
 
 loc_F159:                               ; ROM:loc_F143↑j
-                bra     *+2
+                bra     loc_F15B
 ; ---------------------------------------------------------------------------
 
 loc_F15B:                               ; ROM:loc_F159↑j

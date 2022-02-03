@@ -4403,7 +4403,7 @@ loc_B893:                               ; sub_B88A+4↑j
                 ldaa    <LastChargeTempVolts
                 ldx     #byte_E27A
                 brclr   <PIA3_Buffer_t3 $20 loc_B8C0
-                ldx     #$E25F
+                ldx     #byte_E25F
                 cmpa    #$40
                 bcc     loc_B8C4
 
@@ -12040,9 +12040,9 @@ sub_E43E:                               ; __RESET+576↑P ROM:F0DD↓P
 
 
 sub_E44C:                               ; sub_BD17+21↑P sub_BD17+36↑P ...
-                ldy     #$E4C1
+                ldy     #loc_E4C1
                 brclr   2,x $FF loc_E458
-                ldy     #$E4BD
+                ldy     #loc_E4BD
 
 loc_E458:                               ; sub_E44C+4↑j
                 pshy
@@ -12106,9 +12106,11 @@ loc_E47F:                               ; sub_E44C+2D↑j
 ; End of function sub_E44C
 
 ; ---------------------------------------------------------------------------
+loc_E4BD:
                 blt     loc_E4C9
                 bra     loc_E4C3
 ; ---------------------------------------------------------------------------
+loc_E4C1:
                 bcs     loc_E4C9
 
 loc_E4C3:                               ; ROM:E4BF↑j
@@ -12673,7 +12675,7 @@ loc_E7D1:                               ; ROM:E7C6↑j
                 staa    Counter_SomethingWithDistributor
                 ldd     Temp5_t3
                 ldx     #$3C
-                ldy     #$6090
+                ldy     #LDXi_6490
                 jsr     sub_E420
                 ldaa    <Counter_TimerRegHalfOverflowBetweenSpeedoPulses
                 lsra
@@ -12939,7 +12941,7 @@ loc_E964:                               ; sub_E832+120↑j
                 clrb
 
 loc_E965:                               ; sub_E832+130↑j
-                ldx     #$E25B
+                ldx     #byte_E25B
                 addb    <BitFlags_36_t3
                 andb    #3
                 stab    <BitFlags_36_t3

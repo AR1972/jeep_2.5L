@@ -12,15 +12,15 @@ BaseAddr equ $6000
  ORG Code_start
 ;;
 XIRQ:
-                ldab    #1
+                ldab    #$01
                 bra     loc_9416
 ;;
 NOCOP:
-                ldab    #2
+                ldab    #$02
                 bra     loc_9416
 ;;
 OPC:
-                ldab    #4
+                ldab    #$04
                 bra     loc_9416
 ;;
 SCISS:
@@ -37,13 +37,13 @@ loc_9416:
                 sei
                 orab    #$80
                 stab    Temp0
-                ldd     #$2A9
+                ldd     #$02A9
                 staa    TMSK2_TimerInterruptMask2
                 stab    OPTION_SysConfigOptionReg
                 ldaa    #$F8
                 staa    BPROT_BlockProtReg
                 tsx
-                ldd     7,x
+                ldd     $07,x
                 std     Ram_01
                 std     Temp1
                 lds     #TopOfStack
@@ -54,7 +54,7 @@ loc_9416:
 CME:
                 sei
                 lds     #TopOfStack
-                ldd     #$2A9
+                ldd     #$02A9
                 staa    TMSK2_TimerInterruptMask2
                 stab    OPTION_SysConfigOptionReg
                 ldaa    #$F8
@@ -63,13 +63,13 @@ CME:
                 clrb
                 staa    Temp0
                 std     Temp1
-                ldx     #0
+                ldx     #$0000
 loc_945A:
-                ldaa    0,x
-                cmpa    #0
+                ldaa    $00,x
+                cmpa    #$00
                 bne     loc_9468
                 inx
-                cpx     #$20
+                cpx     #$0020
                 bcs     loc_945A
                 bra     loc_94A2
 loc_9468:
@@ -82,7 +82,7 @@ loc_9468:
 __RESET:
                 sei
                 lds     #TopOfStack
-                ldd     #$2A9
+                ldd     #$02A9
                 staa    TMSK2_TimerInterruptMask2
                 stab    OPTION_SysConfigOptionReg
                 ldaa    #$F8
@@ -98,19 +98,19 @@ __RESET:
                 jsr     sub_E648
                 cpd     MinimumTimerCountBeforeMainloopCanContinue
                 beq     loc_949C
-                ldy     #0
+                ldy     #$0000
 loc_949C:
                 sty     MinimumTimerCountBeforeMainloopCanContinue
-                bset    Ram_05, %1010
+                bset    Ram_05, %00001010
 loc_94A2:
                 jsr     sub_E4F3
                 ldaa    #$90
                 tap
-                ldab    #$F
+                ldab    #$0F
                 ldaa    byte_8015
-                bita    #%1000
+                bita    #%00001000
                 beq     loc_94B3
-                ldab    #6
+                ldab    #$06
 loc_94B3:
                 stab    HPRIO_HighPriorityInterruptMask
                 clr     OC1M_OutputCompare1Mask
@@ -146,12 +146,12 @@ loc_94B3:
                 clra
                 staa    PPROG_EEPROMControlReg
                 staa    PIA_Ctrl_2
-                ldd     #8
+                ldd     #$0008
                 std     InjectorPulsewidth_HB_Cyl1
                 std     InjectorPulsewidth_HB_Cyl2
                 std     InjectorPulsewidth_HB_Cyl3
                 std     InjectorPulsewidth_HB_Cyl4
-                ldd     #$C22
+                ldd     #$0C22
                 staa    SCCR2_SerialControlReg2
                 stab    BAUD_SerialBaudRate
                 ldd     SCSR_SerialStatus
@@ -162,7 +162,7 @@ loc_94B3:
                 coma
                 cba
                 beq     loc_956D
-                ldab    #8
+                ldab    #$08
                 ldaa    Temp0
                 bpl     loc_9547
                 ldab    #$80
@@ -183,9 +183,9 @@ loc_9547:
                 ldd     #$40DF
                 staa    BitFlags36_t3
                 stab    CurrentAisPosition
-                ldx     #$E
+                ldx     #$0E
 loc_956D:
-                ldy     #$594
+                ldy     #$0594
 loc_9571:
                 dey
                 bne     loc_9571
@@ -193,7 +193,7 @@ loc_9571:
                 clrb
 loc_9577:
                 inx
-                stab    0,x
+                stab    $00,x
                 cpx     #$FF
                 bcs     loc_9577
                 ldaa    byte_8015
@@ -203,14 +203,14 @@ loc_9577:
                 clrb
 loc_9589:
                 inx
-                stab    0,x
+                stab    $00,x
                 cpx     #UNe_64B9
                 bcs     loc_9589
                 ldaa    #$E5
                 staa    PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 jsr     sub_E4FD
-                ldy     #$594
+                ldy     #$0594
 loc_959F:
                 dey
                 bne     loc_959F
@@ -226,7 +226,7 @@ loc_95A8:
                 staa    PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 jsr     sub_E4FD
-                ldy     #$476
+                ldy     #$0476
 loc_95C3:
                 dey
                 bne     loc_95C3
@@ -248,7 +248,7 @@ loc_95CC:
                 xgdx
                 ldd     Temp1
                 aslb
-                adca    #0
+                adca    #$00
                 tab
                 abx
                 ldd     Temp1
@@ -271,7 +271,7 @@ loc_9606:
                 staa    PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 jsr     sub_E4FD
-                ldy     #$594
+                ldy     #$0594
 loc_961E:
                 dey
                 bne     loc_961E
@@ -289,7 +289,7 @@ loc_9627:
                 staa    PIA3_Buffer_2_t3
 loc_963C:
                 jsr     sub_E4FD
-                ldy     #$594
+                ldy     #$0594
 loc_9643:
                 dey
                 bne     loc_9643
@@ -312,7 +312,7 @@ loc_9656:
                 staa    PIA3_Buffer_2_t3
 loc_966B:
                 jsr     sub_E4FD
-                ldy     #$594
+                ldy     #$0594
 loc_9672:
                 dey
                 bne     loc_9672
@@ -338,22 +338,22 @@ loc_968D:
                 clrb
                 std     MapValue2
                 staa    MapValue_t3
-                brclr   Ram_05, %1000, loc_96B6
+                brclr   Ram_05, %00001000, loc_96B6
                 cmpa    #$80
                 bcc     loc_96B1
                 ldaa    #$80
 loc_96B1:
                 staa    BaroPressure
-                bclr    Ram_05, %1000
+                bclr    Ram_05, %00001000
 loc_96B6:
                 ldaa    ADR1_A2DResults1
                 staa    MapVolts_X
                 staa    MapValue3
-                brclr   Ram_05, 2, loc_96E7
-                brclr   Ram_05, 4, loc_96E7
+                brclr   Ram_05, %00000010, loc_96E7
+                brclr   Ram_05, %00000100, loc_96E7
                 cmpa    byte_8A09
                 bcc     loc_96E7
-                ldab    #2
+                ldab    #$02
 loc_96CC:
                 ldaa    #$10
                 staa    ADCTL_A2DControlReg
@@ -365,21 +365,21 @@ loc_96D1:
                 bcc     loc_96E7
                 decb
                 bne     loc_96CC
-                bset    b5C_IPL1_t3, %1000
+                bset    b5C_IPL1_t3, %00001000
                 bset    BitFlags2e, %10000000
 loc_96E7:
-                bclr    Ram_05, %10
+                bclr    Ram_05, %00000010
                 ldaa    Ram_05
                 anda    #$C0
                 cmpa    #$80
                 bne     loc_9708
-                ldd     #$AFF
+                ldd     #$0AFF
                 std     DRBPointer1
                 ldaa    #$F1
                 staa    LastCamFallingEdgeTime2
                 ldab    #$FF
                 ldaa    BitFlags27
-                bita    #$C0
+                bita    #%11000000
                 beq     loc_9720
                 ldab    #$FB
                 bra     loc_9720
@@ -388,7 +388,7 @@ loc_9708:
                 adda    #$40
                 staa    Ram_05
                 ldaa    PIA_Ctrl_1
-                oraa    #4
+                oraa    #$04
                 staa    PIA_Ctrl_1
                 ldab    #$EF
                 ldaa    BitFlags27
@@ -407,17 +407,17 @@ loc_9720:
                 mul
                 nop
                 ldaa    PIA3_Buffer_t3
-                oraa    #4
+                oraa    #$04
                 staa    PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 ldab    SPCR_SerialPeripheralControl
                 andb    #$FC
                 stab    SPCR_SerialPeripheralControl
                 jsr     sub_E4FD
-                ldx     #$535
+                ldx     #$0535
 loc_974B:
                 ldaa    SwitchPortAccessReg1
-                bita    #%10000
+                bita    #%00010000
                 bne     loc_9755
                 dex
                 bne     loc_974B
@@ -427,15 +427,15 @@ loc_9755:
                 anda    #$FB
                 staa    PIA_Ctrl_1
                 ldaa    Timer_DelayBeforeUpdating_MINTHR
-                oraa    #3
+                oraa    #$03
                 staa    Timer_DelayBeforeUpdating_MINTHR
-                bset    Ram_05, 1
-                bset    BitFlags24, %10000
+                bset    Ram_05, %00000001
+                bset    BitFlags24, %00010000
                 bset    ACClutchToggleVar, %11111111
-                bset    BitFlags66_t3, %10000
-                bset    BitFlags68_t3, %1000100
-                bset    BitFlags36_t3, %100000
-                bclr    BitFlags36_t3, %10000
+                bset    BitFlags66_t3, %00010000
+                bset    BitFlags68_t3, %01000100
+                bset    BitFlags36_t3, %00100000
+                bclr    BitFlags36_t3, %00010000
                 bset    CruiseStatus_1, %10100000
                 ldaa    #$80
                 staa    Counter_Cruise_1
@@ -454,17 +454,17 @@ loc_9755:
                 std     TPSVoltsTemp_A
                 std     TPSVoltsTemp_B
                 ldx     #$B616
-                ldaa    0,x
+                ldaa    $00,x
                 cmpa    #$4A
                 bne     loc_97B1
                 coma
-                cmpa    1,x
+                cmpa    $01,x
                 bne     loc_97B1
-                bset    BitFlags2d, 4
+                bset    BitFlags2d, %00000100
 loc_97B1:
                 ldaa    LastCoolantTempVolts
                 ldx     #byte_E27A
-                brclr   PIA3_Buffer_t3, $10, loc_97BD
+                brclr   PIA3_Buffer_t3, $00000010, loc_97BD
                 ldx     #byte_E25F
 loc_97BD:
                 jsr     sub_E372
@@ -486,7 +486,7 @@ loc_97D5:
                 staa    PreviousCoolantTemp_fromTable_Scaled
                 ldaa    LastChargeTempVolts
                 ldx     #byte_E27A
-                brclr   PIA3_Buffer_t3, %100000, loc_97ED
+                brclr   PIA3_Buffer_t3, %00100000, loc_97ED
                 ldx     #byte_E25F
 loc_97ED:
                 jsr     sub_E372
@@ -511,7 +511,7 @@ loc_9805:
                 addb    byte_8017
                 cmpb    byte_801B
                 bcs     loc_9826
-                adda    #6
+                adda    #$06
                 ldab    byte_801B
                 cba
                 bcc     loc_9826
@@ -524,16 +524,16 @@ loc_9826:
                 cmpa    byte_89E0
                 bcs     loc_9837
 loc_9834:
-                bset    BitFlags6d_t3, %10
+                bset    BitFlags6d_t3, %00000010
 loc_9837:
                 jsr     sub_C25C
                 jsr     sub_BF66
                 ldd     TCNT_Counter_FreeRunning16bit
-                addd    #$3E8
+                addd    #$03E8
                 std     TOC1_Counter_OC1
                 jsr     sub_E9F9
                 ldaa    PIA3_Buffer_t3
-                oraa    #1
+                oraa    #$01
                 staa    PIA3_Buffer_2_t3
                 anda    #$FE
                 staa    PIA3_Buffer_t3
@@ -541,39 +541,39 @@ loc_9837:
                 ldx     #byte_E25B
                 ldab    BitFlags_36_t3
                 abx
-                ldab    0,x
+                ldab    $00,x
                 tba
                 comb
                 aslb
                 aslb
                 aslb
                 aslb
-                anda    #$F
+                anda    #$0F
                 aba
                 ldx     #PORTD_PortD
-                bclr    0,x, %100000
+                bclr    $00,x, %00100000
                 cmpa    SPSR_SerialPeripheralStatus
                 staa    SPDR_SerialPeripheralDataIO
                 ldaa    PIA3_Buffer_t3
-                oraa    #1
+                oraa    #$01
                 staa    PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 mul
-                bset    0,x, %100000
+                bset    $00,x, %00100000
                 ldaa    #$BF
                 ldab    byte_8016
-                bitb    #%100000
+                bitb    #%00100000
                 beq     loc_9893
                 ldab    byte_8015
-                bitb    #1
+                bitb    #%00000001
                 beq     loc_9893
                 anda    #$DF
 loc_9893:
                 staa    PIA1_Buffer_t3
                 ldaa    SwitchPortAccessReg1
-                oraa    #1
+                oraa    #$01
                 staa    SwitchPortAccessReg1
-                ldx     #$238
+                ldx     #$0238
 loc_98A0:
                 dex
                 bne     loc_98A0
@@ -603,7 +603,7 @@ loc_98BF:
                 inc     Counter_MainLoop
                 bne     loc_98E0
                 bclr    Ram_05, %11000000
-                bset    BitFlags6a_t3, %100
+                bset    BitFlags6a_t3, %00000100
                 ldaa    KeyOnOrEngineRunningTime
                 inca
                 beq     loc_98E0
@@ -617,8 +617,8 @@ loc_98E0:
                 jsr     sub_E420
                 cmpa    #$10
                 bcs     loc_9914
-                brset   BitFlags2e, %10000, loc_9917
-                bset    BitFlags2e, %10000
+                brset   BitFlags2e, %00010000, loc_9917
+                bset    BitFlags2e, %00010000
                 ldab    #$AA
                 stab    TCTL1_TimerControlReg1
                 ldab    #$78
@@ -629,7 +629,7 @@ loc_98E0:
                 bclr    BitFlags2b, %11000000
                 bra     loc_9917
 loc_9914:
-                bclr    BitFlags2e, %10000
+                bclr    BitFlags2e, %00010000
 loc_9917:
                 ldaa    ADCTL_A2DControlReg
                 bpl     loc_9917
@@ -660,7 +660,7 @@ loc_994B:
                 bpl     loc_994B
                 ldx     #off_98AF
                 ldab    Counter_MainLoop
-                andb    #7
+                andb    #$07
                 beq     loc_996F
                 ldab    Counter_MainLoop
                 orab    #$80
@@ -669,11 +669,11 @@ loc_994B:
                 ldab    Ram_E2
                 bne     loc_99DC
                 ldab    Counter_MainLoop
-                andb    #7
+                andb    #$07
                 aslb
                 abx
-                ldx     0,x
-                jmp     0,x
+                ldx     $00,x
+                jmp     $00,x
 loc_996F:
                 ldd     ADR1_A2DResults1
                 staa    LastCoolantTempVolts
@@ -682,11 +682,11 @@ loc_996F:
 loc_9978:
                 ldaa    PIA3_Buffer_t3
                 anda    #$7F
-                brclr   PIA3_Buffer_t3, %10000, loc_9985
-                bset    BitFlags23, %1000
+                brclr   PIA3_Buffer_t3, %00010000, loc_9985
+                bset    BitFlags23, %00001000
                 bra     loc_9988
 loc_9985:
-                bclr    BitFlags23, %1000
+                bclr    BitFlags23, %00001000
 loc_9988:
                 anda    #$EF
                 staa    PIA3_Buffer_t3
@@ -697,10 +697,10 @@ loc_9991:
                 cli
                 cmpa    CoolantVoltsTmp1
                 bne     loc_999F
-                bset    BitFlags23, %100000
+                bset    BitFlags23, %00100000
                 bra     loc_99A2
 loc_999F:
-                bclr    BitFlags23, %100000
+                bclr    BitFlags23, %00100000
 loc_99A2:
                 staa    CoolantVoltsTmp1
                 ldaa    PIA3_Buffer_t3
@@ -712,9 +712,9 @@ loc_99B0:
                 ldaa    ADR1_A2DResults1
                 cli
                 staa    CoolantVoltsTmp2
-                brclr   BitFlags23, %100000, loc_99DC
+                brclr   BitFlags23, %00100000, loc_99DC
                 ldab    BitFlags66_t3
-                bitb    #%11
+                bitb    #%00000011
                 bne     loc_99DC
                 jsr     sub_BC48
                 jsr     sub_BCB0
@@ -722,7 +722,7 @@ loc_99B0:
 loc_99C9:
                 ldaa    PIA3_Buffer_t3
                 anda    #$7F
-                brclr   BitFlags23, 8, loc_99D5
+                brclr   BitFlags23, %00001000, loc_99D5
                 oraa    #$10
                 bra     loc_99D7
 loc_99D5:
@@ -810,7 +810,7 @@ loc_9A95:
                 jsr     sub_D303
                 jsr     sub_D260
                 jsr     sub_D5BA
-                brset   BitFlags6a_t3, $40, loc_9AC4
+                brset   BitFlags6a_t3, %01000000, loc_9AC4
                 sei
                 ldaa    CountdownTimerFromKeyOn
                 bne     loc_9AC4
@@ -830,7 +830,7 @@ loc_9AC4:
 loc_9AC8:
                 ldd     TCNT_Counter_FreeRunning16bit
                 subd    MinimumTimerCountBeforeMainloopCanContinue2
-                cpd     #$ABE
+                cpd     #$0ABE
                 bcs     loc_9AC8
                 ldd     TCNT_Counter_FreeRunning16bit
                 std     MinimumTimerCountBeforeMainloopCanContinue2
@@ -839,11 +839,11 @@ loc_9AC8:
 sub_9ADD:
                 ldab    byte_8807
                 ldaa    PIA2_Buffer_t3
-                bita    #1
+                bita    #%00000001
                 beq     loc_9AEC
-                subb    #3
+                subb    #$03
                 bcc     loc_9AEC
-                ldab    #0
+                ldab    #$00
 loc_9AEC:
                 cmpb    TpsVolts_Minus_LowestSessionTpsVolts
                 bcc     loc_9B06
@@ -851,7 +851,7 @@ loc_9AEC:
                 cmpb    byte_8808
                 bcc     loc_9B09
                 ldaa    Counter_MainLoop
-                bita    #%111
+                bita    #%00000111
                 bne     loc_9B04
                 incb
                 beq     loc_9B04
@@ -861,19 +861,19 @@ loc_9B04:
 loc_9B06:
                 clr     UNe_64AD
 loc_9B09:
-                brclr   IPL1, %1000000, loc_9B59
+                brclr   IPL1, %01000000, loc_9B59
                 ldab    KeyOnOrEngineRunningTime
                 cmpb    byte_880E
                 bcs     loc_9B59
-                brclr   BitFlags2d, %100, loc_9B28
+                brclr   BitFlags2d, %00000100, loc_9B28
                 ldaa    EngineRpm_HB
                 cmpa    #$20
                 bcc     loc_9B59
                 brset   StartupSwitchMirror1, %10000000, loc_9B59
-                brclr   StartupSwitchMirror1, %1000000, loc_9B59
+                brclr   StartupSwitchMirror1, %01000000, loc_9B59
                 bra     loc_9B60
 loc_9B28:
-                brset   BitFlags68_t3, %1000, loc_9B59
+                brset   BitFlags68_t3, %00001000, loc_9B59
                 ldab    CoolantTemp
                 cmpb    byte_8809
                 bhi     loc_9B59
@@ -890,14 +890,14 @@ loc_9B4A:
                 ldab    STe_64AE
                 beq     loc_9B60
                 ldaa    Counter_MainLoop
-                bita    #7
+                bita    #%00000111
                 bne     loc_9B59
                 decb
                 stab    STe_64AE
 loc_9B59:
                 sei
                 ldaa    PIA2_Buffer_t3
-                oraa    #1
+                oraa    #$01
                 bra     loc_9B65
 loc_9B60:
                 sei
@@ -910,8 +910,8 @@ loc_9B67:
                 rts
 ;;
 sub_9B69:
-                brset   PIA2_Buffer_t3, 1, loc_9B82
-                brclr   BitFlags2d, %100, loc_9B82
+                brset   PIA2_Buffer_t3, %00000001, loc_9B82
+                brclr   BitFlags2d, %00000100, loc_9B82
                 ldaa    Counter_ACControl1
                 inca
                 beq     loc_9B7F
@@ -919,48 +919,48 @@ sub_9B69:
                 cmpa    byte_880F
                 bcs     loc_9B82
 loc_9B7F:
-                bset    BitFlags2d, %10
+                bset    BitFlags2d, %00000010
 loc_9B82:
                 ldab    ACClutchToggleVar
                 ldaa    BitFlags68_t3
                 lsra
                 eora    BitFlags68_t3
-                bita    #%100000
+                bita    #%00100000
                 beq     loc_9BBB
-                brclr   BitFlags68_t3, %100000, loc_9BA6
+                brclr   BitFlags68_t3, %00100000, loc_9BA6
                 cmpb    #$30
                 bcs     loc_9B9B
-                bclr    ACClutchToggleVar, %111
-                bset    BitFlags68_t3, %1000000
+                bclr    ACClutchToggleVar, %00000111
+                bset    BitFlags68_t3, %01000000
 loc_9B9B:
                 ldaa    Counter_MainLoop
-                bita    #%11111
+                bita    #%00011111
                 bne     locret_9BD0
-                addb    #8
+                addb    #$08
                 bcc     loc_9BCE
                 rts
 loc_9BA6:
-                brclr   ACClutchToggleVar, 7, loc_9BB1
+                brclr   ACClutchToggleVar, %00000111, loc_9BB1
                 tba
-                anda    #7
-                cmpa    #5
+                anda    #$07
+                cmpa    #$05
                 bls     loc_9BB8
 loc_9BB1:
                 cmpb    #$B8
                 bcs     loc_9B9B
-                bclr    BitFlags68_t3, %1000000
+                bclr    BitFlags68_t3, %01000000
 loc_9BB8:
                 clrb
                 bra     loc_9BCE
 loc_9BBB:
-                brset   ACClutchToggleVar, 7, loc_9BC2
+                brset   ACClutchToggleVar, %00000111, loc_9BC2
                 incb
                 stab    ACClutchToggleVar
 loc_9BC2:
-                brset   BitFlags68_t3, %1000000, loc_9B9B
+                brset   BitFlags68_t3, %01000000, loc_9B9B
                 cmpb    #$60
                 bcs     loc_9B9B
-                andb    #7
+                andb    #$07
                 orab    #$60
 loc_9BCE:
                 stab    ACClutchToggleVar
@@ -969,33 +969,33 @@ locret_9BD0:
 ;;
 sub_9BD1:
                 ldaa    DRBPointer1
-                cmpa    #$A
+                cmpa    #$0A
                 bne     loc_9BDB
-                bset    PIA2_Buffer_t3, %10000
+                bset    PIA2_Buffer_t3, %00010000
                 rts
 loc_9BDB:
                 cmpa    #$18
                 bne     loc_9C28
                 ldaa    DRBSerialMode
-                bita    #%110000
+                bita    #%00110000
                 bne     loc_9C28
                 ldaa    TimerOverflowsBetweenCamPulses
                 cmpa    #$50
                 bls     loc_9C1A
                 ldaa    DRBPointer2
                 tab
-                anda    #$F
+                anda    #$0F
                 pshb
                 lsrb
                 lsrb
                 lsrb
                 lsrb
                 comb
-                andb    #$F
+                andb    #$0F
                 cba
                 pulb
                 bne     loc_9C1A
-                bset    BitFlags2d, %10000
+                bset    BitFlags2d, %00010000
                 tst     Counter_MainLoop
                 bne     loc_9C0E
                 deca
@@ -1015,8 +1015,8 @@ loc_9C1A:
                 clra
                 staa    DRBPointer1
                 staa    ATMOffset
-                bclr    BitFlags2d, %10000
-                bclr    DRBSerialMode, %110000
+                bclr    BitFlags2d, %00010000
+                bclr    DRBSerialMode, %00110000
                 jsr     sub_CBA8
 loc_9C28:
                 ldx     #$2D
@@ -1025,18 +1025,18 @@ loc_9C28:
                 bcc     loc_9C34
                 ldx     #$5B
 loc_9C34:
-                ldab    #4
+                ldab    #$04
                 ldaa    BatteryVolts
                 cmpa    #$B2
-                brset   BitFlags23, %100, loc_9C49
+                brset   BitFlags23, %00000100, loc_9C49
                 bcc     loc_9C4D
                 cpx     #$5B
                 bne     loc_9C4D
-                ldab    #$B
+                ldab    #$0B
                 bra     loc_9C4D
 loc_9C49:
                 bcs     loc_9C4D
-                ldab    #3
+                ldab    #$03
 loc_9C4D:
                 sei
                 ldaa    PIA2_Buffer_t3
@@ -1050,18 +1050,18 @@ loc_9C4D:
 loc_9C5F:
                 staa    PIA2_Buffer_t3
                 cli
-                brclr   IPL1, %1000000, locret_9C6F
+                brclr   IPL1, %01000000, locret_9C6F
                 ldab    KeyOnOrEngineRunningTime
-                cmpb    #4
+                cmpb    #$04
                 bcs     locret_9C6F
-                bset    BitFlags23, %100
+                bset    BitFlags23, %00000100
 locret_9C6F:
                 rts
 ;;
 sub_9C70:
-                brclr   IPL1, %1000000, loc_9CE6
+                brclr   IPL1, %01000000, loc_9CE6
                 ldaa    byte_8016
-                bita    #%10
+                bita    #%00000010
                 beq     locret_9CF2
                 ldaa    InjectorPulsewidth_HB
                 ldab    EngineRpm_HB
@@ -1072,40 +1072,40 @@ sub_9C70:
                 mul
                 subd    word_8821
                 bcc     loc_9C91
-                ldd     #0
+                ldd     #$0000
 loc_9C91:
-                brclr   BitFlags27, %1000, loc_9C9B
+                brclr   BitFlags27, %00001000, loc_9C9B
                 brclr   PIA1_Buffer_t3, %10000000, loc_9CD9
                 bra     loc_9CA7
 loc_9C9B:
-                brclr   PIA2_Buffer_t3, %1000, loc_9CD9
+                brclr   PIA2_Buffer_t3, %00001000, loc_9CD9
                 subd    word_8823
                 bcc     loc_9CA7
-                ldd     #0
+                ldd     #$0000
 loc_9CA7:
                 cpd     Temp0
                 bls     locret_9CF2
-                brset   BitFlags2d, %1000000, loc_9CBD
+                brset   BitFlags2d, %01000000, loc_9CBD
                 ldaa    BatteryVolts
                 cmpa    byte_8826
                 bls     locret_9CF2
-                bset    BitFlags2d, %1000000
+                bset    BitFlags2d, %01000000
                 bra     loc_9CCB
 loc_9CBD:
                 ldaa    BatteryVolts
                 ldab    byte_8826
-                addb    #3
+                addb    #$03
                 bcc     loc_9CC8
                 ldab    #$FF
 loc_9CC8:
                 cba
                 bls     locret_9CF2
 loc_9CCB:
-                brclr   BitFlags27, %1000, loc_9CD4
+                brclr   BitFlags27, %00001000, loc_9CD4
                 bclr    PIA1_Buffer_t3, %10000000
                 bra     locret_9CF2
 loc_9CD4:
-                bclr    PIA2_Buffer_t3, %1000
+                bclr    PIA2_Buffer_t3, %00001000
                 bra     locret_9CF2
 loc_9CD9:
                 cpd     Temp0
@@ -1114,21 +1114,21 @@ loc_9CD9:
                 cmpa    byte_8826
                 bhi     locret_9CF2
 loc_9CE6:
-                brclr   BitFlags27, %1000, loc_9CEF
+                brclr   BitFlags27, %00001000, loc_9CEF
                 bset    PIA1_Buffer_t3, %10000000
                 bra     locret_9CF2
 loc_9CEF:
-                bset    PIA2_Buffer_t3, %1000
+                bset    PIA2_Buffer_t3, %00001000
 locret_9CF2:
                 rts
 ;;
 sub_9CF3:
                 ldaa    byte_89DD
-                bita    #%1000
+                bita    #%00001000
                 bne     loc_9CFD
                 jmp     loc_9DD9
 loc_9CFD:
-                brset   IPL1, %1000000, loc_9D0D
+                brset   IPL1, %01000000, loc_9D0D
                 ldaa    CoolantTemp
                 cmpa    byte_8A3F
                 bcc     loc_9D1C
@@ -1139,7 +1139,7 @@ loc_9D0D:
                 cmpa    byte_8A40
                 bcs     loc_9D1C
                 brset   BitFlags6d_t3, %10000000, loc_9D1C
-                brset   BitFlags29, %1000000, loc_9D1F
+                brset   BitFlags29, %01000000, loc_9D1F
 loc_9D1C:
                 jmp     loc_9D7E
 loc_9D1F:
@@ -1149,7 +1149,7 @@ loc_9D1F:
                 cmpa    byte_8A41
                 bcs     loc_9D7E
                 ldx     EGRVar3_ErrorCodeBufferHB
-                brset   BitFlags6d_t3, %1000000, loc_9D9C
+                brset   BitFlags6d_t3, %01000000, loc_9D9C
                 cpx     word_8A49
                 bcc     loc_9D8D
                 ldaa    MapValue
@@ -1172,33 +1172,33 @@ loc_9D1F:
                 bcc     loc_9D7E
                 inx
                 stx     EGRVar3_ErrorCodeBufferHB
-                bset    BitFlags6d_t3, %10000
+                bset    BitFlags6d_t3, %00010000
                 ldab    byte_8A51
                 suba    EGRVar5_EGR_Temp_1
                 bcs     loc_9D72
                 mul
-                adca    #0
+                adca    #$00
                 bra     loc_9D77
 loc_9D72:
                 nega
                 mul
-                adca    #0
+                adca    #$00
                 nega
 loc_9D77:
                 adda    EGRVar5_EGR_Temp_1
                 staa    EGRVar5_EGR_Temp_1
                 jmp     loc_9E14
 loc_9D7E:
-                ldx     #0
+                ldx     #$0000
                 stx     EGRVar3_ErrorCodeBufferHB
-                bclr    BitFlags6d_t3, %1010000
+                bclr    BitFlags6d_t3, %01010000
                 ldaa    Counter_O2SensorFeedbackCount_Signed
                 staa    EGRVar5_EGR_Temp_1
                 jmp     loc_9E14
 loc_9D8D:
-                ldx     #0
-                bset    BitFlags6d_t3, %1000000
-                bclr    BitFlags6d_t3, %10000
+                ldx     #$0000
+                bset    BitFlags6d_t3, %01000000
+                bclr    BitFlags6d_t3, %00010000
                 ldaa    EGRVar5_EGR_Temp_1
                 staa    EGRVar6
                 bra     loc_9DA1
@@ -1234,10 +1234,10 @@ loc_9DA1:
 loc_9DD9:
                 clr     EGRVar1_ErrorCodeCounter
                 bset    BitFlags6d_t3, %10000000
-                bclr    BitFlags6d_t3, %1110000
+                bclr    BitFlags6d_t3, %01110000
                 bra     loc_9E14
 loc_9DE4:
-                ldx     #0
+                ldx     #$0000
                 stx     EGRVar3_ErrorCodeBufferHB
                 ldab    BitFlags6d_t3
                 andb    #$AF
@@ -1251,7 +1251,7 @@ loc_9DE4:
                 ldd     #$2E81
                 jsr     ThrowNonCriticalError
                 bcc     loc_9E05
-                bset    b5D_IPL2_t3, %1000
+                bset    b5D_IPL2_t3, %00001000
 loc_9E05:
                 pulb
 loc_9E06:
@@ -1264,18 +1264,18 @@ loc_9E06:
 loc_9E12:
                 stab    BitFlags6d_t3
 loc_9E14:
-                brset   BitFlags6d_t3, %1000000, loc_9E72
+                brset   BitFlags6d_t3, %01000000, loc_9E72
                 ldaa    Ram_CC
                 beq     loc_9E1F
                 dec     Ram_CC
 loc_9E1F:
                 brclr   BitFlags66_t3, %10000000, loc_9E69
-                brset   BitFlags66_t3, %1000000, loc_9E69
+                brset   BitFlags66_t3, %01000000, loc_9E69
                 ldaa    byte_8817
-                brset   PIA2_Buffer_t3, %10, loc_9E35
+                brset   PIA2_Buffer_t3, %00000010, loc_9E35
                 suba    byte_8818
                 bcc     loc_9E35
-                ldaa    #0
+                ldaa    #$00
 loc_9E35:
                 cmpa    EngineRpm_HB
                 bcs     loc_9E69
@@ -1283,7 +1283,7 @@ loc_9E35:
                 cmpa    byte_8813
                 bcs     loc_9E69
                 ldaa    MapValue
-                brset   PIA2_Buffer_t3, %10, loc_9E4C
+                brset   PIA2_Buffer_t3, %00000010, loc_9E4C
                 suba    byte_8811
                 bcc     loc_9E4C
                 clra
@@ -1305,46 +1305,46 @@ loc_9E65:
                 cmpa    MapValue
                 bcc     locret_9E82
 loc_9E69:
-                brclr   PIA2_Buffer_t3, %10, loc_9E72
+                brclr   PIA2_Buffer_t3, %00000010, loc_9E72
                 ldaa    byte_8815
                 staa    Ram_CC
 loc_9E72:
-                bclr    PIA2_Buffer_t3, %10
+                bclr    PIA2_Buffer_t3, %00000010
                 rts
 loc_9E76:
-                brset   PIA2_Buffer_t3, %10, loc_9E7F
+                brset   PIA2_Buffer_t3, %00000010, loc_9E7F
                 ldaa    byte_8815
                 staa    Ram_CC
 loc_9E7F:
-                bset    PIA2_Buffer_t3, %10
+                bset    PIA2_Buffer_t3, %00000010
 locret_9E82:
                 rts
 ;;
 EmmissionMaintenanceReminder1_MM:
-                brset   IPL1, %1000000, loc_9E8D
-                brset   BitFlags6a_t3, %100, loc_9E9A
+                brset   IPL1, %01000000, loc_9E8D
+                brset   BitFlags6a_t3, %00000100, loc_9E9A
                 bra     loc_9E9F
 loc_9E8D:
-                brset   BitFlags6a_t3, %1000000, locret_9ED4
+                brset   BitFlags6a_t3, %01000000, locret_9ED4
                 ldd     $B610
                 cpd     #$5AA5
                 beq     loc_9E9F
 loc_9E9A:
-                bclr    PIA1_Buffer_t3, %1000
+                bclr    PIA1_Buffer_t3, %00001000
                 bra     loc_9EA2
 loc_9E9F:
-                bset    PIA1_Buffer_t3, %1000
+                bset    PIA1_Buffer_t3, %00001000
 loc_9EA2:
                 brset   IPL1, %10000000, loc_9EA9
                 jmp     loc_9F56
 loc_9EA9:
-                brset   BitFlags6a_t3, %1000000, locret_9ED4
-                brclr   BitFlags6a_t3, %100000, loc_9ED5
+                brset   BitFlags6a_t3, %01000000, locret_9ED4
+                brclr   BitFlags6a_t3, %00100000, loc_9ED5
                 jsr     sub_9F79
                 stab    DRBOffsetStored_LB
                 inc     DRBOffsetStored_HB
-                bset    BitFlags6a_t3, %1000000
-                bclr    BitFlags6a_t3, %100000
+                bset    BitFlags6a_t3, %01000000
+                bclr    BitFlags6a_t3, %00100000
                 sei
                 bclr    IPL1, %10000000
                 cli
@@ -1353,31 +1353,31 @@ loc_9EA9:
                 cpd     #$3938
                 bne     locret_9ED4
 loc_9ED1:
-                bset    BitFlags6a_t3, %10000
+                bset    BitFlags6a_t3, %00010000
 locret_9ED4:
                 rts
 loc_9ED5:
                 ldx     #$1C
                 ldaa    #$30
 loc_9EDA:
-                brclr   0,x, %11111111, loc_9EE8
-                cmpa    0,x
+                brclr   $00,x, %11111111, loc_9EE8
+                cmpa    $00,x
                 beq     loc_9F38
                 dex
                 cpx     #$15
                 bcc     loc_9EDA
 loc_9EE8:
-                ldd     #0
+                ldd     #$0000
                 std     Temp4
                 staa    DRBOffsetStored_HB
                 ldx     #$B600
                 ldy     #$B60E
 loc_9EF8:
-                ldd     0,x
-                subd    0,y
-                cpd     #1
+                ldd     $00,x
+                subd    $00,y
+                cpd     #$0001
                 bne     loc_9F14
-                ldd     0,x
+                ldd     $00,x
                 cpd     Temp4
                 bcs     loc_9F14
                 std     Temp4
@@ -1411,29 +1411,29 @@ locret_9F3D:
                 rts
 loc_9F3E:
                 ldaa    DRBOffsetStored_HB
-                adda    #2
+                adda    #$02
                 cmpa    #$10
                 bne     loc_9F49
-                ldaa    #0
+                ldaa    #$00
 loc_9F49:
                 staa    DRBOffsetStored_HB
                 jsr     sub_9F79
                 staa    DRBOffsetStored_LB
-                bset    BitFlags6a_t3, %1100000
+                bset    BitFlags6a_t3, %01100000
 locret_9F55:
                 rts
 loc_9F56:
-                brclr   BitFlags6a_t3, %10000, locret_9F55
-                brset   BitFlags6a_t3, %1000000, locret_9F55
+                brclr   BitFlags6a_t3, %00010000, locret_9F55
+                brset   BitFlags6a_t3, %01000000, locret_9F55
                 ldd     #$105A
-                brclr   BitFlags6a_t3, %100000, loc_9F6F
+                brclr   BitFlags6a_t3, %00100000, loc_9F6F
                 inca
                 comb
-                bclr    BitFlags6a_t3, %110000
-                bset    BitFlags6a_t3, %1000000
+                bclr    BitFlags6a_t3, %00110000
+                bset    BitFlags6a_t3, %01000000
                 bra     loc_9F72
 loc_9F6F:
-                bset    BitFlags6a_t3, %1100000
+                bset    BitFlags6a_t3, %01100000
 loc_9F72:
                 staa    DRBOffsetStored_HB
                 stab    DRBOffsetStored_LB
@@ -1442,13 +1442,13 @@ loc_9F72:
 sub_9F79:
                 ldx     #$B600
                 ldab    DRBOffsetStored_HB
-                subb    #2
+                subb    #$02
                 bpl     loc_9F85
-                ldab    #$E
+                ldab    #$0E
 loc_9F85:
                 abx
-                ldd     0,x
-                addd    #1
+                ldd     $00,x
+                addd    #$0001
                 bcc     locret_9F90
                 ldd     #$FFFF
 locret_9F90:
@@ -1461,37 +1461,37 @@ sub_9F91:
 loc_9F98:
                 jmp     loc_A03F
 loc_9F9B:
-                brset   StartupSwitchMirror1, 1, loc_A01C
+                brset   StartupSwitchMirror1, %00000001, loc_A01C
                 ldab    b5d_IPL2
                 bitb    #%10000000
                 beq     loc_9FAB
-                bita    #%100000
+                bita    #%00100000
                 bne     loc_A01C
                 bra     loc_9F98
 loc_9FAB:
                 ldaa    byte_882A
-                brset   BitFlags2a, %1000000, loc_9FB5
+                brset   BitFlags2a, %01000000, loc_9FB5
                 adda    byte_882B
 loc_9FB5:
                 cmpa    VehicleSpeedx8_Scaled
                 bcc     loc_A019
-                bset    BitFlags2a, %1000000
+                bset    BitFlags2a, %01000000
                 ldaa    CoolantTemp
                 cmpa    byte_8827
                 bcs     loc_A01C
                 ldaa    byte_882D
-                brset   PIA1_Buffer_t3, %10000, loc_9FCC
-                adda    #4
+                brset   PIA1_Buffer_t3, %00010000, loc_9FCC
+                adda    #$04
 loc_9FCC:
                 cmpa    ScaledDistPWForCruiseControl
                 bcs     loc_A01C
-                brclr   BitFlags68_t3, %10000, loc_A01C
+                brclr   BitFlags68_t3, %00010000, loc_A01C
                 ldaa    EngineRpm_HB
                 cmpa    byte_8829
                 bcs     loc_9FEF
                 brclr   Ram_D0, %11111111, loc_9FEF
                 ldaa    Counter_MainLoop
-                bita    #%111
+                bita    #%00000111
                 bne     loc_9FEA
                 dec     Ram_D0
                 beq     loc_9FEF
@@ -1513,21 +1513,21 @@ loc_9FF5:
                 ldaa    TpsVolts_Minus_LowestSessionTpsVolts
                 cba
                 bcc     loc_A012
-                brclr   PIA1_Buffer_t3, %10000, loc_A03F
+                brclr   PIA1_Buffer_t3, %00010000, loc_A03F
                 bra     loc_A01F
 loc_A012:
                 ldaa    byte_8828
                 staa    Ram_D0
                 bra     loc_A01F
 loc_A019:
-                bclr    BitFlags2a, %1000000
+                bclr    BitFlags2a, %01000000
 loc_A01C:
                 clr     Ram_D0
 loc_A01F:
                 ldaa    byte_882C
                 staa    Ram_D1
 loc_A024:
-                bset    PIA1_Buffer_t3, %10000
+                bset    PIA1_Buffer_t3, %00010000
                 clr     Ram_D3
 loc_A02A:
                 jmp     loc_A11C
@@ -1535,21 +1535,21 @@ loc_A02D:
                 ldaa    Ram_D1
                 beq     loc_A03C
                 ldab    Counter_MainLoop
-                bitb    #%111
+                bitb    #%00000111
                 bne     loc_A024
                 deca
                 staa    Ram_D1
                 bne     loc_A024
 loc_A03C:
-                bclr    PIA1_Buffer_t3, %10000
+                bclr    PIA1_Buffer_t3, %00010000
 loc_A03F:
                 ldaa    byte_8016
-                bita    #%1000000
+                bita    #%01000000
                 bne     loc_A049
                 jmp     locret_A0DA
 loc_A049:
                 ldaa    Counter_MainLoop
-                bita    #1
+                bita    #$01
                 bne     loc_A059
                 ldaa    Ram_D3
                 cmpa    byte_887C
@@ -1571,9 +1571,9 @@ loc_A069:
                 ldaa    CoolantTemp
                 cmpa    byte_8873
                 bcs     loc_A02A
-                brclr   BitFlags68_t3, %10000, loc_A02A
+                brclr   BitFlags68_t3, %00010000, loc_A02A
                 brclr   BitFlags66_t3, %10000000, loc_A02A
-                brset   StartupSwitchMirror1, %100000, loc_A02A
+                brset   StartupSwitchMirror1, %00100000, loc_A02A
                 ldaa    VehicleSpeedx8_Scaled
                 cmpa    byte_8875
                 bcc     loc_A099
@@ -1589,30 +1589,30 @@ loc_A099:
                 bcs     loc_A0C8
                 staa    Temp5
                 ldx     #word_8878
-                brset   BitFlags2a, %100000, loc_A0BF
-                brset   BitFlags2a, %10000, loc_A0BE
+                brset   BitFlags2a, %00100000, loc_A0BF
+                brset   BitFlags2a, %00010000, loc_A0BE
                 ldaa    Temp3
                 cmpa    byte_8877
                 bcs     loc_A0BB
-                bset    BitFlags2a, %100000
+                bset    BitFlags2a, %00100000
                 bra     loc_A0BF
 loc_A0BB:
-                bset    BitFlags2a, %10000
+                bset    BitFlags2a, %00010000
 loc_A0BE:
                 inx
 loc_A0BF:
                 ldab    Temp5
-                cmpb    0,x
+                cmpb    $00,x
                 bcc     loc_A11C
                 bra     loc_A0CB
 loc_A0C8:
-                bclr    BitFlags2a, %110000
+                bclr    BitFlags2a, %00110000
 loc_A0CB:
                 ldaa    Counter_PartThrottleUnlock
-                cmpa    #1
+                cmpa    #$01
                 bls     loc_A0DB
                 ldab    Counter_MainLoop
-                bitb    #%111
+                bitb    #%00000111
                 bne     locret_A0DA
                 deca
                 staa    Counter_PartThrottleUnlock
@@ -1620,14 +1620,14 @@ locret_A0DA:
                 rts
 loc_A0DB:
                 ldx     #byte_889B
-                brclr   PIA1_Buffer_t3, %100000, loc_A0E5
+                brclr   PIA1_Buffer_t3, %00100000, loc_A0E5
                 ldx     #byte_887D
 loc_A0E5:
                 stx     Temp4
                 bsr     sub_A126
                 bcc     loc_A11C
                 ldx     Temp4
-                ldab    #$F
+                ldab    #$0F
                 abx
                 bsr     sub_A126
                 bcs     loc_A11C
@@ -1640,7 +1640,7 @@ loc_A0E5:
                 cmpa    byte_887C
                 bcs     locret_A0DA
 loc_A108:
-                bclr    PIA1_Buffer_t3, %100000
+                bclr    PIA1_Buffer_t3, %00100000
                 rts
 loc_A10C:
                 ldaa    VehicleSpeedx8_Scaled
@@ -1653,8 +1653,8 @@ loc_A119:
                 rts
 loc_A11C:
                 clr     Counter_PartThrottleUnlock
-                bset    PIA1_Buffer_t3, %100000
-                bclr    BitFlags2a, %110000
+                bset    PIA1_Buffer_t3, %00100000
+                bclr    BitFlags2a, %00110000
                 rts
 ;;
 sub_A126:
@@ -1666,12 +1666,12 @@ sub_A126:
 ;;
 sub_A130:
                 ldaa    byte_8016
-                bita    #%100000
+                bita    #%00100000
                 beq     locret_A142
                 ldaa    byte_8015
-                bita    #1
+                bita    #%00000001
                 beq     locret_A142
-                brclr   Counter_MainLoop, %10, loc_A143
+                brclr   Counter_MainLoop, %00000010, loc_A143
 locret_A142:
                 rts
 loc_A143:
@@ -1680,7 +1680,7 @@ loc_A143:
                 bcc     loc_A174
                 cmpa    byte_88B9
                 bcs     loc_A174
-                brset   BitFlags2a, %100, loc_A174
+                brset   BitFlags2a, %00000100, loc_A174
                 ldaa    ScaledDistPWForCruiseControl
                 cmpa    byte_88BA
                 bcc     loc_A174
@@ -1702,7 +1702,7 @@ loc_A174:
                 clr     Ram_D0
 loc_A177:
                 ldaa    EngineRpm_HB
-                cmpa    #$F
+                cmpa    #$0F
                 bcs     loc_A1A6
                 ldab    ScaledDistPWForCruiseControl
                 subb    PTU_MapTemp
@@ -1711,11 +1711,11 @@ loc_A177:
 loc_A184:
                 cmpb    byte_88BD
                 bcs     loc_A191
-                bset    BitFlags2a, %100
+                bset    BitFlags2a, %00000100
                 clr     Ram_D1
                 bra     loc_A1B5
 loc_A191:
-                brclr   BitFlags2a, %100, loc_A1A9
+                brclr   BitFlags2a, %00000100, loc_A1A9
                 cmpb    byte_88BE
                 bcc     loc_A1A9
                 ldaa    Ram_D1
@@ -1725,7 +1725,7 @@ loc_A191:
                 cmpa    byte_88BF
                 bcs     loc_A1AC
 loc_A1A6:
-                bclr    BitFlags2a, %100
+                bclr    BitFlags2a, %00000100
 loc_A1A9:
                 clr     Ram_D1
 loc_A1AC:
@@ -1738,12 +1738,12 @@ loc_A1B5:
                 ldaa    ScaledDistPWForCruiseControl
                 staa    PTU_MapTemp
 loc_A1B9:
-                brset   IPL1, %1000000, loc_A1C3
-                brset   BitFlags6a_t3, %100, loc_A1C3
+                brset   IPL1, %01000000, loc_A1C3
+                brset   BitFlags6a_t3, %00000100, loc_A1C3
                 bra     loc_A220
 loc_A1C3:
                 brclr   BitFlags66_t3, %10000000, loc_A214
-                brclr   BitFlags66_t3, %1000000, loc_A1D2
+                brclr   BitFlags66_t3, %01000000, loc_A1D2
                 ldaa    EngineRpm_HB
                 cmpa    byte_88C1
                 bcc     loc_A214
@@ -1759,10 +1759,10 @@ loc_A1D2:
                 ldaa    EngineRpm_HB
                 cba
                 bcc     loc_A1FA
-                brset   PIA1_Buffer_t3, %100000, loc_A214
+                brset   PIA1_Buffer_t3, %00100000, loc_A214
                 subb    byte_88CC
                 bcc     loc_A1F5
-                ldab    #0
+                ldab    #$00
 loc_A1F5:
                 cba
                 bcc     loc_A206
@@ -1798,7 +1798,7 @@ loc_A224:
 ;;
 sub_A227:
                 ldaa    byte_8016
-                bita    #%1000
+                bita    #%00001000
                 beq     locret_A24B
                 ldaa    CoolantTemp
                 cmpa    byte_881A
@@ -1808,42 +1808,42 @@ sub_A227:
                 brset   BitFlags2a, %10000000, loc_A245
 loc_A23E:
                 bclr    BitFlags2a, %10000000
-                bclr    PIA2_Buffer_t3, %100000
+                bclr    PIA2_Buffer_t3, %00100000
                 rts
 loc_A245:
                 bset    BitFlags2a, %10000000
-                bset    PIA2_Buffer_t3, %100000
+                bset    PIA2_Buffer_t3, %00100000
 locret_A24B:
                 rts
 ;;
 sub_A24C:
                 ldaa    byte_8016
-                bita    #%10000
+                bita    #%00010000
                 beq     locret_A25E
-                brset   BitFlags29, %1000000, loc_A25B
-                bclr    PIA2_Buffer_t3, %100
+                brset   BitFlags29, %01000000, loc_A25B
+                bclr    PIA2_Buffer_t3, %00000100
                 rts
 loc_A25B:
-                bset    PIA2_Buffer_t3, %100
+                bset    PIA2_Buffer_t3, %00000100
 locret_A25E:
                 rts
 ;;
 sub_A25F:
                 ldaa    byte_8015
-                bita    #%1000
+                bita    #%00001000
                 bne     locret_A2B5
                 ldaa    byte_8016
-                bita    #%100
+                bita    #%00000100
                 beq     locret_A2B5
-                brclr   IPL1, %1000000, loc_A2B2
+                brclr   IPL1, %01000000, loc_A2B2
                 ldaa    Counter_MainLoop
                 anda    #$7F
                 bne     locret_A2B5
-                brset   b5C_IPL1_t3, %10, loc_A2AD
+                brset   b5C_IPL1_t3, %00000010, loc_A2AD
                 ldaa    BitFlags27
                 bita    #%11000000
                 beq     loc_A285
-                brclr   PIA2_Buffer_t3, 1, loc_A2AD
+                brclr   PIA2_Buffer_t3, %00000001, loc_A2AD
 loc_A285:
                 ldx     #word_881D
                 ldaa    VehicleSpeedx8_Scaled
@@ -1851,19 +1851,19 @@ loc_A285:
                 bcc     loc_A29F
                 cmpa    byte_881C
                 bcs     loc_A298
-                brset   BitFlags2a, %1000, loc_A29F
+                brset   BitFlags2a, %00001000, loc_A29F
 loc_A298:
                 inx
                 inx
-                bclr    BitFlags2a, %1000
+                bclr    BitFlags2a, %00001000
                 bra     loc_A2A2
 loc_A29F:
-                bset    BitFlags2a, %1000
+                bset    BitFlags2a, %00001000
 loc_A2A2:
                 brset   PIA1_Buffer_t3, %10000000, loc_A2A7
                 inx
 loc_A2A7:
-                ldab    0,x
+                ldab    $00,x
                 cmpb    CoolantTemp
                 bcc     loc_A2B2
 loc_A2AD:
@@ -1875,7 +1875,7 @@ locret_A2B5:
                 rts
 ;;
 sub_A2B6:
-                brclr   IPL1, %1000000, loc_A2C3
+                brclr   IPL1, %01000000, loc_A2C3
                 ldaa    Timer_AisChanges
                 inca
                 beq     loc_A2C6
@@ -1885,43 +1885,43 @@ loc_A2C3:
                 clr     Timer_AisChanges
 loc_A2C6:
                 brset   BitFlags68_t3, %10000000, loc_A2D2
-                brclr   BitFlags6d_t3, %1000, loc_A2D5
+                brclr   BitFlags6d_t3, %00001000, loc_A2D5
                 ldaa    #$30
                 bra     loc_A34D
 loc_A2D2:
                 jmp     loc_A352
 loc_A2D5:
                 ldx     #byte_8711
-                brset   BitFlags68_t3, %10000, loc_A324
+                brset   BitFlags68_t3, %00010000, loc_A324
                 ldaa    DRBPointer1
                 cmpa    #$19
                 beq     loc_A2F4
-                brclr   BitFlags6d_t3, 1, loc_A304
+                brclr   BitFlags6d_t3, %00000001, loc_A304
                 ldd     TargetIdleSpeedHB
-                subd    #1
-                bitb    #%111111
+                subd    #$0001
+                bitb    #%00111111
                 bne     loc_A350
-                bclr    BitFlags6d_t3, 1
+                bclr    BitFlags6d_t3, %00000001
                 bra     loc_A350
 loc_A2F4:
-                brset   DRBSerialMode, %100000, loc_A352
+                brset   DRBSerialMode, %00100000, loc_A352
                 clr     DRBPointer1
                 ldaa    DRBPointer2
                 ldab    #$FF
-                bset    BitFlags6d_t3, 1
+                bset    BitFlags6d_t3, %00000001
                 bra     loc_A34E
 loc_A304:
-                brclr   BitFlags2d, %100, loc_A316
-                brclr   IPL1, %1000000, loc_A316
+                brclr   BitFlags2d, %00000100, loc_A316
+                brclr   IPL1, %01000000, loc_A316
                 ldaa    KeyOnOrEngineRunningTime
-                cmpa    #8
+                cmpa    #$08
                 bcs     loc_A316
                 ldaa    #$70
                 bra     loc_A34D
 loc_A316:
                 ldaa    byte_8730
-                brset   BitFlags2a, 1, loc_A34D
-                brset   b5C_IPL1_t3, %10, loc_A34D
+                brset   BitFlags2a, %00000001, loc_A34D
+                brset   b5C_IPL1_t3, %00000010, loc_A34D
                 ldx     #byte_86FE
 loc_A324:
                 ldaa    CoolantTemp
@@ -1939,7 +1939,7 @@ loc_A33C:
                 ldab    BitFlags27
                 bitb    #%11000000
                 beq     loc_A34D
-                brclr   StartupSwitchMirror1, %1000000, loc_A34D
+                brclr   StartupSwitchMirror1, %01000000, loc_A34D
                 ldab    byte_872F
                 cba
                 bcc     loc_A34D
@@ -1953,18 +1953,18 @@ loc_A350:
                 std     TargetIdleSpeedHB
 loc_A352:
                 ldaa    ATMOffset
-                cmpa    #7
+                cmpa    #$07
                 beq     locret_A39C
                 cmpa    #$14
                 beq     locret_A39C
-                brset   BitFlags36_t3, %100000, loc_A364
-                brset   IPL1, %1000000, loc_A38C
+                brset   BitFlags36_t3, %00100000, loc_A364
+                brset   IPL1, %01000000, loc_A38C
 loc_A364:
                 ldaa    DesiredNewAisPosition
                 cmpa    CurrentAisPosition
                 bne     loc_A371
-                brset   BitFlags36_t3, %1000000, loc_A371
-                bclr    BitFlags36_t3, %100000
+                brset   BitFlags36_t3, %01000000, loc_A371
+                bclr    BitFlags36_t3, %00100000
 loc_A371:
                 ldaa    CoolantTemp
                 ldx     #byte_8688
@@ -1983,12 +1983,12 @@ loc_A38C:
                 brclr   b5C_IPL1_t3, %10001000, loc_A3A1
                 ldaa    byte_8A3D
                 staa    DesiredNewAisPosition
-                brclr   BitFlags68_t3, %1000000, loc_A39D
-                bset    BitFlags68_t3, %1100
+                brclr   BitFlags68_t3, %01000000, loc_A39D
+                bset    BitFlags68_t3, %00001100
 locret_A39C:
                 rts
 loc_A39D:
-                bclr    BitFlags68_t3, %1100
+                bclr    BitFlags68_t3, %00001100
                 rts
 loc_A3A1:
                 jsr     sub_A531
@@ -1996,58 +1996,58 @@ loc_A3A1:
                 bne     loc_A3A8
                 rts
 loc_A3A8:
-                brclr   BitFlags68_t3, %10, loc_A3DE
+                brclr   BitFlags68_t3, %00000010, loc_A3DE
                 ldx     #byte_875A
                 ldaa    BaroPressure
-                brclr   StartupSwitchMirror1, 1, loc_A3B8
+                brclr   StartupSwitchMirror1, %00000001, loc_A3B8
                 ldx     #byte_8764
 loc_A3B8:
                 jsr     sub_E3AA
                 tba
-                brclr   StartupSwitchMirror1, 1, loc_A3CA
+                brclr   StartupSwitchMirror1, %00000001, loc_A3CA
                 nega
-                brclr   BitFlags2d, %100000, loc_A3DA
-                bclr    BitFlags2d, %100000
+                brclr   BitFlags2d, %00100000, loc_A3DA
+                bclr    BitFlags2d, %00100000
                 bra     loc_A3D4
 loc_A3CA:
                 ldab    EngineRpm_HB
                 cmpb    byte_8763
                 bcc     loc_A3DA
-                bset    BitFlags2d, %100000
+                bset    BitFlags2d, %00100000
 loc_A3D4:
                 jsr     sub_A517
                 clra
                 staa    Timer_AisChanges
 loc_A3DA:
-                bclr    BitFlags68_t3, %10
+                bclr    BitFlags68_t3, %00000010
                 rts
 loc_A3DE:
                 brclr   BitFlags66_t3, %10000000, loc_A3F9
-                brset   BitFlags27, 1, loc_A3E9
+                brset   BitFlags27, %00000001, loc_A3E9
                 bclr    BitFlags68_t3, %10000000
 loc_A3E9:
-                brclr   StartupSwitchMirror1, %100000, loc_A3FD
+                brclr   StartupSwitchMirror1, %00100000, loc_A3FD
                 ldx     #byte_867D
                 ldaa    TpsVolts_Minus_LowestSessionTpsVolts
                 jsr     sub_E372
                 cmpa    EngineRpm_HB
                 bcc     loc_A3FD
 loc_A3F9:
-                brclr   BitFlags66_t3, %100000, loc_A400
+                brclr   BitFlags66_t3, %00100000, loc_A400
 loc_A3FD:
                 jmp     loc_A465
 loc_A400:
-                brset   BitFlags66_t3, %100, locret_A39C
+                brset   BitFlags66_t3, %00000100, locret_A39C
                 ldab    Timer_CountdownFromStartRunForAisFeedback
                 bne     locret_A39C
                 ldaa    DesiredNewAisPosition
-                cmpa    #4
+                cmpa    #$04
                 bcs     loc_A411
-                bclr    BitFlags36_t3, %10000
+                bclr    BitFlags36_t3, %00010000
 loc_A411:
                 brclr   BitFlags68_t3, %10000000, loc_A42D
                 ldx     #byte_8773
-                brclr   StartupSwitchMirror1, %10000, loc_A41F
+                brclr   StartupSwitchMirror1, %00010000, loc_A41F
                 ldx     #byte_877E
 loc_A41F:
                 ldaa    CoolantTemp
@@ -2070,8 +2070,8 @@ loc_A42D:
 loc_A444:
                 lsrd
                 lsrd
-                brset   BitFlags27, 1, loc_A44E
-                brset   BitFlags68_t3, %10000, loc_A44F
+                brset   BitFlags27, %00000001, loc_A44E
+                brset   BitFlags68_t3, %00010000, loc_A44F
 loc_A44E:
                 lsrd
 loc_A44F:
@@ -2080,7 +2080,7 @@ loc_A44F:
                 ldab    #$FF
 loc_A454:
                 tba
-                cmpa    1,x
+                cmpa    $01,x
                 bcs     locret_A464
                 jsr     sub_E372
                 beq     locret_A464
@@ -2126,9 +2126,9 @@ loc_A4A8:
                 bcc     loc_A4B8
                 ldaa    Temp5
 loc_A4B8:
-                brset   BitFlags68_t3, %100, loc_A4E2
+                brset   BitFlags68_t3, %00000100, loc_A4E2
                 ldab    byte_86A6
-                brset   BitFlags66_t3, %100000, loc_A4DF
+                brset   BitFlags66_t3, %00100000, loc_A4DF
                 psha
                 ldaa    CoolantTemp
                 cmpa    byte_86A7
@@ -2136,10 +2136,10 @@ loc_A4B8:
                 ldx     #byte_86AB
                 ldaa    VehicleSpeedx8_Scaled
                 jsr     sub_E372
-                brclr   BitFlags68_t3, %1000, loc_A4DE
+                brclr   BitFlags68_t3, %00001000, loc_A4DE
                 ldaa    byte_86A9
                 mul
-                adca    #0
+                adca    #$00
                 tab
 loc_A4DE:
                 pula
@@ -2147,11 +2147,11 @@ loc_A4DF:
                 aba
                 bcs     loc_A4F9
 loc_A4E2:
-                brset   BitFlags68_t3, %10000, loc_A4EB
+                brset   BitFlags68_t3, %00010000, loc_A4EB
                 adda    byte_86BA
                 bcs     loc_A4F9
 loc_A4EB:
-                brset   BitFlags36_t3, %10000, loc_A4F4
+                brset   BitFlags36_t3, %00010000, loc_A4F4
                 adda    byte_8772
                 bcs     loc_A4F9
 loc_A4F4:
@@ -2160,7 +2160,7 @@ loc_A4F4:
 loc_A4F9:
                 ldaa    byte_876E
 loc_A4FC:
-                brset   BitFlags66_t3, %100000, loc_A511
+                brset   BitFlags66_t3, %00100000, loc_A511
                 cmpa    DesiredNewAisPosition
                 bcc     loc_A50E
                 ldab    Counter_MainLoop
@@ -2173,7 +2173,7 @@ loc_A50E:
 locret_A510:
                 rts
 loc_A511:
-                bclr    BitFlags66_t3, %100000
+                bclr    BitFlags66_t3, %00100000
                 staa    DesiredNewAisPosition
                 rts
 ;;
@@ -2200,9 +2200,9 @@ loc_A52E:
                 rts
 ;;
 sub_A531:
-                ldx     #0
+                ldx     #$00
                 ldab    BitFlags68_t3
-                andb    #4
+                andb    #$04
                 stab    Temp4
                 ldab    BitFlags68_t3
                 andb    #$40
@@ -2212,7 +2212,7 @@ sub_A531:
                 lsrb
                 eorb    Temp4
                 bne     loc_A565
-                brset   BitFlags68_t3, %100, loc_A5B3
+                brset   BitFlags68_t3, %00000100, loc_A5B3
                 ldaa    Timer_AisOrO2Sensor
                 beq     loc_A561
                 clrb
@@ -2224,7 +2224,7 @@ sub_A531:
                 ldaa    byte_8758
                 bsr     sub_A517
 loc_A561:
-                bclr    BitFlags68_t3, %1000
+                bclr    BitFlags68_t3, %00001000
                 rts
 loc_A565:
                 ldaa    KeyOnOrEngineRunningTime
@@ -2232,7 +2232,7 @@ loc_A565:
                 bcs     loc_A5B3
                 eorb    BitFlags68_t3
                 stab    BitFlags68_t3
-                bitb    #4
+                bitb    #$04
                 bne     loc_A58C
                 ldaa    byte_86A8
                 staa    Timer_AisOrO2Sensor
@@ -2270,11 +2270,11 @@ loc_A5B0:
                 clra
                 staa    Timer_AisChanges
 loc_A5B3:
-                bset    BitFlags68_t3, %1000
+                bset    BitFlags68_t3, %00001000
                 rts
 sub_A5B7:
-                brclr   IPL1, %1000000, locret_A5CD
-                brset   BitFlags36_t3, %100000, locret_A5CD
+                brclr   IPL1, %01000000, locret_A5CD
+                brset   BitFlags36_t3, %00100000, locret_A5CD
                 brset   BitFlags66_t3, %10000000, locret_A5CD
                 ldaa    b5C_IPL1_t3
                 bita    #%10001000
@@ -2307,7 +2307,7 @@ loc_A5EC:
                 aba
                 bcs     loc_A617
 loc_A5F0:
-                brclr   BitFlags66_t3, %100, loc_A619
+                brclr   BitFlags66_t3, %00000100, loc_A619
                 psha
                 ldx     #byte_879C
                 ldaa    KeyOnOrEngineRunningTime
@@ -2322,7 +2322,7 @@ loc_A5F0:
                 pulb
                 aba
                 bcs     loc_A617
-                brset   PIA2_Buffer_t3, 1, loc_A619
+                brset   PIA2_Buffer_t3, %00000001, loc_A619
                 adda    byte_8800
                 bcc     loc_A619
 loc_A617:
@@ -2361,9 +2361,9 @@ loc_A652:
                 ldaa    #$FF
 loc_A654:
                 staa    MAPOffsetForCylTrim
-                brset   BitFlags66_t3, %100, loc_A6C0
-                brset   BitFlags27, 1, loc_A662
-                brclr   StartupSwitchMirror1, %10000, locret_A6BF
+                brset   BitFlags66_t3, %00000100, loc_A6C0
+                brset   BitFlags27, %00000001, loc_A662
+                brclr   StartupSwitchMirror1, %00010000, locret_A6BF
 loc_A662:
                 ldab    Counter_MainLoop
                 bitb    byte_8803
@@ -2371,7 +2371,7 @@ loc_A662:
                 ldab    KeyOnOrEngineRunningTime
                 cmpb    byte_8802
                 bcs     locret_A6BF
-                brclr   PIA2_Buffer_t3, 1, locret_A6BF
+                brclr   PIA2_Buffer_t3, %00000001, locret_A6BF
                 ldab    Timer_CountdownFromStartRunForAisFeedback
                 bne     locret_A6BF
                 ldab    CoolantTemp
@@ -2396,8 +2396,8 @@ loc_A694:
 loc_A698:
                 stab    Timer_DacalCountdown
 loc_A69A:
-                brset   BitFlags27, 1, loc_A6A2
-                brclr   BitFlags68_t3, %10000, locret_A6BF
+                brset   BitFlags27, %00000001, loc_A6A2
+                brclr   BitFlags68_t3, %00010000, locret_A6BF
 loc_A6A2:
                 ldaa    Timer_AisChanges
                 cmpa    byte_876D
@@ -2438,7 +2438,7 @@ loc_A6D6:
                 rts
 ;;
 sub_A6E6:
-                brset   BitFlags66_t3, %100, locret_A705
+                brset   BitFlags66_t3, %00000100, locret_A705
                 ldaa    b5C_IPL1_t3
                 bita    #%10001000
                 bne     locret_A705
@@ -2446,18 +2446,18 @@ sub_A6E6:
                 oraa    CurrentAisPosition
                 bne     locret_A705
                 ldab    Counter_MainLoop
-                bitb    #%1111111
+                bitb    #%01111111
                 bne     locret_A705
-                adda    #2
+                adda    #$02
                 staa    CurrentAisPosition
                 staa    DesiredNewAisPosition
-                bset    BitFlags36_t3, %10000
+                bset    BitFlags36_t3, %00010000
 locret_A705:
                 rts
 ;;
 sub_A706:
-                bclr    Counter_Cruise_1, %1111
-                brset   StartupSwitchMirror1, %100, loc_A712
+                bclr    Counter_Cruise_1, %00001111
+                brset   StartupSwitchMirror1, %00000100, loc_A712
                 clrb
                 stab    CruiseSpeedSetpoint
                 bra     loc_A770
@@ -2468,7 +2468,7 @@ loc_A712:
                 lsld
                 lsld
                 aslb
-                adca    #0
+                adca    #$00
                 staa    Temp0
                 cmpa    byte_88DA
                 bcs     loc_A767
@@ -2477,10 +2477,10 @@ loc_A712:
                 cmpa    byte_88DB
                 bcc     loc_A767
                 inc     Counter_Cruise_1
-                brset   StartupSwitchMirror1, %100000, loc_A767
+                brset   StartupSwitchMirror1, %00100000, loc_A767
                 inc     Counter_Cruise_1
-                brset   BitFlags27, 1, loc_A749
-                brclr   StartupSwitchMirror1, %10000, loc_A767
+                brset   BitFlags27, %00000001, loc_A749
+                brclr   StartupSwitchMirror1, %00010000, loc_A767
                 inc     Counter_Cruise_1
                 inc     Counter_Cruise_1
                 bra     loc_A799
@@ -2496,15 +2496,15 @@ loc_A749:
 loc_A75C:
                 inc     Counter_Cruise_1
                 brset   CruiseStatus_1, %10000000, loc_A799
-                brclr   BitFlags24, %1000, loc_A799
+                brclr   BitFlags24, %00001000, loc_A799
 loc_A767:
-                brclr   CruiseStatus_1, %11000, loc_A770
+                brclr   CruiseStatus_1, %00011000, loc_A770
                 ldaa    Temp0
                 staa    CruiseSpeedSetpoint
 loc_A770:
                 brset   CruiseStatus_1, %10000000, loc_A77D
                 ldab    Counter_Cruise_1
-                andb    #$F
+                andb    #$0F
                 ldaa    #$11
                 mul
                 stab    Counter_Cruise_1
@@ -2516,9 +2516,9 @@ loc_A77D:
                 stab    Counter_Cruise_2
                 stab    CruiseControlVar6
                 stab    CruiseControlVar1
-                bclr    CruiseStatus_1, %11111
+                bclr    CruiseStatus_1, %00011111
                 bset    CruiseStatus_1, %10100000
-                bclr    CruiseStatus_2, %1111
+                bclr    CruiseStatus_2, %00001111
                 bset    Timer_CruiseDecelerate, %10000000
                 jmp     loc_A951
 loc_A799:
@@ -2528,36 +2528,36 @@ loc_A799:
                 eora    PIA2_Buffer_t3_Temp
                 anda    #$C0
                 beq     loc_A7FE
-                brset   BitFlags6a_t3, 1, loc_A7FE
-                bita    #%1000000
+                brset   BitFlags6a_t3, %00000001, loc_A7FE
+                bita    #%01000000
                 bne     loc_A7B0
                 lsrb
 loc_A7B0:
-                ldaa    #0
-                bitb    #%1000000
+                ldaa    #$00
+                bitb    #%01000000
                 bne     loc_A7EC
                 brset   CruiseStatus_1, %10000000, loc_A7E1
                 ldaa    Temp0
                 psha
-                ldd     #$F89
+                ldd     #$0F89
                 jsr     ThrowNonCriticalError
                 pula
                 staa    Temp0
                 ldd     #$F08
                 ldx     #$DC
-                cmpa    0,x
+                cmpa    $00,x
                 beq     loc_A7D7
                 inx
-                cmpa    0,x
+                cmpa    $00,x
                 bne     loc_A7FE
 loc_A7D7:
-                cmpb    2,x
+                cmpb    $02,x
                 bne     loc_A7FE
-                clr     0,x
-                clr     2,x
+                clr     $00,x
+                clr     $02,x
                 bra     loc_A767
 loc_A7E1:
-                ldaa    #7
+                ldaa    #$07
                 ldab    Temp1_t3
                 bitb    #%11000000
                 bne     loc_A7EC
@@ -2567,42 +2567,42 @@ loc_A7EC:
                 bne     loc_A7FE
                 ldaa    Temp0
                 psha
-                ldd     #$F10
+                ldd     #$0F10
                 jsr     ThrowNonCriticalError
                 pula
                 staa    Temp0
 loc_A7FE:
                 inc     Counter_Cruise_1
-                brset   StartupSwitchMirror1, %10, loc_A85B
+                brset   StartupSwitchMirror1, %00000010, loc_A85B
                 ldab    Timer_CruiseDecelerate
                 incb
                 bne     loc_A80B
                 decb
 loc_A80B:
                 stab    Timer_CruiseDecelerate
-                brset   CruiseStatus_1, 1, loc_A82C
+                brset   CruiseStatus_1, %00000001, loc_A82C
                 brset   Timer_CruiseDecelerate, %10000000, loc_A836
-                cmpb    #4
+                cmpb    #$04
                 bls     loc_A836
-                bset    CruiseStatus_1, %100001
-                bclr    CruiseStatus_1, %1010
-                bset    CruiseStatus_2, %100
+                bset    CruiseStatus_1, %00100001
+                bclr    CruiseStatus_1, %00001010
+                bset    CruiseStatus_2, %00000100
                 clra
                 staa    Counter_Cruise_4
                 staa    CruiseControlVar0
-                bclr    CruiseStatus_1, %100
+                bclr    CruiseStatus_1, %00000100
                 bra     loc_A836
 loc_A82C:
                 brset   CruiseStatus_1, %10000000, loc_A836
-                brset   CruiseStatus_1, %10000, loc_A849
+                brset   CruiseStatus_1, %00010000, loc_A849
                 bra     loc_A839
 loc_A836:
                 jmp     loc_AA61
 loc_A839:
                 cmpb    byte_88D1
                 bls     loc_A836
-                bset    CruiseStatus_1, %10000
-                bclr    CruiseStatus_2, %11
+                bset    CruiseStatus_1, %00010000
+                bclr    CruiseStatus_2, %00000011
                 ldaa    Temp0
                 staa    CruiseControlVar0
 loc_A849:
@@ -2617,17 +2617,17 @@ loc_A857:
                 stab    CruiseControlVar0
                 bra     loc_A836
 loc_A85B:
-                brclr   CruiseStatus_1, 1, loc_A8C2
+                brclr   CruiseStatus_1, %00000001, loc_A8C2
                 ldaa    #$7F
                 brset   CruiseStatus_1, %10000000, loc_A895
-                brset   CruiseStatus_2, %1000, loc_A874
+                brset   CruiseStatus_2, %00001000, loc_A874
                 ldab    CruiseSpeedSetpoint
                 subb    Temp0
                 bcc     loc_A874
                 cmpb    #$FC
                 bcs     loc_A895
 loc_A874:
-                brset   CruiseStatus_1, %10000, loc_A87A
+                brset   CruiseStatus_1, %00010000, loc_A87A
                 bra     loc_A89B
 loc_A87A:
                 ldaa    Counter_Cruise_4
@@ -2640,7 +2640,7 @@ loc_A87A:
                 bra     loc_A88D
 loc_A88A:
                 mul
-                adca    #0
+                adca    #$00
 loc_A88D:
                 cmpa    #$7F
                 bls     loc_A89B
@@ -2648,7 +2648,7 @@ loc_A891:
                 ldaa    #$7F
                 bra     loc_A89B
 loc_A895:
-                bset    CruiseStatus_2, 1
+                bset    CruiseStatus_2, %00000001
                 clrb
                 stab    CruiseControlVar6
 loc_A89B:
@@ -2662,8 +2662,8 @@ loc_A89B:
                 tab
 loc_A8AD:
                 bclr    CruiseStatus_1, %10010001
-                bclr    CruiseStatus_2, %1000
-                bclr    BitFlags24, %1000
+                bclr    CruiseStatus_2, %00001000
+                bclr    BitFlags24, %00001000
                 clra
                 staa    Counter_Cruise_4
                 staa    Timer_CruiseDecelerate
@@ -2673,7 +2673,7 @@ loc_A8AD:
 loc_A8C2:
                 clrb
                 stab    Timer_CruiseDecelerate
-                brset   StartupSwitchMirror1, %1000, loc_A8CC
+                brset   StartupSwitchMirror1, %00001000, loc_A8CC
                 jmp     loc_A9C3
 loc_A8CC:
                 ldab    Counter_Cruise_4
@@ -2682,24 +2682,24 @@ loc_A8CC:
                 decb
 loc_A8D2:
                 stab    Counter_Cruise_4
-                brclr   CruiseStatus_1, %10, loc_A8DB
+                brclr   CruiseStatus_1, %00000010, loc_A8DB
                 jmp     loc_A96D
 loc_A8DB:
-                brclr   CruiseStatus_1, %100000, loc_A8E2
+                brclr   CruiseStatus_1, %00100000, loc_A8E2
                 jmp     loc_AA0A
 loc_A8E2:
-                cmpb    #4
+                cmpb    #$04
                 bhi     loc_A8E9
                 jmp     loc_AA61
 loc_A8E9:
-                bset    CruiseStatus_1, %110
-                bset    CruiseStatus_2, %100
+                bset    CruiseStatus_1, %00000110
+                bset    CruiseStatus_2, %00000100
                 clra
                 staa    Counter_Cruise_2
                 brclr   CruiseStatus_1, %10000000, loc_A92E
-                bset    CruiseStatus_1, %100000
+                bset    CruiseStatus_1, %00100000
                 bclr    CruiseStatus_1, %10000000
-                bclr    BitFlags24, %1000
+                bclr    BitFlags24, %00001000
                 jsr     sub_AA29
                 staa    Temp2
                 ldaa    CruiseSpeedSetpoint
@@ -2711,7 +2711,7 @@ loc_A90F:
                 bpl     loc_A916
                 asla
                 ldaa    #$80
-                sbca    #0
+                sbca    #$00
 loc_A916:
                 adda    #$80
                 ldx     #byte_8951
@@ -2726,12 +2726,12 @@ loc_A92B:
                 clrb
                 bra     loc_A968
 loc_A92E:
-                bclr    CruiseStatus_2, %11
+                bclr    CruiseStatus_2, %00000011
                 ldaa    CruiseSpeedSetpoint
-                adda    #4
+                adda    #$04
                 staa    CruiseSpeedSetpoint
                 ldab    CruiseControlVar2
-                suba    #3
+                suba    #$03
                 cmpa    byte_88D6
                 bhi     loc_A951
                 ldab    byte_88DC
@@ -2749,7 +2749,7 @@ loc_A951:
                 ldaa    CruiseSpeedSetpoint
                 cmpa    byte_88D6
                 bls     loc_A960
-                bclr    CruiseStatus_2, %11
+                bclr    CruiseStatus_2, %00000011
                 ldaa    byte_88D6
                 bra     loc_A966
 loc_A960:
@@ -2763,12 +2763,12 @@ loc_A968:
 loc_A96A:
                 jmp     loc_AA61
 loc_A96D:
-                brset   CruiseStatus_1, %100000, loc_A96A
-                brset   CruiseStatus_1, %1000, loc_A98C
+                brset   CruiseStatus_1, %00100000, loc_A96A
+                brset   CruiseStatus_1, %00001000, loc_A98C
                 cmpb    byte_88D2
                 bls     loc_A96A
-                bset    CruiseStatus_1, %1000
-                bset    CruiseStatus_2, %1000
+                bset    CruiseStatus_1, %00001000
+                bset    CruiseStatus_2, %00001000
                 ldaa    Temp0
                 adda    byte_88E9
                 bcc     loc_A98A
@@ -2779,7 +2779,7 @@ loc_A98C:
                 ldaa    Temp0
                 cmpa    byte_88D6
                 bcs     loc_A99B
-                bset    CruiseStatus_1, %100000
+                bset    CruiseStatus_1, %00100000
                 ldab    CruiseControlVar2
                 bra     loc_A9F3
 loc_A99B:
@@ -2806,22 +2806,22 @@ loc_A9BF:
                 stab    CruiseControlVar0
                 bra     loc_A96A
 loc_A9C3:
-                bclr    CruiseStatus_1, %10
+                bclr    CruiseStatus_1, %00000010
                 ldaa    CruiseSpeedSetpoint
                 beq     loc_A9CD
-                bclr    CruiseStatus_1, %100000
+                bclr    CruiseStatus_1, %00100000
 loc_A9CD:
-                brclr   CruiseStatus_1, %1000, loc_AA0A
+                brclr   CruiseStatus_1, %00001000, loc_AA0A
                 ldaa    Counter_Cruise_4
                 cmpa    #$5D
                 bhi     loc_A9E1
-                bclr    CruiseStatus_1, %1000
-                bclr    CruiseStatus_2, %1000
+                bclr    CruiseStatus_1, %00001000
+                bclr    CruiseStatus_2, %00001000
                 stab    CruiseControlVar0
                 bra     loc_AA0A
 loc_A9E1:
                 ldaa    Temp0
-                adda    #4
+                adda    #$04
                 suba    CruiseSpeedSetpoint
                 bcc     loc_A9EB
                 clra
@@ -2832,8 +2832,8 @@ loc_A9EB:
 loc_A9F3:
                 ldaa    Temp0
                 staa    CruiseSpeedSetpoint
-                bclr    CruiseStatus_1, %1100
-                bclr    CruiseStatus_2, %1000
+                bclr    CruiseStatus_1, %000001100
+                bclr    CruiseStatus_2, %000001000
                 clra
                 staa    CruiseControlVar0
                 staa    Counter_Cruise_4
@@ -2846,8 +2846,8 @@ loc_AA0A:
                 clrb
                 stab    Counter_Cruise_4
                 ldaa    CruiseStatus_2
-                eora    #4
-                bita    #7
+                eora    #$04
+                bita    #%00000111
                 bne     loc_AA61
                 ldaa    Counter_MainLoop
                 bne     loc_AA61
@@ -2855,7 +2855,7 @@ loc_AA0A:
                 incb
                 cmpb    byte_88E1
                 bcs     loc_AA25
-                bclr    CruiseStatus_2, 4
+                bclr    CruiseStatus_2, %00000100
                 clrb
 loc_AA25:
                 stab    Counter_Cruise_2
@@ -2875,7 +2875,7 @@ loc_AA35:
                 ldab    Temp1
                 aslb
                 mul
-                adca    #0
+                adca    #$00
                 bpl     loc_AA4B
                 ldaa    #$7F
 loc_AA4B:
@@ -2885,7 +2885,7 @@ loc_AA4B:
                 bls     loc_AA56
                 dex
 loc_AA56:
-                adda    0,x
+                adda    $00,x
                 bpl     locret_AA5D
                 bvs     loc_AA5E
                 clra
@@ -2897,16 +2897,16 @@ loc_AA5E:
 loc_AA61:
                 brset   CruiseStatus_1, %10000000, loc_AA76
                 inc     Counter_Cruise_1
-                brclr   CruiseStatus_1, %11000, loc_AA76
+                brclr   CruiseStatus_1, %00011000, loc_AA76
                 inc     Counter_Cruise_1
-                brset   CruiseStatus_1, %1000, loc_AA76
+                brset   CruiseStatus_1, %00001000, loc_AA76
                 inc     Counter_Cruise_1
 loc_AA76:
                 ldaa    CruiseStatus_2
                 adda    #$10
                 cmpa    #$B0
                 bcs     loc_AA80
-                anda    #$F
+                anda    #$0F
 loc_AA80:
                 staa    CruiseStatus_2
                 anda    #$F0
@@ -2914,7 +2914,7 @@ loc_AA80:
                 jmp     loc_AD22
 loc_AA89:
                 clrb
-                brclr   BitFlags24, %10000, loc_AA91
+                brclr   BitFlags24, %00010000, loc_AA91
                 jmp     loc_AB6D
 loc_AA91:
                 ldy     #$3E
@@ -2923,8 +2923,8 @@ loc_AA91:
                 brclr   TimerOverflowsBetweenSpeedoPulses, %11111111, loc_AAAC
                 clrb
                 clra
-                brset   TimerOverflowsBetweenSpeedoPulses, %1000000, loc_AAB1
-                ldab    #6
+                brset   TimerOverflowsBetweenSpeedoPulses, %01000000, loc_AAB1
+                ldab    #$06
                 dey
 loc_AAA9:
                 ldx     #$DDD0
@@ -2936,16 +2936,16 @@ loc_AAB1:
                 ldx     VehicleSpeed_HB
                 stx     Temp0
                 std     VehicleSpeed_HB
-                brclr   CruiseStatus_2, %10, loc_AB27
+                brclr   CruiseStatus_2, %00000010, loc_AB27
                 ldaa    Counter_Cruise_2
-                brclr   CruiseStatus_2, 1, loc_AAD2
+                brclr   CruiseStatus_2, %00000001, loc_AAD2
                 cmpa    byte_88F5
                 bcc     loc_AACC
                 inca
                 staa    Counter_Cruise_2
                 bra     loc_AB27
 loc_AACC:
-                bclr    CruiseStatus_2, 1
+                bclr    CruiseStatus_2, %00000001
                 clra
                 staa    Counter_Cruise_2
 loc_AAD2:
@@ -2964,14 +2964,14 @@ loc_AADD:
                 bls     loc_AAED
                 dex
 loc_AAED:
-                ldab    0,x
-                adda    2,x
+                ldab    $00,x
+                adda    $02,x
                 bvc     loc_AAF8
                 asla
                 ldaa    #$80
-                sbca    #0
+                sbca    #$00
 loc_AAF8:
-                staa    2,x
+                staa    $02,x
                 cmpa    byte_88EE
                 bgt     loc_AB11
                 cmpa    byte_88EF
@@ -2987,11 +2987,11 @@ loc_AB11:
                 ble     loc_AB1C
                 ldab    byte_88F2
 loc_AB1C:
-                stab    0,x
+                stab    $00,x
                 clra
-                staa    2,x
+                staa    $02,x
 loc_AB21:
-                bclr    CruiseStatus_2, %10
+                bclr    CruiseStatus_2, %00000010
                 clra
                 staa    Counter_Cruise_2
 loc_AB27:
@@ -3068,7 +3068,7 @@ loc_AB82:
                 ldx     #byte_8905
                 clrb
                 ldaa    CruiseSpeedSetpoint
-                brclr   CruiseStatus_1, %11000, loc_AB92
+                brclr   CruiseStatus_1, %00011000, loc_AB92
                 ldaa    CruiseControlVar0
 loc_AB92:
                 lsrd
@@ -3076,11 +3076,11 @@ loc_AB92:
                 lsrd
                 subd    VehicleSpeed_HB
                 bcc     loc_ABDF
-                bclr    CruiseStatus_1, %100
+                bclr    CruiseStatus_1, %00000100
                 ldx     #byte_88F6
                 coma
                 comb
-                addd    #1
+                addd    #$0001
                 stab    Temp0
                 tsta
                 beq     loc_ABB1
@@ -3091,7 +3091,7 @@ loc_AB92:
 loc_ABB1:
                 lsrd
                 lsrd
-                brclr   CruiseStatus_1, %10000, loc_ABC1
+                brclr   CruiseStatus_1, %00010000, loc_ABC1
                 ldx     #byte_8999
                 tsta
                 beq     loc_ABF5
@@ -3106,17 +3106,17 @@ loc_ABC1:
                 ldab    Temp0
                 cmpa    byte_88D0
                 bcs     loc_ABF5
-                ldaa    #5
+                ldaa    #$05
                 bra     loc_ABD8
 loc_ABD6:
-                ldaa    #$F
+                ldaa    #$0F
 loc_ABD8:
                 oraa    #$80
                 staa    CruiseControlVar2
 loc_ABDC:
                 jmp     loc_AD22
 loc_ABDF:
-                brclr   CruiseStatus_1, %1100, loc_ABE8
+                brclr   CruiseStatus_1, %00001100, loc_ABE8
                 ldx     #byte_891C
                 lsrd
                 lsrd
@@ -3127,7 +3127,7 @@ loc_ABE8:
 loc_ABED:
                 cmpb    byte_88D3
                 bcc     loc_ABF5
-                bclr    CruiseStatus_1, %100
+                bclr    CruiseStatus_1, %00000100
 loc_ABF5:
                 tba
 loc_ABF6:
@@ -3163,11 +3163,11 @@ loc_AC2A:
                 lsld
                 addd    Temp0
                 std     Temp0
-                brset   CruiseStatus_2, %100, loc_AC5E
+                brset   CruiseStatus_2, %00000100, loc_AC5E
                 bpl     loc_AC3D
                 coma
                 comb
-                addd    #1
+                addd    #$0001
 loc_AC3D:
                 tsta
                 beq     loc_AC42
@@ -3184,7 +3184,7 @@ loc_AC42:
                 bpl     loc_AC56
                 coma
                 comb
-                addd    #1
+                addd    #$0001
 loc_AC56:
                 tsta
                 bne     loc_AC5E
@@ -3201,7 +3201,7 @@ loc_AC64:
                 bpl     loc_AC71
                 coma
                 comb
-                addd    #1
+                addd    #$0001
 loc_AC71:
                 cpd     Temp2
                 bcc     loc_AC82
@@ -3228,7 +3228,7 @@ loc_AC95:
                 tsta
                 bpl     loc_ACC4
                 oraa    byte_88E3
-                brclr   CruiseStatus_1, %10000, loc_ACA6
+                brclr   CruiseStatus_1, %00010000, loc_ACA6
                 adda    byte_88E5
                 bra     loc_ACEE
 loc_ACA6:
@@ -3249,11 +3249,11 @@ loc_ACC4:
                 cmpb    byte_88D5
                 bcc     loc_ACEE
                 oraa    byte_88E2
-                brclr   CruiseStatus_1, %1000, loc_ACD5
+                brclr   CruiseStatus_1, %00001000, loc_ACD5
                 adda    byte_88E4
                 bra     loc_ACEE
 loc_ACD5:
-                brset   CruiseStatus_1, %100, loc_ACEE
+                brset   CruiseStatus_1, %00000100, loc_ACEE
                 staa    Temp4
                 ldx     #byte_89A8
                 stx     Temp2
@@ -3294,7 +3294,7 @@ sub_ACF2:
                 jsr     sub_E372
                 ldab    Temp2
                 mul
-                adca    #0
+                adca    #$00
                 rts
 loc_AD22:
                 ldaa    PIA2_Buffer_t3
@@ -3303,7 +3303,7 @@ loc_AD22:
                 ldab    CruiseControlVar2
                 beq     loc_AD3D
                 bpl     loc_AD3F
-                brclr   CruiseStatus_1, %10000, loc_AD3B
+                brclr   CruiseStatus_1, %00010000, loc_AD3B
                 ldab    Counter_Cruise_4
                 incb
                 beq     loc_AD3B
@@ -3313,12 +3313,12 @@ loc_AD3B:
 loc_AD3D:
                 oraa    #$80
 loc_AD3F:
-                bclr    BitFlags6a_t3, 1
+                bclr    BitFlags6a_t3, %00000001
                 tab
                 eorb    PIA2_Buffer_t3
                 andb    #$C0
                 beq     loc_AD4C
-                bset    BitFlags6a_t3, 1
+                bset    BitFlags6a_t3, %00000001
 loc_AD4C:
                 staa    PIA2_Buffer_t3
                 ldab    CruiseControlVar2
@@ -3326,15 +3326,15 @@ loc_AD4C:
                 lsld
                 tstb
                 beq     loc_AD5B
-                subb    #2
+                subb    #$02
                 beq     loc_AD5B
                 lsrd
 loc_AD5B:
                 stab    CruiseControlVar2
                 rts
 loc_AD5E:
-                brclr   CruiseStatus_2, 1, locret_AD65
-                bset    CruiseStatus_2, %10
+                brclr   CruiseStatus_2, %00000001, locret_AD65
+                bset    CruiseStatus_2, %00000010
 locret_AD65:
                 rts
 ;;
@@ -3344,25 +3344,25 @@ locret_AD65:
 ;;
 sub_B800:
                 ldab    Counter_MainLoop
-                bitb    #7
+                bitb    #$07
                 beq     loc_B809
                 jmp     loc_B87F
 loc_B809:
                 ldaa    LastCoolantTempVolts
                 ldx     #byte_E27A
-                brclr   PIA3_Buffer_t3, $10, loc_B833
+                brclr   PIA3_Buffer_t3, $00000010, loc_B833
                 ldx     #byte_E25F
                 cmpa    #$40
                 bcc     loc_B837
 loc_B819:
-                brset   BitFlags66_t3, 3, loc_B824
+                brset   BitFlags66_t3, %00000011, loc_B824
                 ldab    BitFlags66_t3
-                addb    #1
+                addb    #$01
                 stab    BitFlags66_t3
                 rts
 loc_B824:
                 sei
-                bclr    BitFlags66_t3, 3
+                bclr    BitFlags66_t3, %00000011
                 ldab    PIA3_Buffer_t3
                 eorb    #$10
                 stab    PIA3_Buffer_t3
@@ -3373,13 +3373,13 @@ loc_B833:
                 cmpa    #$DC
                 bcc     loc_B819
 loc_B837:
-                bclr    BitFlags66_t3, %11
+                bclr    BitFlags66_t3, %00000011
                 cmpa    byte_89E8
                 bhi     loc_B863
                 cmpa    byte_89E7
                 bcs     loc_B868
-                brclr   b5C_IPL1_t3, %10, loc_B84F
-                ldaa    #2
+                brclr   b5C_IPL1_t3, %00000010, loc_B84F
+                ldaa    #$02
                 jsr     sub_D5F4
                 bra     loc_B87F
 loc_B84F:
@@ -3390,7 +3390,7 @@ loc_B84F:
                 decb
                 bra     loc_B85F
 loc_B85A:
-                cmpa    #3
+                cmpa    #$03
                 bcs     loc_B87F
                 incb
 loc_B85F:
@@ -3402,10 +3402,10 @@ loc_B863:
 loc_B868:
                 ldd     #$1E9E
 loc_B86B:
-                brset   b5C_IPL1_t3, %10, loc_B87F
+                brset   b5C_IPL1_t3, %00000010, loc_B87F
                 jsr     ThrowNonCriticalError
                 bcc     loc_B87F
-                bset    b5C_IPL1_t3, %10
+                bset    b5C_IPL1_t3, %00000010
                 ldaa    byte_89E9
                 staa    CoolantTemp
                 clr     Timer_ThermostatDiagnostics
@@ -3418,26 +3418,26 @@ loc_B87F:
 ;;
 sub_B88A:
                 ldab    Counter_MainLoop
-                bitb    #7
+                bitb    #$07
                 beq     loc_B893
                 jmp     loc_B909
 loc_B893:
                 ldaa    LastChargeTempVolts
                 ldx     #byte_E27A
-                brclr   PIA3_Buffer_t3, %100000, loc_B8C0
+                brclr   PIA3_Buffer_t3, %00100000, loc_B8C0
                 ldx     #byte_E25F
                 cmpa    #$40
                 bcc     loc_B8C4
 loc_B8A3:
-                brset   BitFlags23, %11, loc_B8B1
+                brset   BitFlags23, %00000011, loc_B8B1
                 ldab    BitFlags23
-                addb    #1
+                addb    #$01
                 stab    BitFlags23
                 ldaa    LastChargeTempVolts
                 bra     loc_B8C7
 loc_B8B1:
                 sei
-                bclr    BitFlags23, %11
+                bclr    BitFlags23, %00000011
                 ldab    PIA3_Buffer_t3
                 eorb    #$20
                 stab    PIA3_Buffer_t3
@@ -3448,14 +3448,14 @@ loc_B8C0:
                 cmpa    #$DC
                 bcc     loc_B8A3
 loc_B8C4:
-                bclr    BitFlags23, %11
+                bclr    BitFlags23, %00000011
 loc_B8C7:
                 cmpa    byte_89EB
                 bhi     loc_B8F0
                 cmpa    byte_89EA
                 bcs     loc_B8F5
-                brclr   b5C_IPL1_t3, 1, loc_B8DC
-                ldaa    #1
+                brclr   b5C_IPL1_t3, %00000001, loc_B8DC
+                ldaa    #$01
                 jsr     sub_D5F4
                 bra     loc_B909
 loc_B8DC:
@@ -3466,7 +3466,7 @@ loc_B8DC:
                 decb
                 bra     loc_B8EC
 loc_B8E7:
-                cmpa    #3
+                cmpa    #$03
                 bcs     loc_B909
                 incb
 loc_B8EC:
@@ -3478,10 +3478,10 @@ loc_B8F0:
 loc_B8F5:
                 ldd     #$399E
 loc_B8F8:
-                brset   b5C_IPL1_t3, 1, loc_B909
+                brset   b5C_IPL1_t3, %00000001, loc_B909
                 jsr     ThrowNonCriticalError
                 bcc     loc_B909
-                bset    b5C_IPL1_t3, 1
+                bset    b5C_IPL1_t3, %00000001
                 ldaa    byte_89EC
                 staa    ChargeTempVolts
 loc_B909:
@@ -3492,7 +3492,7 @@ loc_B909:
                 rts
 ;;
 sub_B914:
-                brclr   BitFlags24, %10000, loc_B92D
+                brclr   BitFlags24, %00010000, loc_B92D
                 sei
                 ldd     VehicleSpeed_HB
                 lsrd
@@ -3532,17 +3532,17 @@ loc_B94A:
                 lsld
                 lsld
                 aslb
-                adca    #0
+                adca    #$00
                 ldab    byte_801E
-                brset   BitFlags66_t3, %100, loc_B95F
-                addb    #3
+                brset   BitFlags66_t3, %00000100, loc_B95F
+                addb    #$03
 loc_B95F:
                 cba
                 bcs     loc_B967
-                bset    BitFlags66_t3, %100
+                bset    BitFlags66_t3, %00000100
                 bra     loc_B96A
 loc_B967:
-                bclr    BitFlags66_t3, %100
+                bclr    BitFlags66_t3, %00000100
 loc_B96A:
                 ldd     VehicleSpeed_HB
                 lsld
@@ -3555,7 +3555,7 @@ loc_B973:
                 rts
 ;;
 sub_B976:
-                brclr   IPL1, %1000000, locret_B9B9
+                brclr   IPL1, %01000000, locret_B9B9
                 ldaa    MapValue2
                 cmpa    #$80
                 bcs     locret_B9B9
@@ -3597,10 +3597,10 @@ locret_B9B9:
                 rts
 ;;
 sub_B9BA:
-                brclr   StartupSwitchMirror1, %10000, loc_B9C1
-                bclr    BitFlags2a, 1
+                brclr   StartupSwitchMirror1, %00010000, loc_B9C1
+                bclr    BitFlags2a, %00000001
 loc_B9C1:
-                brset   BitFlags27, 1, loc_B9DF
+                brset   BitFlags27, %00000001, loc_B9DF
                 ldab    BitFlags68_t3
                 andb    #$10
                 stab    Temp5
@@ -3611,7 +3611,7 @@ loc_B9C1:
                 eorb    BitFlags68_t3
                 orab    #$80
                 stab    BitFlags68_t3
-                bclr    BitFlags66_t3, 4
+                bclr    BitFlags66_t3, %00000100
                 rts
 loc_B9DF:
                 bclr    BitFlags68_t3, %10010000
@@ -3621,40 +3621,40 @@ locret_B9E2:
 sub_B9E3:
                 brclr   BitFlags27, %10000000, loc_BA07
                 ldab    BitFlags68_t3
-                andb    #1
+                andb    #$01
                 stab    Temp5
                 ldab    StartupSwitchMirror1
-                andb    #1
+                andb    #$01
                 eorb    Temp5
                 beq     locret_BA0D
                 eorb    BitFlags68_t3
-                brset   BitFlags36_t3, %100000, loc_BA03
-                brclr   IPL1, %1000000, loc_BA03
-                orab    #2
+                brset   BitFlags36_t3, %00100000, loc_BA03
+                brclr   IPL1, %01000000, loc_BA03
+                orab    #$02
 loc_BA03:
                 stab    BitFlags68_t3
                 bra     locret_BA0D
 loc_BA07:
-                bclr    BitFlags68_t3, %10
-                bset    BitFlags68_t3, 1
+                bclr    BitFlags68_t3, %00000010
+                bset    BitFlags68_t3, %00000001
 locret_BA0D:
                 rts
 ;;
 sub_BA0E:
                 clr     Temp4
                 clr     Temp3
-                brset   Ram_30, %100, loc_BA25
+                brset   Ram_30, %00000100, loc_BA25
                 ldaa    LastTpsVolts
                 cmpa    byte_8A02
                 bcc     loc_BA25
                 ldaa    Ram_30
-                adda    #1
+                adda    #$01
                 staa    Ram_30
 loc_BA25:
                 ldaa    b5C_IPL1_t3
                 bita    #$88
                 bne     loc_BA7A
-                brset   Ram_30, %1000, loc_BA49
+                brset   Ram_30, %00001000, loc_BA49
                 ldaa    EngineRpm_HB
                 cmpa    byte_8A00
                 bcs     loc_BA55
@@ -3675,7 +3675,7 @@ loc_BA49:
                 com     Temp4
                 bra     loc_BA87
 loc_BA55:
-                brset   BitFlags2e, %1000, loc_BA6E
+                brset   BitFlags2e, %00001000, loc_BA6E
                 ldaa    VehicleSpeedx8_Scaled
                 cmpa    byte_89FF
                 bcs     loc_BA7A
@@ -3700,31 +3700,31 @@ loc_BA7A:
                 bcs     loc_BACF
 loc_BA87:
                 cli
-                brclr   Counter_MainLoop, 1, loc_BAED
+                brclr   Counter_MainLoop, %00000001, loc_BAED
                 ldd     #$1BA0
                 bra     loc_BA99
 loc_BA91:
                 cli
-                brclr   Counter_MainLoop, 1, loc_BAED
+                brclr   Counter_MainLoop, %00000001, loc_BAED
                 ldd     #$1AA0
 loc_BA99:
-                brset   b5C_IPL1_t3, %1000000, loc_BAB9
+                brset   b5C_IPL1_t3, %01000000, loc_BAB9
                 jsr     ThrowNonCriticalError
                 ldaa    TpsVolts
                 bcc     loc_BAED
-                bset    b5C_IPL1_t3, %1000000
+                bset    b5C_IPL1_t3, %01000000
                 tst     Temp4
                 beq     loc_BAB1
-                bset    Ram_30, %1000
+                bset    Ram_30, %00001000
                 bra     loc_BAB9
 loc_BAB1:
                 tst     Temp3
                 beq     loc_BAB9
-                bset    BitFlags2e, %1000
+                bset    BitFlags2e, %00001000
 loc_BAB9:
                 ldaa    #$40
                 staa    LowestSessionTpsVolts
-                brclr   IPL1, %1000000, loc_BACB
+                brclr   IPL1, %01000000, loc_BACB
                 ldab    MapValue
                 cmpb    byte_89FD
                 bcs     loc_BACB
@@ -3733,16 +3733,16 @@ loc_BACB:
                 staa    TpsVolts
                 bra     loc_BAED
 loc_BACF:
-                brclr   b5C_IPL1_t3, %1000000, loc_BAEB
+                brclr   b5C_IPL1_t3, %01000000, loc_BAEB
                 cli
                 ldaa    Counter_MainLoop
-                bita    #7
+                bita    #$07
                 bne     loc_BAB9
-                ldaa    #7
+                ldaa    #$07
                 jsr     sub_D5F4
-                brset   b5C_IPL1_t3, %1000000, loc_BAB9
-                bclr    BitFlags2e, %1000
-                bclr    Ram_30, %1000
+                brset   b5C_IPL1_t3, %01000000, loc_BAB9
+                bclr    BitFlags2e, %00001000
+                bclr    Ram_30, %00001000
                 bra     loc_BAB9
 loc_BAEB:
                 staa    TpsVolts
@@ -3751,7 +3751,7 @@ loc_BAED:
                 brset   BitFlags66_t3, %10000000, loc_BB17
                 ldab    Timer_CountdownFromStartRunForAisFeedback
                 bne     loc_BB17
-                brclr   IPL1, %1000000, loc_BB17
+                brclr   IPL1, %01000000, loc_BB17
                 ldab    KeyOnOrEngineRunningTime
                 beq     loc_BB17
                 cmpa    LowestSessionTpsVolts
@@ -3760,13 +3760,13 @@ loc_BAED:
                 deca
                 bne     loc_BB1A
                 ldab    LowestSessionTpsVolts
-                cmpb    #1
+                cmpb    #$01
                 bcc     loc_BB11
                 ldab    byte_801B
 loc_BB11:
                 decb
                 stab    LowestSessionTpsVolts
-                bclr    BitFlags66_t3, %10000
+                bclr    BitFlags66_t3, %00010000
 loc_BB17:
                 ldaa    byte_8018
 loc_BB1A:
@@ -3791,12 +3791,12 @@ loc_BB27:
                 orab    #$10
 loc_BB3F:
                 orab    #$80
-                bclr    BitFlags2a, 1
+                bclr    BitFlags2a, %00000001
                 bra     loc_BB60
 loc_BB46:
                 tstb
                 bpl     loc_BB5E
-                brset   BitFlags68_t3, %100, loc_BB4F
+                brset   BitFlags68_t3, %00000100, loc_BB4F
                 orab    #$20
 loc_BB4F:
                 ldx     #byte_876F
@@ -3805,14 +3805,14 @@ loc_BB4F:
                 bcc     loc_BB5A
                 inx
 loc_BB5A:
-                ldaa    0,x
+                ldaa    $00,x
                 staa    Timer_CountdownFromStartRunForAisFeedback
 loc_BB5E:
                 andb    #$7F
 loc_BB60:
-                bitb    #8
+                bitb    #$08
                 bne     loc_BB85
-                brclr   StartupSwitchMirror1, %100000, loc_BB85
+                brclr   StartupSwitchMirror1, %00100000, loc_BB85
                 ldaa    EngineRpm_HB
                 cmpa    byte_801C
                 bcs     loc_BB85
@@ -3826,7 +3826,7 @@ loc_BB60:
                 ldaa    byte_801B
 loc_BB81:
                 staa    LowestSessionTpsVolts
-                orab    #8
+                orab    #$08
 loc_BB85:
                 ldaa    LowestSessionTpsVolts
                 adda    #$30
@@ -3887,11 +3887,11 @@ loc_BBDB:
 sub_BBDE:
                 ldab    #$1C
 loc_BBE0:
-                subb    #2
+                subb    #$02
                 bls     loc_BBEF
                 ldx     #byte_8037
                 abx
-                ldx     0,x
+                ldx     $00,x
                 cpx     EngineRpm_HB
                 bcc     loc_BBE0
                 lsrb
@@ -3922,7 +3922,7 @@ sub_BBF2:
                 addd    Temp0
                 lsrd
                 lsrd
-                oraa    #0
+                oraa    #$00
                 beq     loc_BC24
                 ldab    #$FF
 loc_BC24:
@@ -3938,15 +3938,15 @@ sub_BC27:
 loc_BC33:
                 ldab    byte_8020
 loc_BC36:
-                brclr   BitFlags66_t3, %1000000, loc_BC3C
-                subb    #3
+                brclr   BitFlags66_t3, %01000000, loc_BC3C
+                subb    #$03
 loc_BC3C:
                 cmpb    TpsVolts
                 bcc     loc_BC44
-                bset    BitFlags66_t3, %1000000
+                bset    BitFlags66_t3, %01000000
                 rts
 loc_BC44:
-                bclr    BitFlags66_t3, %1000000
+                bclr    BitFlags66_t3, %01000000
                 rts
 ;;
 sub_BC48:
@@ -3961,7 +3961,7 @@ sub_BC48:
                 xgdx
                 ldd     Temp1
                 aslb
-                adca    #0
+                adca    #$00
                 tab
                 abx
                 ldd     Temp1
@@ -3981,7 +3981,7 @@ sub_BC48:
                 ldab    AmbientAirTempVolts2
                 subb    #$10
                 bcc     loc_BC97
-                ldab    #0
+                ldab    #$00
                 bra     loc_BC97
 loc_BC8B:
                 cmpa    #$10
@@ -3994,7 +3994,7 @@ loc_BC97:
                 stab    AmbientAirTempVolts2
                 bra     locret_BCAF
 loc_BC9B:
-                brset   b5C_IPL1_t3, %10, locret_BCAF
+                brset   b5C_IPL1_t3, %00000010, locret_BCAF
                 ldaa    CoolantTemp
                 cmpa    #$C1
                 bcc     locret_BCAF
@@ -4014,10 +4014,10 @@ sub_BCB0:
                 addb    #$F8
                 bcs     loc_BCC6
                 mul
-                adca    #0
+                adca    #$00
                 bra     loc_BCD2
 loc_BCC6:
-                cmpb    #8
+                cmpb    #$08
                 bhi     loc_BCD2
                 mul
                 adca    Temp5
@@ -4031,13 +4031,13 @@ loc_BCD2:
 sub_BCD5:
                 brset   BitFlags6a_t3, %1000000, locret_BD16
                 ldaa    PPROG_EEPROMControlReg
-                bita    #2
+                bita    #$02
                 bne     locret_BD16
                 ldaa    $B7E1
                 coma
                 cmpa    $B7E0
                 beq     loc_BCEB
-                ldaa    #8
+                ldaa    #$08
 loc_BCEB:
                 staa    BodyComputerBatteryVoltsOutput
                 ldaa    $B615
@@ -4047,9 +4047,9 @@ loc_BCEB:
                 clra
                 bra     loc_BD05
 loc_BCF9:
-                cmpa    #$C
+                cmpa    #$0C
                 ble     loc_BCFF
-                ldaa    #$C
+                ldaa    #$0C
 loc_BCFF:
                 cmpa    #$F4
                 bge     loc_BD05
@@ -4059,10 +4059,10 @@ loc_BD05:
                 ldaa    $B7EF
                 cmpa    #$55
                 bne     loc_BD13
-                bset    BitFlags6a_t3, %10
+                bset    BitFlags6a_t3, %00000010
                 bra     locret_BD16
 loc_BD13:
-                bclr    BitFlags6a_t3, %10
+                bclr    BitFlags6a_t3, %00000010
 locret_BD16:
                 rts
 ;;
@@ -4074,10 +4074,10 @@ sub_BD17:
                 bne     loc_BD34
                 ldaa    Ram_CC
                 beq     loc_BD2D
-                brset   PIA2_Buffer_t3, %10, loc_BD34
+                brset   PIA2_Buffer_t3, %00000010, loc_BD34
                 bra     loc_BD31
 loc_BD2D:
-                brclr   PIA2_Buffer_t3, %10, loc_BD34
+                brclr   PIA2_Buffer_t3, %00000010, loc_BD34
 loc_BD31:
                 ldx     #byte_811F
 loc_BD34:
@@ -4088,7 +4088,7 @@ loc_BD34:
                 ldaa    #$7F
 loc_BD3F:
                 staa    Temp5
-                brclr   IPL1, %10000, loc_BD5E
+                brclr   IPL1, %00010000, loc_BD5E
                 ldx     #byte_81BC
                 ldaa    EngineRPM_3D
                 ldab    MapValue2
@@ -4105,10 +4105,10 @@ loc_BD5E:
                 ldx     #byte_8258
                 ldab    RPMTableOffset
                 abx
-                ldaa    0,x
+                ldaa    $00,x
                 cmpa    MapValue2
                 bcc     loc_BDAF
-                bset    BitFlags23, %1000000
+                bset    BitFlags23, %01000000
                 ldx     #byte_8266
                 ldaa    CoolantTemp_fromTable_Scaled
                 jsr     sub_E3AA
@@ -4139,32 +4139,32 @@ loc_BDAA:
                 stab    Temp4
                 bra     loc_BDB2
 loc_BDAF:
-                bclr    BitFlags23, %1000000
+                bclr    BitFlags23, %01000000
 loc_BDB2:
                 jsr     sub_BF03
                 ldaa    byte_827A
                 beq     loc_BDCD
                 brset   BitFlags66_t3, %10000000, loc_BDCD
                 ldab    VehicleSpeedx8_Scaled
-                brclr   BitFlags23, %10000, loc_BDCA
-                adda    #3
+                brclr   BitFlags23, %00010000, loc_BDCA
+                adda    #$03
                 bcc     loc_BDCA
                 ldaa    #$FF
 loc_BDCA:
                 cba
                 bcc     loc_BDD2
 loc_BDCD:
-                bclr    BitFlags23, %10000
+                bclr    BitFlags23, %00010000
                 bra     loc_BDD5
 loc_BDD2:
-                bset    BitFlags23, %10000
+                bset    BitFlags23, %00010000
 loc_BDD5:
                 ldaa    byte_827A
                 beq     loc_BE0E
                 ldx     #byte_827C
                 ldaa    CoolantTemp_fromTable_Scaled
                 jsr     sub_E3AA
-                brclr   BitFlags23, %10000, loc_BDF2
+                brclr   BitFlags23, %00010000, loc_BDF2
                 addb    byte_827B
                 bpl     loc_BDED
                 ldab    #$7F
@@ -4178,7 +4178,7 @@ loc_BDF2:
                 jsr     sub_E3AA
                 ldaa    Temp4
                 mul
-                adca    #0
+                adca    #$00
                 staa    Temp4
                 jsr     sub_BF03
                 staa    Temp0
@@ -4186,9 +4186,9 @@ loc_BDF2:
 loc_BE0E:
                 ldaa    Temp5
                 staa    Temp0
-                brclr   IPL1, %1000000, loc_BE71
+                brclr   IPL1, %01000000, loc_BE71
                 brset   BitFlags66_t3, %10000000, loc_BE71
-                brset   BitFlags66_t3, %100, loc_BE71
+                brset   BitFlags66_t3, %00000100, loc_BE71
                 ldab    Timer_CountdownFromStartRunForAisFeedback
                 bne     loc_BE79
                 ldab    TimerOverflowsBetweenCamPulses
@@ -4218,7 +4218,7 @@ loc_BE51:
                 lsrd
                 lsrd
                 bcc     loc_BE5A
-                addd    #1
+                addd    #$0001
 loc_BE5A:
                 tsta
                 beq     loc_BE5F
@@ -4240,19 +4240,19 @@ loc_BE79:
                 clr     SparkScatterIncrement
 loc_BE7F:
                 ldaa    byte_8665
-                brset   BitFlags6d_t3, %1000, loc_BE91
-                brset   BitFlags2a, 1, loc_BE8E
-                brclr   b5C_IPL1_t3, %10, loc_BE96
+                brset   BitFlags6d_t3, %00001000, loc_BE91
+                brset   BitFlags2a, %00000001, loc_BE8E
+                brclr   b5C_IPL1_t3, %00000010, loc_BE96
 loc_BE8E:
                 ldaa    byte_8664
 loc_BE91:
                 staa    Temp0
                 bra     loc_BEDC
 loc_BE96:
-                ldd     #0
-                brclr   BitFlags2c, %1000, loc_BEA4
+                ldd     #$00
+                brclr   BitFlags2c, %00001000, loc_BEA4
                 sei
-                bclr    BitFlags2c, %1000
+                bclr    BitFlags2c, %00001000
                 cli
                 bra     loc_BEE4
 loc_BEA4:
@@ -4260,7 +4260,7 @@ loc_BEA4:
                 decb
                 cmpb    Ram_4C
                 beq     loc_BEE1
-                brclr   IPL1, 1, loc_BEE1
+                brclr   IPL1, %00000001, loc_BEE1
                 brset   BitFlags66_t3, %10000000, loc_BEE1
                 cmpa    Ram_4C
                 bls     loc_BEE1
@@ -4302,7 +4302,7 @@ loc_BEF5:
                 clra
 loc_BEF6:
                 ldab    UNe_6481
-                bitb    #2
+                bitb    #$02
                 beq     loc_BF00
                 ldaa    UNe_6482
 loc_BF00:
@@ -4337,22 +4337,22 @@ loc_BF31:
                 cpd     DistributorFallingEdgePulsewidth_HB
                 bcs     loc_BF5C
                 ldx     #SwitchPortAccessReg1
-                brset   IPL1, %1000001, loc_BF62
+                brset   IPL1, %01000001, loc_BF62
                 brset   BitFlags23, %10000000, loc_BF4F
-                brclr   0,x, %100000, loc_BF62
+                brclr   $00,x, %00100000, loc_BF62
                 bset    BitFlags23, %10000000
                 ldaa    byte_807E
                 staa    Ram_7F
                 bra     locret_BF65
 loc_BF4F:
-                brset   0,x, %100000, locret_BF65
+                brset   $00,x, %00100000, locret_BF65
                 ldaa    Ram_7F
                 beq     locret_BF65
                 deca
                 staa    Ram_7F
                 bra     locret_BF65
 loc_BF5C:
-                bclr    IPL1, %1000001
+                bclr    IPL1, %01000001
                 bclr    BitFlags23, %10000000
 loc_BF62:
                 clr     Ram_7F
@@ -4360,7 +4360,7 @@ locret_BF65:
                 rts
 ;;
 sub_BF66:
-                brset   IPL1, %1000000, locret_BF7F
+                brset   IPL1, %01000000, locret_BF7F
                 ldaa    CoolantTemp_fromTable_Scaled
                 ldx     #byte_8449
                 jsr     sub_E3AA
@@ -4396,23 +4396,23 @@ sub_BF80:
 loc_BFA9:
                 cpd     EngineRpm_HB
                 bcc     loc_BFE2
-                brclr   BitFlags2c, %1000000, loc_BFB9
+                brclr   BitFlags2c, %01000000, loc_BFB9
                 jsr     sub_C03B
-                brset   BitFlags2c, %1000000, loc_BFE2
+                brset   BitFlags2c, %01000000, loc_BFE2
 loc_BFB9:
                 ldaa    byte_8652
                 bne     loc_BFC4
                 brclr   BitFlags66_t3, %10000000, loc_BFE9
                 bra     loc_BFE2
 loc_BFC4:
-                cmpa    #1
+                cmpa    #$01
                 bne     loc_BFD2
                 ldd     Ram_73
                 cpd     byte_8653
                 bcs     loc_BFE9
                 bra     loc_BFE2
 loc_BFD2:
-                cmpa    #2
+                cmpa    #$02
                 bne     loc_BFE2
                 ldd     Ram_73
                 cpd     byte_8653
@@ -4428,38 +4428,38 @@ loc_BFE9:
                 bset    BitFlags2c, %11000000
 loc_BFF0:
                 ldd     byte_8655
-                brclr   BitFlags2c, %10, loc_BFFF
+                brclr   BitFlags2c, %00000010, loc_BFFF
                 subd    byte_8657
                 bcc     loc_BFFF
-                ldd     #0
+                ldd     #$00
 loc_BFFF:
                 cpd     EngineRpm_HB
                 bcc     loc_C01B
                 ldaa    byte_8659
-                brclr   BitFlags2c, %10, loc_C012
+                brclr   BitFlags2c, %00000010, loc_C012
                 suba    byte_865A
                 bcc     loc_C012
-                ldaa    #0
+                ldaa    #$00
 loc_C012:
                 cmpa    VehicleSpeedx8_Scaled
                 bcc     loc_C01B
-                bset    BitFlags2c, %10
+                bset    BitFlags2c, %00000010
                 bra     loc_C01E
 loc_C01B:
-                bclr    BitFlags2c, %10
+                bclr    BitFlags2c, %00000010
 loc_C01E:
                 ldd     byte_865B
-                brclr   BitFlags2c, 1, loc_C02D
+                brclr   BitFlags2c, %00000001, loc_C02D
                 subd    byte_865D
                 bcc     loc_C02D
-                ldd     #0
+                ldd     #$00
 loc_C02D:
                 cpd     EngineRpm_HB
                 bcc     loc_C037
-                bset    BitFlags2c, 1
+                bset    BitFlags2c, %00000001
                 bra     locret_C03A
 loc_C037:
-                bclr    BitFlags2c, 1
+                bclr    BitFlags2c, %00000001
 locret_C03A:
                 rts
 ;;
@@ -4480,19 +4480,19 @@ loc_C050:
                 brset   BitFlags66_t3, %10000000, loc_C075
                 bra     locret_C078
 loc_C05D:
-                cmpa    #1
+                cmpa    #$01
                 bne     loc_C068
                 cpx     byte_864F
                 bcc     loc_C075
                 bra     locret_C078
 loc_C068:
-                cmpa    #2
+                cmpa    #$02
                 bne     loc_C075
                 brclr   BitFlags66_t3, %10000000, locret_C078
                 cpx     byte_864F
                 bcs     locret_C078
 loc_C075:
-                bclr    BitFlags2c, %1000000
+                bclr    BitFlags2c, %01000000
 locret_C078:
                 rts
 ;;
@@ -4500,7 +4500,7 @@ sub_C079:
                 ldx     #byte_84B4
                 ldd     EngineRpm_HB
                 aslb
-                adca    #0
+                adca    #$00
                 jsr     sub_E372
                 staa    Temp0
                 ldab    MapValue
@@ -4518,7 +4518,7 @@ sub_C09F:
                 ldaa    CoolantTemp
                 cmpa    byte_8637
                 bcc     loc_C0AF
-                ldd     #0
+                ldd     #$00
                 staa    Ram_82
                 std     Counter_F_HB
                 bra     locret_C10B
@@ -4526,7 +4526,7 @@ loc_C0AF:
                 ldab    EngineRpmTemp
                 cmpb    byte_8638
                 bcs     loc_C0BA
-                brset   BitFlags66_t3, $40, loc_C0D9
+                brset   BitFlags66_t3, %01000000, loc_C0D9
 loc_C0BA:
                 ldaa    EngineRpmTemp
                 ldab    RPM_Scaled_maybe
@@ -4541,7 +4541,7 @@ loc_C0CD:
                 ldaa    byte_863E
                 staa    Ram_82
 loc_C0D2:
-                ldd     #0
+                ldd     #$00
                 std     Counter_F_HB
                 bra     locret_C10B
 loc_C0D9:
@@ -4556,7 +4556,7 @@ loc_C0D9:
 loc_C0EC:
                 ldaa    byte_863B
                 staa    Ram_82
-                ldd     #0
+                ldd     #$00
                 std     Counter_F_HB
 loc_C0F6:
                 bra     locret_C10B
@@ -4587,10 +4587,10 @@ sub_C10C:
                 eora    Ram_A1
                 anda    #$80
                 beq     loc_C12A
-                bset    BitFlags29, 1
+                bset    BitFlags29, %00000001
                 bra     loc_C12D
 loc_C12A:
-                bclr    BitFlags29, 1
+                bclr    BitFlags29, %00000001
 loc_C12D:
                 ldaa    BitFlags29
                 staa    Ram_A1
@@ -4605,7 +4605,7 @@ loc_C13E:
                 staa    Ram_0B
                 staa    ValueFromAdaptiveMemory
 loc_C144:
-                brclr   Ram_A1, %1000000, loc_C19D
+                brclr   Ram_A1, %01000000, loc_C19D
                 ldaa    Ram_9D
                 suba    Ram_9E
                 bcc     loc_C14F
@@ -4627,30 +4627,30 @@ loc_C14F:
                 cmpa    byte_8628
                 bcs     loc_C182
                 ldx     #byte_8629
-                brset   BitFlags2c, %100000, loc_C19F
-                bset    BitFlags2c, %100000
-                bclr    BitFlags2c, %10000
+                brset   BitFlags2c, %00100000, loc_C19F
+                bset    BitFlags2c, %00100000
+                bclr    BitFlags2c, %00010000
                 bra     loc_C194
 loc_C182:
                 cmpa    byte_8627
                 bcc     loc_C19D
 loc_C187:
                 ldx     #byte_862E
-                brset   BitFlags2c, %10000, loc_C19F
-                bset    BitFlags2c, %10000
-                bclr    BitFlags2c, %100000
+                brset   BitFlags2c, %00010000, loc_C19F
+                bset    BitFlags2c, %00010000
+                bclr    BitFlags2c, %00100000
 loc_C194:
                 clra
                 clrb
                 std     Ram_9B
-                ldaa    0,x
+                ldaa    $00,x
                 staa    Ram_99
 locret_C19C:
                 rts
 loc_C19D:
                 bra     loc_C1FB
 loc_C19F:
-                brclr   Ram_A1, 1, locret_C19C
+                brclr   Ram_A1, %00000001, locret_C19C
                 clra
                 staa    Temp0
                 ldab    Ram_A2
@@ -4658,13 +4658,13 @@ loc_C19F:
                 std     Ram_9B
                 dec     Ram_99
                 bne     locret_C19C
-                subd    1,x
+                subd    $01,x
                 bcs     loc_C1BD
-                subd    3,x
+                subd    $03,x
                 bcs     loc_C1FB
                 inc     Temp0
 loc_C1BD:
-                brset   BitFlags2c, %100000, loc_C1DD
+                brset   BitFlags2c, %00100000, loc_C1DD
                 ldaa    Ram_9A
                 beq     loc_C1FB
                 deca
@@ -4700,7 +4700,7 @@ loc_C1F4:
                 ldaa    byte_8636
                 staa    Ram_9A
 loc_C1FB:
-                bclr    BitFlags2c, %110000
+                bclr    BitFlags2c, %00110000
                 rts
 ;;
 sub_C1FF:
@@ -4733,8 +4733,8 @@ loc_C21F:
                 deca
                 staa    Counter_C
 loc_C226:
-                brclr   IPL1, %1000000, loc_C246
-                brset   BitFlags2c, 4, loc_C23C
+                brclr   IPL1, %01000000, loc_C246
+                brset   BitFlags2c, %00000100, loc_C23C
                 ldaa    Counter_X
                 beq     loc_C237
                 deca
@@ -4742,7 +4742,7 @@ loc_C226:
                 bne     loc_C246
 loc_C237:
                 sei
-                bset    BitFlags2c, %100
+                bset    BitFlags2c, %00000100
                 cli
 loc_C23C:
                 ldaa    PreviousCoolantTemp_fromTable_Scaled
@@ -4773,7 +4773,7 @@ sub_C25C:
                 jsr     sub_E3AA
                 stab    Ram_81
                 ldaa    CoolantTemp_fromTable_Scaled
-                brset   IPL1, %1000000, loc_C290
+                brset   IPL1, %01000000, loc_C290
                 ldaa    PreviousCoolantTemp_fromTable_Scaled
                 ldx     #byte_84A8
                 jsr     sub_E3AA
@@ -4834,15 +4834,15 @@ sub_C2E6:
                 cpd     DistributorFallingEdgePulsewidth_HB
                 bcc     loc_C2F7
 loc_C2F2:
-                bset    BitFlags29, %10
+                bset    BitFlags29, %00000010
                 bra     loc_C301
 loc_C2F7:
                 ldd     EngineRpm_HB
                 cpd     TargetIdleSpeedHB
                 bcs     loc_C301
-                bclr    BitFlags29, %10
+                bclr    BitFlags29, %00000010
 loc_C301:
-                brclr   BitFlags29, %10, loc_C314
+                brclr   BitFlags29, %00000010, loc_C314
                 clrb
                 ldaa    MapValue
                 std     MapValueTemp2
@@ -4897,8 +4897,8 @@ loc_C36F:
                 jsr     sub_E4D0
                 rts
 sub_C379:
-                brset   BitFlags6d_t3, %1000000, loc_C385
-                brclr   PIA2_Buffer_t3, %10, loc_C38D
+                brset   BitFlags6d_t3, %01000000, loc_C385
+                brclr   PIA2_Buffer_t3, %00000010, loc_C38D
                 ldaa    Ram_CC
                 bne     loc_C38D
 loc_C385:
@@ -4929,14 +4929,14 @@ sub_C39F:
                 aba
                 bcs     loc_C3CE
                 staa    LDXi_6490
-                brclr   BitFlags2c, %100, loc_C3C6
+                brclr   BitFlags2c, %00000100, loc_C3C6
                 ldaa    Ram_BD
                 beq     loc_C3C3
                 ldab    byte_84A7
                 mul
                 staa    Ram_BD
 loc_C3C3:
-                bclr    BitFlags2c, %100
+                bclr    BitFlags2c, %00000100
 loc_C3C6:
                 ldaa    LDXi_6490
                 ldab    Ram_BD
@@ -4952,10 +4952,10 @@ sub_C3D3:
                 ldd     Ram_73
                 cpd     byte_84B2
                 bcc     loc_C3E0
-                bset    BitFlags29, %100000
+                bset    BitFlags29, %00100000
                 bra     loc_C3EC
 loc_C3E0:
-                bclr    BitFlags29, %100000
+                bclr    BitFlags29, %00100000
                 brset   BitFlags2c, %10000000, loc_C3EC
                 tst     Ram_82
                 beq     loc_C3F1
@@ -4967,25 +4967,25 @@ loc_C3F1:
                 cmpa    byte_89F7
                 bcs     loc_C41E
                 brclr   BitFlags29, %10000000, loc_C40D
-                brset   b5D_IPL2_t3, 1, loc_C43D
-                ldd     #$381
+                brset   b5D_IPL2_t3, %00000001, loc_C43D
+                ldd     #$0381
                 jsr     ThrowNonCriticalError
                 bcc     loc_C41E
-                bset    b5D_IPL2_t3, 1
+                bset    b5D_IPL2_t3, %00000001
                 bra     loc_C43D
 loc_C40D:
-                brset   b5D_IPL2_t3, %10, loc_C43D
-                ldd     #$481
+                brset   b5D_IPL2_t3, %00000010, loc_C43D
+                ldd     #$0481
                 jsr     ThrowNonCriticalError
                 bcc     loc_C41E
-                bset    b5D_IPL2_t3, %10
+                bset    b5D_IPL2_t3, %00000010
                 bra     loc_C43D
 loc_C41E:
                 tst     CounterDn_b9_o2
                 bne     loc_C43D
                 ldd     Counter_A_HB
                 bne     loc_C43D
-                brset   BitFlags29, %1000000, loc_C437
+                brset   BitFlags29, %01000000, loc_C437
                 ldaa    O2SensorVolts
                 cmpa    byte_89F5
                 bcc     loc_C437
@@ -4996,7 +4996,7 @@ loc_C437:
                 cmpa    #$3E
                 bcs     loc_C450
 loc_C43D:
-                bclr    BitFlags29, %1010100
+                bclr    BitFlags29, %01010100
                 ldaa    byte_860F
                 staa    CounterDn_ba_o2
                 ldaa    byte_8611
@@ -5007,7 +5007,7 @@ loc_C43D:
 loc_C450:
                 jsr     sub_C47D
                 ldaa    BitFlags29
-                bita    #4
+                bita    #$04
                 beq     loc_C461
                 clr     Ram_B4
                 jsr     sub_C4A8
@@ -5028,7 +5028,7 @@ loc_C470:
                 clra
 loc_C477:
                 staa    Counter_O2SensorFeedbackCount_Signed
-                bset    BitFlags29, %1000000
+                bset    BitFlags29, %01000000
 locret_C47C:
                 rts
 ;;
@@ -5050,7 +5050,7 @@ loc_C492:
                 eorb    BitFlags29
                 aslb
                 bcc     loc_C49F
-                oraa    #4
+                oraa    #$04
                 clr     Ram_B4
                 bra     loc_C4A1
 loc_C49F:
@@ -5063,7 +5063,7 @@ loc_C4A1:
                 rts
 ;;
 sub_C4A8:
-                brclr   BitFlags29, %10000, loc_C4BA
+                brclr   BitFlags29, %00010000, loc_C4BA
                 ldaa    CounterUp_b6_o2
                 ldab    byte_860E
                 cba
@@ -5073,7 +5073,7 @@ sub_C4A8:
 loc_C4B8:
                 staa    Ram_B5
 loc_C4BA:
-                bclr    BitFlags29, %10000
+                bclr    BitFlags29, %00010000
                 clr     CounterUp_b6_o2
                 ldaa    byte_860F
                 staa    CounterDn_ba_o2
@@ -5100,13 +5100,13 @@ sub_C4E4:
                 ldab    CounterDn_bc_o2
                 bne     loc_C531
                 ldab    BitFlags29
-                bitb    #$10
+                bitb    #%00010000
                 bne     loc_C4FE
                 clr     CounterUp_b6_o2
-                bset    BitFlags29, %10000
+                bset    BitFlags29, %00010000
                 ldab    byte_8610
                 stab    CounterDn_bb_o2
-                ldaa    #1
+                ldaa    #$01
                 bra     locret_C53C
 loc_C4FE:
                 ldab    CounterUp_b6_o2
@@ -5132,7 +5132,7 @@ loc_C517:
 loc_C524:
                 ldab    CounterDn_bb_o2
                 bne     loc_C52F
-                ldaa    #1
+                ldaa    #$01
                 ldab    byte_8610
                 stab    CounterDn_bb_o2
 loc_C52F:
@@ -5142,7 +5142,7 @@ loc_C531:
                 bne     locret_C53C
                 ldab    byte_860F
                 stab    CounterDn_ba_o2
-                ldaa    #1
+                ldaa    #$01
 locret_C53C:
                 rts
 ;;
@@ -5230,17 +5230,17 @@ locret_C5B9:
 ;;
 sub_C5BA:
                 ldx     #DoubleTempC
-                ldaa    #1
+                ldaa    #$01
                 ldab    Ram_81
                 std     DoubleTempC
                 ldab    Ram_82
                 jsr     sub_E406
                 std     DoubleTempC
-                ldaa    #1
+                ldaa    #$01
                 ldab    Ram_0B
                 jsr     sub_E406
                 std     DoubleTempC
-                ldaa    #1
+                ldaa    #$01
                 ldab    Counter_O2SensorFeedbackCount_Signed
                 jsr     sub_E406
                 std     DoubleTempC
@@ -5263,14 +5263,14 @@ sub_C5F1:
                 bcs     loc_C60B
                 cmpb    byte_89FC
                 bcc     loc_C60B
-                brset   b5C_IPL1_t3, %1000000, loc_C60B
+                brset   b5C_IPL1_t3, %01000000, loc_C60B
                 stab    TpsVolts
 loc_C60B:
                 ldaa    ADR1_A2DResults1
                 ldab    EngineRpm_HB
                 cmpb    #$2F
                 bcc     loc_C622
-                cmpb    #$D
+                cmpb    #$0D
                 bcs     loc_C622
                 cmpa    byte_8A08
                 bcc     loc_C626
@@ -5287,12 +5287,12 @@ loc_C629:
                 rorb
                 stab    MapValue
 loc_C633:
-                brset   IPL1, %1000000, loc_C63A
+                brset   IPL1, %01000000, loc_C63A
                 jmp     loc_C758
 loc_C63A:
-                brset   BitFlags27, %1000, loc_C648
+                brset   BitFlags27, %00001000, loc_C648
                 ldaa    TFLG1_TimerInterruptFlag1
-                bita    #8
+                bita    #$08
                 beq     loc_C648
                 jsr     sub_F36D
 loc_C648:
@@ -5307,13 +5307,13 @@ loc_C657:
                 ldaa    MapValue
                 jsr     sub_E4D0
                 jsr     sub_C379
-                brclr   BitFlags27, %1000000, loc_C671
+                brclr   BitFlags27, %01000000, loc_C671
                 ldaa    TFLG1_TimerInterruptFlag1
                 bita    #$10
                 beq     loc_C671
                 jsr     sub_F363
 loc_C671:
-                brclr   BitFlags27, %1000, loc_C67F
+                brclr   BitFlags27, %00001000, loc_C67F
                 ldaa    TFLG1_TimerInterruptFlag1
                 bita    #$40
                 beq     loc_C67F
@@ -5330,7 +5330,7 @@ loc_C67F:
 loc_C68E:
                 addd    byte_849D
                 bgt     loc_C696
-                ldd     #0
+                ldd     #$00
 loc_C696:
                 xgdy
                 ldaa    Ram_85
@@ -5341,20 +5341,20 @@ loc_C696:
                 ldd     #$FFFF
 loc_C6A5:
                 std     DoubleTempC
-                brset   BitFlags27, %1000, loc_C6B6
+                brset   BitFlags27, %00001000, loc_C6B6
                 ldaa    TFLG1_TimerInterruptFlag1
-                bita    #8
+                bita    #$08
                 beq     loc_C6B6
                 jsr     sub_F36D
 loc_C6B6:
-                ldaa    #1
+                ldaa    #$01
                 ldab    Ram_86
                 ldx     #DoubleTempC
                 jsr     sub_E406
                 ldx     #$75
                 jsr     ScaleXbyB_somethingelse
                 std     DoubleTempB
-                brclr   BitFlags27, %1000, loc_C6D7
+                brclr   BitFlags27, %00001000, loc_C6D7
                 ldaa    TFLG1_TimerInterruptFlag1
                 bita    #$40
                 beq     loc_C6D7
@@ -5364,7 +5364,7 @@ loc_C6D7:
                 ldab    Ram_B1
                 lsld
                 addb    ValueFromAdaptiveMemory
-                adca    #0
+                adca    #$00
                 tst     byte_849F
                 bmi     loc_C6EE
                 addd    byte_849F
@@ -5394,7 +5394,7 @@ loc_C70F:
                 subd    Ram_AA
                 bcc     loc_C71A
 loc_C717:
-                ldd     #0
+                ldd     #$00
 loc_C71A:
                 std     DoubleTempB
                 ldy     DoubleTempB
@@ -5406,7 +5406,7 @@ loc_C71A:
                 std     DoubleTempB
                 tst     Ram_C0
                 bpl     loc_C74F
-                ldd     #0
+                ldd     #$00
                 subd    Ram_C0
                 cpd     DoubleTempB
                 bpl     loc_C74A
@@ -5414,7 +5414,7 @@ loc_C71A:
                 addd    Ram_C0
                 bra     loc_C756
 loc_C74A:
-                ldd     #0
+                ldd     #$00
                 bra     loc_C756
 loc_C74F:
                 addd    Ram_C0
@@ -5423,19 +5423,19 @@ loc_C74F:
 loc_C756:
                 std     Ram_73
 loc_C758:
-                brset   BitFlags27, 8, loc_C766
+                brset   BitFlags27, %00001000, loc_C766
                 ldaa    TFLG1_TimerInterruptFlag1
-                bita    #8
+                bita    #$08
                 beq     loc_C766
                 jsr     sub_F36D
 loc_C766:
-                brclr   BitFlags27, %1000000, loc_C774
+                brclr   BitFlags27, %01000000, loc_C774
                 ldaa    TFLG1_TimerInterruptFlag1
                 bita    #$10
                 beq     loc_C774
                 jsr     sub_F363
 loc_C774:
-                brset   IPL1, %1000000, loc_C7C4
+                brset   IPL1, %01000000, loc_C7C4
                 ldx     #byte_84A5
                 ldaa    MapValue2
                 cmpa    MapValue
@@ -5445,8 +5445,8 @@ loc_C784:
                 ldy     #$90
                 ldaa    MapValue
                 jsr     sub_E4D0
-                brclr   BitFlags66_t3, %1000000, loc_C79B
-                brclr   Ram_30, %100, loc_C79B
+                brclr   BitFlags66_t3, %01000000, loc_C79B
+                brclr   Ram_30, %00000100, loc_C79B
                 clra
                 clrb
                 std     InjectorPulsewidth_HB
@@ -5465,7 +5465,7 @@ loc_C79B:
                 staa    Ram_80
                 cmpa    byte_845F
                 bhi     loc_C7BE
-                ldd     #0
+                ldd     #$00
                 std     InjectorPulsewidth_HB
                 bra     loc_C7D8
 loc_C7BE:
@@ -5487,13 +5487,13 @@ loc_C7D5:
                 jsr     sub_C7FB
 loc_C7D8:
                 jsr     sub_C2E6
-                brclr   BitFlags27, %1000000, loc_C7E9
+                brclr   BitFlags27, %01000000, loc_C7E9
                 ldaa    TFLG1_TimerInterruptFlag1
                 bita    #$10
                 beq     loc_C7E9
                 jsr     sub_F363
 loc_C7E9:
-                brclr   BitFlags27, %1000, loc_C7F7
+                brclr   BitFlags27, %00001000, loc_C7F7
                 ldaa    TFLG1_TimerInterruptFlag1
                 bita    #$40
                 beq     loc_C7F7
@@ -5504,8 +5504,8 @@ loc_C7F7:
 ;;
 sub_C7FB:
                 ldx     #CCDFlags5
-                brclr   0,x, %100000, loc_C808
-                ldd     #0
+                brclr   $00,x, %00100000, loc_C808
+                ldd     #$00
                 jmp     loc_C898
 loc_C808:
                 brset   BitFlags2c, %10000000, loc_C80F
@@ -5530,27 +5530,27 @@ loc_C825:
                 bhi     loc_C85B
                 bra     loc_C866
 loc_C833:
-                cmpa    #1
+                cmpa    #$01
                 bne     loc_C842
                 brclr   BitFlags66_t3, %10000000, loc_C866
                 cpx     byte_8643
                 bhi     loc_C85B
                 bra     loc_C866
 loc_C842:
-                cmpa    #2
+                cmpa    #$02
                 bne     loc_C851
                 brset   BitFlags66_t3, %10000000, loc_C85B
                 cpx     byte_8643
                 bhi     loc_C85B
                 bra     loc_C866
 loc_C851:
-                cmpa    #3
+                cmpa    #$03
                 bne     loc_C85B
                 brset   BitFlags66_t3, %10000000, loc_C85B
                 bra     loc_C866
 loc_C85B:
                 bclr    BitFlags2c, %10000000
-                bset    BitFlags2c, %1000
+                bset    BitFlags2c, %00001000
                 ldaa    byte_8642
                 staa    CounterDn_b7_o2
 loc_C866:
@@ -5570,10 +5570,10 @@ loc_C87B:
                 xgdy
 loc_C883:
                 ldx     #UNe_6481
-                brclr   0,x, %100, loc_C898
+                brclr   $00,x, %00000100, loc_C898
                 ldaa    UNe_6483
                 clrb
-                brset   0,x, %1000, loc_C895
+                brset   $00,x, %00001000, loc_C895
                 ldab    UNe_6484
 loc_C895:
                 lsrd
@@ -5583,18 +5583,18 @@ loc_C898:
                 std     InjectorPulsewidth_HB
                 rts
 ;;
-byte_C89B:      db 0
-                db 0
-                db 0
+byte_C89B:      db $00
+                db $00
+                db $00
                 db $20
                 db $20
                 db $30
                 db $20
-                db 0
+                db $00
                 db $20
                 db $20
                 db $20
-                db 0
+                db $00
                 db $30
                 db $30
                 db $30
@@ -5619,20 +5619,20 @@ sub_C8AF:
                 rts
 loc_C8CA:
                 ldaa    SCSR_SerialStatus
-                bita    #%1110
+                bita    #%00001110
                 beq     loc_C8D5
                 ldaa    SCDR_SerialData
                 rts
 loc_C8D5:
-                bita    #%100000
+                bita    #%00100000
                 bne     loc_C8EC
-                brset   DRBSerialMode, %1111, loc_C8E1
+                brset   DRBSerialMode, %00001111, loc_C8E1
                 incb
                 stab    DRBSerialMode
                 rts
 loc_C8E1:
-                brclr   DRBSerialMode, %110000, locret_C8EB
-                bclr    DRBSerialMode, %110000
+                brclr   DRBSerialMode, %00110000, locret_C8EB
+                bclr    DRBSerialMode, %00110000
                 clr     DRBPointer1
 locret_C8EB:
                 rts
@@ -5641,12 +5641,12 @@ loc_C8EC:
                 staa    SCDR_SerialData
                 andb    #$F0
                 stab    DRBSerialMode
-                bitb    #%110000
+                bitb    #%00110000
                 bne     loc_C91B
                 staa    DRBPointer1
                 cmpa    #$14
                 beq     loc_C903
-                bclr    BitFlags6d_t3, %1000
+                bclr    BitFlags6d_t3, %00001000
 loc_C903:
                 clr     DRBPointer2
                 clr     DRBPointer3
@@ -5656,17 +5656,17 @@ loc_C903:
                 bcc     locret_C91A
                 ldx     #byte_C89B
                 abx
-                ldab    0,x
+                ldab    $00,x
                 orab    DRBSerialMode
                 stab    DRBSerialMode
 locret_C91A:
                 rts
 loc_C91B:
-                bitb    #%100000
+                bitb    #%00100000
                 beq     loc_C922
                 jmp     loc_C93D
 loc_C922:
-                bitb    #%10000
+                bitb    #%00010000
                 bne     loc_C929
                 jmp     loc_C95A
 loc_C929:
@@ -5679,7 +5679,7 @@ loc_C930:
                 ldab    DRBPointer3
                 ldaa    DRBPointer2
                 xgdx
-                ldaa    0,x
+                ldaa    $00,x
 loc_C93A:
                 jmp     sub_CBA8
 loc_C93D:
@@ -5690,25 +5690,25 @@ loc_C93D:
                 cpd     #TIC3_Counter_IC3_CrankSensor
                 bne     loc_C963
                 brset   BitFlags66_t3, %10000000, loc_C95A
-                brset   BitFlags27, 1, loc_C968
-                brclr   BitFlags68_t3, %10000, loc_C968
+                brset   BitFlags27, %00000001, loc_C968
+                brclr   BitFlags68_t3, %00010000, loc_C968
                 bclr    BitFlags68_t3, %10000000
 loc_C95A:
                 clr     DRBPointer1
                 clr     DRBPointer2
                 clr     DRBPointer3
 loc_C963:
-                bclr    BitFlags6d_t3, %1000
+                bclr    BitFlags6d_t3, %00001000
                 bra     locret_C96B
 loc_C968:
-                bset    BitFlags6d_t3, %1000
+                bset    BitFlags6d_t3, %00001000
 locret_C96B:
                 rts
 loc_C96C:
                 clr     DRBPointer1
-                brset   BitFlags6a_t3, %1000000, loc_C988
-                brset   BitFlags6a_t3, %100000, loc_C988
-                bset    BitFlags6a_t3, %1000000
+                brset   BitFlags6a_t3, %01000000, loc_C988
+                brset   BitFlags6a_t3, %00100000, loc_C988
+                bset    BitFlags6a_t3, %01000000
                 ldaa    DRBPointer3
                 staa    DRBOffsetStored_LB
                 ldab    DRBPointer2
@@ -5719,7 +5719,7 @@ loc_C988:
                 clra
                 bra     loc_C93A
 loc_C98B:
-                ldx     #0
+                ldx     #$00
                 bra     loc_C9B3
 loc_C990:
                 ldx     #CountdownTimerFromKeyOn
@@ -5745,30 +5745,30 @@ loc_C9B3:
                 ldab    DRBPointer2
                 ldaa    DRBPointer3
                 abx
-                staa    0,x
+                staa    $00,x
                 ldaa    #$E5
                 jmp     sub_CBA8
 loc_C9C2:
                 ldx     #STe_64BA
                 ldab    DRBPointer3
-                cmpb    1,x
+                cmpb    $01,x
                 beq     loc_C9D0
                 comb
-                cmpb    1,x
+                cmpb    $01,x
                 bne     loc_C9FB
 loc_C9D0:
                 ldab    DRBPointer2
-                cmpb    0,x
+                cmpb    $00,x
                 bne     loc_C9FF
                 abx
-                ldaa    1,x
+                ldaa    $01,x
                 cmpa    #$39
                 bne     loc_C9A9
                 ldx     #STe_64BA
                 clra
 loc_C9E1:
                 inx
-                adda    1,x
+                adda    $01,x
                 decb
                 bne     loc_C9E1
                 cmpa    DRBPointer3
@@ -5783,38 +5783,38 @@ loc_C9F4:
                 ldaa    #$E4
                 bra     loc_CA2B
 loc_C9FB:
-                ldaa    #1
+                ldaa    #$01
                 bra     loc_CA05
 loc_C9FF:
-                ldaa    #2
+                ldaa    #$02
                 bra     loc_CA05
 loc_CA03:
-                ldaa    #3
+                ldaa    #$03
 loc_CA05:
                 clr     DRBPointer1
                 bra     loc_CA2B
 loc_CA0A:
                 ldaa    DRBPointer2
                 bne     loc_CA13
-                bclr    BitFlags2a, 1
+                bclr    BitFlags2a, %00000001
                 bra     loc_C9A9
 loc_CA13:
                 ldaa    DRBPointer3
                 bne     loc_CA2E
                 brset   BitFlags66_t3, %10000000, loc_C9FF
-                brset   BitFlags27, 1, loc_CA23
-                brset   BitFlags68_t3, %10000, loc_CA03
+                brset   BitFlags27, %00000001, loc_CA23
+                brset   BitFlags68_t3, %00010000, loc_CA03
 loc_CA23:
                 coma
                 staa    DRBPointer3
-                ldaa    #1
-                bset    BitFlags2a, 1
+                ldaa    #$01
+                bset    BitFlags2a, %00000001
 loc_CA2B:
                 jmp     sub_CBA8
 loc_CA2E:
                 brset   BitFlags66_t3, %10000000, loc_CA3A
-                brset   BitFlags27, 1, locret_CA3D
-                brclr   BitFlags68_t3, %10000, locret_CA3D
+                brset   BitFlags27, %00000001, locret_CA3D
+                brclr   BitFlags68_t3, %00010000, locret_CA3D
 loc_CA3A:
                 clr     DRBPointer1
 locret_CA3D:
@@ -5823,11 +5823,11 @@ loc_CA3E:
                 ldaa    DRBPointer3
                 beq     loc_CA67
                 ldaa    DRBPointer2
-                cmpa    #1
+                cmpa    #$01
                 beq     loc_CA52
-                cmpa    #2
+                cmpa    #$02
                 beq     loc_CA56
-                cmpa    #3
+                cmpa    #$03
                 beq     loc_CA5A
                 bra     loc_CA3A
 loc_CA52:
@@ -5858,19 +5858,19 @@ loc_CA76:
                 jmp     sub_CBA8
 loc_CA7A:
                 ldaa    DRBPointer2
-                cmpa    #1
+                cmpa    #$01
                 beq     loc_CA91
-                cmpa    #2
+                cmpa    #$02
                 beq     loc_CAA2
-                cmpa    #3
+                cmpa    #$03
                 beq     loc_CAAA
-                cmpa    #4
+                cmpa    #$04
                 beq     loc_CAB6
-                ldaa    #1
+                ldaa    #$01
                 jmp     sub_CBA8
 loc_CA91:
-                brclr   BitFlags6a_t3, %1000000, loc_CA9A
-                ldaa    #2
+                brclr   BitFlags6a_t3, %01000000, loc_CA9A
+                ldaa    #$02
                 jmp     sub_CBA8
 loc_CA9A:
                 jsr     sub_CABD
@@ -5884,7 +5884,7 @@ loc_CAA2:
                 bra     loc_CA9D
 loc_CAAA:
                 sei
-                bset    BitFlags36_t3, %1000000
+                bset    BitFlags36_t3, %01000000
                 ldaa    #$DF
                 staa    CurrentAisPosition
                 cli
@@ -5938,7 +5938,7 @@ sub_CAFE:
 loc_CB05:
                 ldaa    DRBPointer1
                 beq     locret_CB28
-                cmpa    #$A
+                cmpa    #$0A
                 beq     locret_CB28
                 tab
                 ldx     #off_CAD6
@@ -5948,10 +5948,10 @@ loc_CB05:
                 cmpb    #$28
                 bcc     loc_CB1F
                 abx
-                ldx     0,x
-                jmp     0,x
+                ldx     $00,x
+                jmp     $00,x
 loc_CB1F:
-                bclr    DRBSerialMode, %110000
+                bclr    DRBSerialMode, %00110000
                 clra
                 staa    DRBPointer1
                 jmp     sub_CBA8
@@ -5963,12 +5963,12 @@ loc_CB29:
                 cmpb    #$50
                 bhi     loc_CB38
                 staa    DRBPointer1
-                bclr    DRBSerialMode, %110000
+                bclr    DRBSerialMode, %00110000
                 jmp     sub_CBA8
 loc_CB38:
                 ldab    DRBSerialMode
-                andb    #$F
-                cmpb    #3
+                andb    #$0F
+                cmpb    #$03
                 bls     loc_CB43
                 clr     BitFlags65_t3
 loc_CB43:
@@ -5976,7 +5976,7 @@ loc_CB43:
                 inca
                 cmpa    #$18
                 bls     loc_CB5D
-                brset   BitFlags6a_t3, %1000000, loc_CB60
+                brset   BitFlags6a_t3, %01000000, loc_CB60
                 clra
                 staa    DRBPointer1
                 staa    BitFlags65_t3
@@ -6002,16 +6002,16 @@ loc_CB67:
                 ldab    DRBPointer2
                 aslb
                 abx
-                ldd     0,x
+                ldd     $00,x
                 cpd     #ATM_SerialOut_0
                 beq     loc_CB99
                 ldaa    DRBPointer2
-                brset   BitFlags27, 1, loc_CB91
+                brset   BitFlags27, %00000001, loc_CB91
                 cmpa    #$17
                 beq     loc_CB99
                 bra     loc_CB9E
 loc_CB91:
-                cmpa    #$F
+                cmpa    #$0F
                 beq     loc_CB99
                 cmpa    #$16
                 bne     loc_CB9E
@@ -6023,7 +6023,7 @@ loc_CB9E:
                 cmpa    ATMOffset
                 beq     sub_CBA8
                 staa    ATMOffset
-                ldab    #2
+                ldab    #$02
                 stab    KeyOnOrEngineRunningTime
 ;;
 sub_CBA8:
@@ -6034,13 +6034,13 @@ sub_CBA8:
 loc_CBB1:
                 ldx     #$15
                 ldab    DRBPointer2
-                cmpb    #7
+                cmpb    #$07
                 bhi     loc_CBC7
                 negb
-                addb    #7
+                addb    #$07
                 abx
                 inc     DRBPointer2
-                ldaa    0,x
+                ldaa    $00,x
                 beq     loc_CBC7
                 bra     sub_CBA8
 loc_CBC7:
@@ -6053,7 +6053,7 @@ loc_CBD3:
                 inx
                 cpx     #$1D
                 bcc     sub_CBA8
-                adda    0,x
+                adda    $00,x
                 bra     loc_CBD3
 loc_CBDD:
                 ldaa    ErrorBitsAssociatedWithPIA1AndReg1eTo25_HB
@@ -6068,14 +6068,14 @@ loc_CBED:
                 clr     DRBPointer1
 loc_CBF3:
                 ldaa    SCSR_SerialStatus
-                bita    #%1000000
+                bita    #%01000000
                 beq     loc_CBF3
-                ldaa    #1
+                ldaa    #$01
                 staa    BAUD_SerialBaudRate
 locret_CBFF:
                 rts
 loc_CC00:
-                bset    DRBSerialMode, %1000000
+                bset    DRBSerialMode, %01000000
                 clr     DRBPointer1
                 rts
 loc_CC07:
@@ -6090,21 +6090,21 @@ loc_CC07:
                 rts
 loc_CC19:
                 ldx     #byte_8002
-                brclr   BitFlags6a_t3, %10, loc_CC23
+                brclr   BitFlags6a_t3, %00000010, loc_CC23
                 ldx     #byte_8007
 loc_CC23:
                 ldab    DRBPointer3
-                cmpb    #4
+                cmpb    #$04
                 beq     loc_CC32
                 inc     DRBPointer3
                 abx
-                ldaa    0,x
+                ldaa    $00,x
                 jmp     sub_CBA8
 loc_CC32:
-                ldaa    0,x
-                adda    1,x
-                adda    2,x
-                adda    3,x
+                ldaa    $00,x
+                adda    $01,x
+                adda    $02,x
+                adda    $03,x
 loc_CC3A:
                 adda    #$16
                 adda    DRBPointer2
@@ -6117,13 +6117,13 @@ loc_CC44:
 loc_CC49:
                 inc     DRBPointer3
                 ldaa    byte_8006
-                brclr   BitFlags6a_t3, %10, loc_CC56
+                brclr   BitFlags6a_t3, %00000010, loc_CC56
                 ldaa    byte_800B
 loc_CC56:
                 ldab    DRBPointer3
-                cmpb    #1
+                cmpb    #$01
                 beq     loc_CC41
-                cmpb    #5
+                cmpb    #$05
                 bcc     loc_CC3A
                 clra
                 bra     loc_CC41
@@ -6181,14 +6181,14 @@ Byt_DRBMemoryTable:
                 db $54
                 db $59
                 db $5A
-                db 6
+                db $06
                 db $FF
                 db $5B
                 db $50
-                db 8
-                db $A
-                db $B
-                db $D
+                db $08
+                db $0A
+                db $0B
+                db $0D
                 db $46
                 db $46
                 db $FF
@@ -6261,8 +6261,8 @@ loc_CD1D:
                 ldx     #AtmFuunctionTable-2
                 aslb
                 abx
-                ldx     0,x
-                jmp     0,x
+                ldx     $00,x
+                jmp     $00,x
 loc_CD26:
                 ldaa    PIA2_Buffer_t3
                 oraa    #$C0
@@ -6284,7 +6284,7 @@ loc_CD46:
                 ldaa    TCTL1_TimerControlReg1
                 anda    #$FE
                 staa    TCTL1_TimerControlReg1
-                ldaa    #8
+                ldaa    #$08
                 staa    CFORC_TimerForceCompare
                 ldaa    PIA2_Buffer_t3
                 oraa    #$10
@@ -6295,9 +6295,9 @@ loc_CD5F:
                 ldaa    PIA2_Buffer_t3
                 anda    #$EF
                 bra     loc_CDA6
-                brset   BitFlags27, %1000, loc_CD75
+                brset   BitFlags27, %00001000, loc_CD75
                 ldaa    PIA2_Buffer_t3
-                oraa    #8
+                oraa    #$08
                 brset   Counter_MainLoop, %10000000, loc_CDA6
                 anda    #$F7
                 bra     loc_CDA6
@@ -6311,19 +6311,19 @@ loc_CD7F:
                 jmp     ATM_SerialOut_0
 loc_CD84:
                 ldaa    PIA2_Buffer_t3
-                oraa    #4
+                oraa    #$04
                 brset   Counter_MainLoop, %10000000, loc_CDA6
                 anda    #$FB
                 bra     loc_CDA6
 loc_CD90:
                 ldaa    PIA2_Buffer_t3
-                oraa    #2
+                oraa    #$02
                 brset   Counter_MainLoop, %10000000, loc_CDA6
                 anda    #$FD
                 bra     loc_CDA6
 loc_CD9C:
                 ldaa    PIA2_Buffer_t3
-                oraa    #1
+                oraa    #$01
                 brset   Counter_MainLoop, %10000000, loc_CDA6
                 anda    #$FE
 loc_CDA6:
@@ -6361,56 +6361,56 @@ loc_CDDC:
 loc_CDE1:
                 ldd     PIA1_Buffer_t3
                 oraa    #$10
-                brset   BitFlags27, 1, loc_CDEB
+                brset   BitFlags27, %00000001, loc_CDEB
                 oraa    #$20
 loc_CDEB:
-                brset   BitFlags27, %1000, loc_CDF3
+                brset   BitFlags27, %00001000, loc_CDF3
                 orab    #$EB
                 bra     loc_CDF7
 loc_CDF3:
                 oraa    #$80
                 orab    #$E3
 loc_CDF7:
-                brset   BitFlags2d, %10000, loc_CDFD
+                brset   BitFlags2d, %00010000, loc_CDFD
                 orab    #$10
 loc_CDFD:
                 brset   Counter_MainLoop, %10000000, loc_CE1B
                 anda    #$EF
-                brset   BitFlags27, 1, loc_CE09
+                brset   BitFlags27, %00000001, loc_CE09
                 anda    #$DF
 loc_CE09:
-                brset   BitFlags27, %1000, loc_CE11
+                brset   BitFlags27, %00001000, loc_CE11
                 andb    #$14
                 bra     loc_CE15
 loc_CE11:
                 anda    #$7F
                 andb    #$1C
 loc_CE15:
-                brset   BitFlags2d, %10000, loc_CE1B
+                brset   BitFlags2d, %00010000, loc_CE1B
                 andb    #$EF
 loc_CE1B:
                 std     PIA1_Buffer_t3
                 bra     loc_CDD4
 loc_CE1F:
-                bclr    PIA2_Buffer_t3, %10000
+                bclr    PIA2_Buffer_t3, %00010000
                 ldx     #SwitchPortAccessReg1
                 sei
                 ldaa    SwitchPortAccessReg1
                 anda    #$FB
                 brset   Counter_MainLoop, %10000000, loc_CE31
-                oraa    #4
+                oraa    #$04
 loc_CE31:
                 staa    SwitchPortAccessReg1
-                bset    2,x, %100
+                bset    $02,x, %00000100
                 ldaa    #$14
 loc_CE39:
                 deca
                 bne     loc_CE39
-                bclr    2,x, %100
+                bclr    $02,x, %00000100
                 cli
                 jmp     ATM_SerialOut_0
 loc_CE43:
-                bclr    PIA2_Buffer_t3, %10000
+                bclr    PIA2_Buffer_t3, %00010000
                 ldab    Counter_MainLoop
                 aslb
                 beq     loc_CE4E
@@ -6418,12 +6418,12 @@ loc_CE43:
 loc_CE4E:
                 sei
                 ldaa    TCTL1_TimerControlReg1
-                oraa    #3
+                oraa    #$03
                 staa    TCTL1_TimerControlReg1
-                ldab    #8
+                ldab    #$08
                 stab    CFORC_TimerForceCompare
                 ldd     TCNT_Counter_FreeRunning16bit
-                addd    #$6D6
+                addd    #$06D6
                 std     TOC5_Counter_OC5_Dwell
                 ldaa    TCTL1_TimerControlReg1
                 anda    #$FE
@@ -6445,46 +6445,46 @@ byte_CE77:
                 db $FB
 
 loc_CE7A:
-                brset   BitFlags27, %10000, loc_CE81
+                brset   BitFlags27, %00010000, loc_CE81
                 jmp     ATM_SerialOut_0
 loc_CE81:
                 ldx     #TOC4_Counter_OC4
                 ldy     #byte_CE77
                 bra     loc_CEB1
 loc_CE8A:
-                brset   BitFlags27, %10000, loc_CE91
+                brset   BitFlags27, %00010000, loc_CE91
                 jmp     ATM_SerialOut_0
 loc_CE91:
                 bra     loc_CE9A
 loc_CE93:
-                brset   BitFlags27, $40, loc_CE9A
+                brset   BitFlags27, %01000000, loc_CE9A
                 jmp     ATM_SerialOut_0
 loc_CE9A:
                 ldx     #TOC3_Counter_OC3
                 ldy     #byte_CE74
                 bra     loc_CEB1
 loc_CEA3:
-                brset   BitFlags27, %1000000, loc_CEAA
+                brset   BitFlags27, %01000000, loc_CEAA
                 jmp     ATM_SerialOut_0
 loc_CEAA:
                 ldx     #TOC2_Counter_OC2
                 ldy     #byte_CE71
 loc_CEB1:
-                bclr    PIA2_Buffer_t3, %10000
+                bclr    PIA2_Buffer_t3, %00010000
                 ldab    Counter_MainLoop
                 aslb
                 beq     loc_CEBC
                 jmp     ATM_SerialOut_0
 loc_CEBC:
                 sei
-                ldd     0,y
+                ldd     $00,y
                 oraa    TCTL1_TimerControlReg1
                 staa    TCTL1_TimerControlReg1
                 stab    CFORC_TimerForceCompare
                 ldd     TCNT_Counter_FreeRunning16bit
-                addd    #$1A9
-                std     0,x
-                ldaa    2,y
+                addd    #$01A9
+                std     $00,x
+                ldaa    $02,y
                 anda    TCTL1_TimerControlReg1
                 staa    TCTL1_TimerControlReg1
                 cli
@@ -6501,7 +6501,7 @@ loc_CEE8:
 loc_CEED:
                 ldx     #InjectorPulsewidth_HB_Cyl4
 loc_CEF0:
-                bclr    PIA2_Buffer_t3, %10000
+                bclr    PIA2_Buffer_t3, %00010000
                 ldab    Counter_MainLoop
                 aslb
                 bne     ATM_SerialOut_0
@@ -6509,7 +6509,7 @@ loc_CEF0:
                 ldaa    PIA_Ctrl_2
                 bita    #$F0
                 beq     loc_CF05
-                anda    #$F
+                anda    #$0F
                 staa    PIA_Ctrl_2
 loc_CF05:
                 ldaa    #$F8
@@ -6517,13 +6517,13 @@ loc_CF05:
                 beq     loc_CF0F
                 staa    PIA_Ctrl_5
 loc_CF0F:
-                ldd     #$1A9
-                std     0,x
+                ldd     #$01A9
+                std     $00,x
                 cli
                 bra     ATM_SerialOut_0
 loc_CF17:
                 ldaa    PIA3_Buffer_t3
-                eora    #2
+                eora    #$02
                 staa    PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 bra     ATM_SerialOut_0
@@ -6539,18 +6539,18 @@ loc_CF2D:
                 ldab    DRBPointer2
                 cmpb    #$40
                 bcc     loc_CF4B
-                cmpb    #0
+                cmpb    #$00
                 beq     locret_CF2C
                 cmpb    #$2D
                 bhi     locret_CF2C
                 ldx     #Byt_DRBMemoryTable
                 clra
                 abx
-                ldab    0,x
+                ldab    $00,x
                 cmpb    #$FF
                 beq     locret_CF2C
                 xgdx
-                ldaa    0,x
+                ldaa    $00,x
                 bra     loc_CFAE
 loc_CF4B:
                 subb    #$40
@@ -6561,15 +6561,15 @@ loc_CF4B:
                 ldx     #off_CCDE
 loc_CF57:
                 abx
-                ldx     0,x
-                jmp     0,x
+                ldx     $00,x
+                jmp     $00,x
 loc_CF5C:
                 ldx     #off_CCEC
                 ldab    DRBPointer2
                 aslb
-                cmpb    #0
+                cmpb    #$00
                 beq     locret_CF2C
-                cmpb    #8
+                cmpb    #$08
                 bls     loc_CF57
                 bra     locret_CF2C
 loc_CF6C:
@@ -6582,7 +6582,7 @@ loc_CF76:
                 bra     loc_CFAE
 loc_CF7A:
                 ldaa    PIA1_Buffer_t3
-                eora    #8
+                eora    #$08
                 bra     loc_CFAE
 loc_CF80:
                 ldaa    SwitchPortAccessReg1
@@ -6647,7 +6647,7 @@ sub_CFDE:
                 ldd     #$9200
                 std     Temp0
                 clra
-                ldab    #8
+                ldab    #$08
 loc_CFEA:
                 bsr     sub_D004
                 psha
@@ -6657,7 +6657,7 @@ loc_CFEA:
                 adda    Temp0
                 staa    Temp0
                 ldaa    SwitchPortAccessReg1
-                bita    #%1000000
+                bita    #%01000000
                 pulb
                 pula
                 beq     locret_D02D
@@ -6670,14 +6670,14 @@ sub_D004:
                 inc     Temp0
                 ldx     #$B800
 loc_D012:
-                adda    0,x
-                adda    1,x
-                adda    2,x
-                adda    3,x
-                adda    4,x
-                adda    5,x
-                adda    6,x
-                adda    7,x
+                adda    $00,x
+                adda    $01,x
+                adda    $02,x
+                adda    $03,x
+                adda    $04,x
+                adda    $05,x
+                adda    $06,x
+                adda    $07,x
                 abx
                 cpx     Temp0
                 bne     loc_D012
@@ -6689,7 +6689,7 @@ loc_D02E:
                 pulx
                 suba    byte_8005
                 beq     locret_D02D
-                ldd     #$201
+                ldd     #$0201
                 jmp     ThrowNonCriticalError
 loc_D03A:
                 ldaa    Counter_MainLoop
@@ -6697,10 +6697,10 @@ loc_D03A:
                 asla
                 bne     locret_D050
                 ldaa    LastCamFallingEdgeTime2
-                bita    #%1110000
+                bita    #%01110000
                 beq     loc_D051
                 suba    #$10
-                bita    #%1110000
+                bita    #%01110000
                 beq     loc_D051
                 staa    LastCamFallingEdgeTime2
 locret_D050:
@@ -6709,10 +6709,10 @@ loc_D051:
                 ldab    PIA1_Buffer_t3
                 eorb    #$40
                 stab    PIA1_Buffer_t3
-                bita    #%1111
+                bita    #%00001111
                 beq     loc_D064
                 deca
-                bita    #$F
+                bita    #$0F
                 beq     loc_D064
                 oraa    #$10
                 bra     loc_D099
@@ -6725,19 +6725,19 @@ loc_D064:
                 beq     loc_D08D
                 tstb
                 bmi     loc_D099
-                cmpb    #8
+                cmpb    #$08
                 bcs     loc_D080
                 ldx     #$B618
                 abx
-                brset   0,x, %11111111, loc_D0E5
+                brset   $00,x, %11111111, loc_D0E5
                 bra     loc_D087
 loc_D080:
                 negb
-                addb    #7
+                addb    #$07
                 ldx     #ErrorBitRegister0
                 abx
 loc_D087:
-                ldab    0,x
+                ldab    $00,x
                 beq     loc_D099
                 bra     loc_D08E
 loc_D08D:
@@ -6745,8 +6745,8 @@ loc_D08D:
 loc_D08E:
                 ldx     #ErrorCodesToDash_Table
                 abx
-                ldaa    0,x
-                anda    #$F
+                ldaa    $00,x
+                anda    #$0F
                 asla
                 oraa    #$A0
 loc_D099:
@@ -6770,25 +6770,25 @@ loc_D0AF:
 loc_D0B4:
                 incb
                 stab    DRBPointer2
-                cmpb    #8
+                cmpb    #$08
                 bcs     loc_D0C9
-                brset   DRBPointer2, $80, loc_D0EE
+                brset   DRBPointer2, %10000000, loc_D0EE
                 ldx     #$B618
                 abx
-                brset   0,x, $FF, loc_D0E5
+                brset   $00,x, %11111111, loc_D0E5
                 bra     loc_D0D0
 loc_D0C9:
                 negb
-                addb    #7
+                addb    #$07
                 ldx     #ErrorBitRegister0
                 abx
 loc_D0D0:
-                ldab    0,x
+                ldab    $00,x
                 beq     loc_D0E5
 loc_D0D4:
                 ldx     #ErrorCodesToDash_Table
                 abx
-                ldaa    0,x
+                ldaa    $00,x
                 lsra
                 lsra
                 lsra
@@ -6896,8 +6896,8 @@ ErrorCodesToDash_Table:
 ThrowNonCriticalError:
                 ldx     #TL_ErrorBitsMask1
 loc_D14B:
-                brclr   0,x, %11111111, loc_D156
-                cmpa    0,x
+                brclr   $00,x, %11111111, loc_D156
+                cmpa    $00,x
                 beq     loc_D1A2
                 inx
                 bra     loc_D14B
@@ -6912,24 +6912,24 @@ loc_D161:
                 andb    #$7F
                 stab    Temp0
                 ldy     #$DC
-                cmpa    0,y
+                cmpa    $00,y
                 beq     loc_D182
                 iny
-                cmpa    0,y
+                cmpa    $00,y
                 beq     loc_D182
-                tst     0,y
+                tst     $00,y
                 beq     loc_D182
                 dey
-                tst     0,y
+                tst     $00,y
                 bne     loc_D1A2
 loc_D182:
-                staa    0,y
-                ldab    2,y
+                staa    $00,y
+                ldab    $02,y
                 incb
                 beq     loc_D1A5
                 cmpb    Temp0
                 bcc     loc_D1A5
-                stab    2,y
+                stab    $02,y
                 clc
                 rts
 loc_D195:
@@ -6947,19 +6947,19 @@ loc_D1A2:
 loc_D1A5:
                 tst     ErrorBitRegister0
                 beq     loc_D1B5
-                brset   BitFlags6a_t3, %1000000, loc_D1B2
-                brclr   BitFlags6a_t3, %100000, loc_D1B5
+                brset   BitFlags6a_t3, %01000000, loc_D1B2
+                brclr   BitFlags6a_t3, %00100000, loc_D1B5
 loc_D1B2:
                 jmp     loc_D23D
 loc_D1B5:
-                clr     0,y
-                clr     2,y
+                clr     $00,y
+                clr     $02,y
                 ldx     #ErrorBitRegister0
 loc_D1BE:
-                cmpa    0,x
+                cmpa    $00,x
                 bne     loc_D1C7
                 clrb
-                stab    0,x
+                stab    $00,x
                 bra     loc_D1CF
 loc_D1C7:
                 inx
@@ -6974,15 +6974,15 @@ loc_D1D9:
                 cpx     #ErrorBitRegisterStored1
                 bcs     loc_D1EE
                 psha
-                ldab    0,y
+                ldab    $00,y
                 ldaa    Temp0
-                staa    0,y
+                staa    $00,y
                 iny
                 stab    Temp0
                 pula
 loc_D1EE:
-                ldab    0,x
-                staa    0,x
+                ldab    $00,x
+                staa    $00,x
                 tba
                 beq     loc_D228
                 dex
@@ -6990,15 +6990,15 @@ loc_D1EE:
                 bcc     loc_D1D9
                 clr     ErrorCodeUpdateKeyOnCount
                 sei
-                brset   BitFlags6a_t3, %1000000, loc_D23D
-                brset   BitFlags6a_t3, %100000, loc_D23D
-                bset    BitFlags6a_t3, %1000000
+                brset   BitFlags6a_t3, %01000000, loc_D23D
+                brset   BitFlags6a_t3, %00100000, loc_D23D
+                bset    BitFlags6a_t3, %01000000
                 cli
                 staa    DRBOffsetStored_LB
                 ldx     #$B61F
 loc_D211:
                 inx
-                ldab    0,x
+                ldab    $00,x
                 cba
                 beq     loc_D223
                 incb
@@ -7009,7 +7009,7 @@ loc_D211:
                 sec
                 rts
 loc_D223:
-                bclr    BitFlags6a_t3, %1000000
+                bclr    BitFlags6a_t3, %01000000
                 sec
                 rts
 loc_D228:
@@ -7018,7 +7018,7 @@ loc_D228:
                 ldab    ErrorCodeUpdateKeyOnCount
                 beq     loc_D23B
                 ldab    Temp0
-                stab    0,y
+                stab    $00,y
 loc_D238:
                 clrb
                 stab    ErrorCodeUpdateKeyOnCount
@@ -7031,17 +7031,17 @@ loc_D23D:
                 rts
 ;;
 gw_PIA1AManipulation_Table2:
-                db 0, 0, 4, 0, $10, $20, 0, $80, 0, 0, $19, 0, $32, $C, 0, $E
+                db $00, $00, $04, $00, $10, $20, $00, $80, $00, $00, $19, $00, $32, $0C, $00, $0E
 ;;
 gw_PIA1AManipulation_Table:
-                db 1, 2, 4, 8, $10, $20, 0, 0, $10, $11, $33, $51, $A, $12, 0, 0
+                db $01, $02, $04, $08, $10, $20, $00, $00, $10, $11, $33, $51, $0A, $12, $00, $00
 ;;
 sub_D260:
                 sei
                 ldab    SPCR_SerialPeripheralControl
-                orab    #1
+                orab    #$01
                 stab    SPCR_SerialPeripheralControl
-                bclr    PIA3_Buffer_t3, 4
+                bclr    PIA3_Buffer_t3, %00000100
                 ldab    PIA3_Buffer_t3
                 stab    PIA3_Buffer_2_t3
                 ldaa    PIA2_Buffer_t3
@@ -7050,7 +7050,7 @@ sub_D260:
                 mul
                 mul
                 nop
-                bset    PIA3_Buffer_t3, 4
+                bset    PIA3_Buffer_t3, %00000100
                 ldaa    PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 ldaa    SPDR_SerialPeripheralDataIO
@@ -7059,14 +7059,14 @@ sub_D260:
                 stab    SPCR_SerialPeripheralControl
                 staa    Temp1_t3
                 cli
-                brclr   BitFlags2e, %1000000, loc_D2FA
+                brclr   BitFlags2e, %01000000, loc_D2FA
                 eora    PIA2_Buffer_t3_Temp
                 anda    byte_89DB
                 ldx     #gw_PIA1AManipulation_Table
                 ldab    Counter_MainLoop
-                andb    #7
+                andb    #$07
                 abx
-                bita    0,x
+                bita    $00,x
                 beq     loc_D2FA
                 ldaa    CountdownTimerFromKeyOn
                 bne     loc_D2FA
@@ -7076,7 +7076,7 @@ sub_D260:
                 ldaa    BatteryVolts
                 cmpa    #$A0
                 bcs     loc_D2FA
-                ldaa    8,x
+                ldaa    $08,x
                 ldab    #$A0
                 cmpa    #$11
                 beq     loc_D2D2
@@ -7088,33 +7088,33 @@ sub_D260:
                 jsr     ThrowNonCriticalError
                 bra     loc_D2FA
 loc_D2D2:
-                brset   b5D_IPL2_t3, %1000, loc_D2FA
+                brset   b5D_IPL2_t3, %00001000, loc_D2FA
                 jsr     ThrowNonCriticalError
                 bcc     loc_D2FA
-                bset    b5D_IPL2_t3, %1000
+                bset    b5D_IPL2_t3, %00001000
                 bra     loc_D2FA
 loc_D2E0:
-                brset   b5D_IPL2_t3, %100000, loc_D2FA
+                brset   b5D_IPL2_t3, %00100000, loc_D2FA
                 jsr     ThrowNonCriticalError
                 bcc     loc_D2FA
-                bset    b5D_IPL2_t3, %100000
+                bset    b5D_IPL2_t3, %00100000
                 bra     loc_D2FA
 loc_D2EE:
-                brset   b5D_IPL2_t3, %100, loc_D2FA
+                brset   b5D_IPL2_t3, %00000100, loc_D2FA
                 jsr     ThrowNonCriticalError
                 bcc     loc_D2FA
-                bset    b5D_IPL2_t3, %100
+                bset    b5D_IPL2_t3, %00000100
 loc_D2FA:
                 ldaa    PIA2_Buffer_t3
                 staa    PIA2_Buffer_t3_Temp
-                bset    BitFlags2e, %1000000
+                bset    BitFlags2e, %01000000
                 rts
 ;;
 sub_D303:
                 ldaa    EngineRpm_HB
                 cmpa    #$3F
                 bcs     loc_D324
-                brclr   BitFlags27, %100000, loc_D324
+                brclr   BitFlags27, %00100000, loc_D324
                 ldaa    BitFlags_BF_t3
                 cmpa    #$83
                 beq     loc_D324
@@ -7134,86 +7134,86 @@ loc_D324:
                 ldy     #PORTA_PortA
                 ldx     #SwitchPortAccessReg1
                 sei
-                bset    0,x, %1000
-                bclr    8,y, %100000
+                bset    $00,x, %00001000
+                bclr    $08,y, %00100000
                 cmpb    SPSR_SerialPeripheralStatus
                 staa    SPDR_SerialPeripheralDataIO
-                bset    2,x, %1000
-                bclr    2,x, %1000
+                bset    $02,x, %00001000
+                bclr    $02,x, %00001000
                 nop
                 ldaa    SPDR_SerialPeripheralDataIO
                 cmpa    SPSR_SerialPeripheralStatus
                 ldaa    #$62
 loc_D353:
-                brclr   0,x, %1000, loc_D35D
+                brclr   $00,x, %00001000, loc_D35D
                 decb
                 bne     loc_D353
                 jmp     loc_D49F
 loc_D35D:
-                ldab    #$B
+                ldab    #$0B
                 staa    SPDR_SerialPeripheralDataIO
-                bset    2,x, %1000
-                bclr    2,x, %1000
+                bset    $02,x, %00001000
+                bclr    $02,x, %00001000
                 nop
                 ldaa    SPDR_SerialPeripheralDataIO
                 staa    Temp1
                 cmpa    SPSR_SerialPeripheralStatus
-                ldaa    #0
+                ldaa    #$00
 loc_D374:
-                brclr   0,x, %1000, loc_D37E
+                brclr   $00,x, %00001000, loc_D37E
                 decb
                 bne     loc_D374
                 jmp     loc_D49F
 loc_D37E:
-                ldab    #$B
+                ldab    #$0B
                 staa    SPDR_SerialPeripheralDataIO
-                bset    2,x, %1000
-                bclr    2,x, %1000
+                bset    $02,x, %00001000
+                bclr    $02,x, %00001000
                 nop
                 ldaa    SPDR_SerialPeripheralDataIO
                 staa    Temp2
                 cmpa    SPSR_SerialPeripheralStatus
                 ldaa    PIA1_Buffer_t3
 loc_D395:
-                brclr   0,x, %1000, loc_D39F
+                brclr   $00,x, %00001000, loc_D39F
                 decb
                 bne     loc_D395
                 jmp     loc_D49F
 loc_D39F:
-                ldab    #$B
+                ldab    #$0B
                 staa    SPDR_SerialPeripheralDataIO
-                bset    2,x, %1000
-                bclr    2,x, %1000
+                bset    $02,x, %00001000
+                bclr    $02,x, %00001000
                 nop
                 ldaa    SPDR_SerialPeripheralDataIO
                 staa    Temp3
                 cmpa    SPSR_SerialPeripheralStatus
-                ldaa    #0
+                ldaa    #$00
 loc_D3B6:
-                brclr   0,x, %1000, loc_D3C0
+                brclr   $00,x, %00001000, loc_D3C0
                 decb
                 bne     loc_D3B6
                 jmp     loc_D49F
 loc_D3C0:
-                ldab    #$B
+                ldab    #$0B
                 staa    SPDR_SerialPeripheralDataIO
-                bset    2,x, %1000
-                bclr    2,x, %1000
+                bset    $02,x, %00001000
+                bclr    $02,x, %00001000
                 nop
                 ldaa    SPDR_SerialPeripheralDataIO
                 staa    Temp4
                 cmpa    SPSR_SerialPeripheralStatus
                 ldaa    Temp0
 loc_D3D8:
-                brclr   0,x, %1000, loc_D3E2
+                brclr   $00,x, %00001000, loc_D3E2
                 decb
                 bne     loc_D3D8
                 jmp     loc_D49F
 loc_D3E2:
-                ldab    #$B
+                ldab    #$0B
                 staa    SPDR_SerialPeripheralDataIO
-                bset    2,x, %1000
-                bclr    2,x, %1000
+                bset    $02,x, %00001000
+                bclr    $02,x, %00001000
                 nop
 loc_D3EE:
                 brset   $29,y, %10000000, loc_D3F9
@@ -7222,7 +7222,7 @@ loc_D3EE:
                 jmp     loc_D49F
 loc_D3F9:
                 ldaa    SPDR_SerialPeripheralDataIO
-                bset    8,y, %100000
+                bset    $08,y, %00100000
                 cli
                 ldab    Temp1
                 addb    Temp2
@@ -7238,44 +7238,44 @@ loc_D413:
                 beq     loc_D437
                 eora    #$82
                 staa    StartupSwitchMirror1
-                brclr   StartupSwitchMirror1, %1000000, loc_D432
+                brclr   StartupSwitchMirror1, %01000000, loc_D432
                 brclr   StartupSwitchMirror1, %10000000, loc_D42D
-                bset    BitFlags68_t3, %100000
+                bset    BitFlags68_t3, %00100000
                 bra     loc_D445
 loc_D42D:
-                bclr    BitFlags68_t3, %100000
+                bclr    BitFlags68_t3, %00100000
                 bra     loc_D445
 loc_D432:
-                bset    BitFlags68_t3, %100000
+                bset    BitFlags68_t3, %00100000
                 bra     loc_D445
 loc_D437:
                 staa    StartupSwitchMirror1
                 brclr   StartupSwitchMirror1, %10000000, loc_D442
-                bset    BitFlags68_t3, %100000
+                bset    BitFlags68_t3, %00100000
                 bra     loc_D445
 loc_D442:
-                bclr    BitFlags68_t3, %100000
+                bclr    BitFlags68_t3, %00100000
 loc_D445:
                 brclr   Ram_30, %10000000, loc_D49B
                 ldaa    Temp4
                 anda    byte_89DA
                 ldx     #gw_PIA1AManipulation_Table2
                 ldab    Counter_MainLoop
-                andb    #7
+                andb    #$07
                 abx
-                bita    0,x
+                bita    $00,x
                 beq     locret_D49A
                 ldaa    CountdownTimerFromKeyOn
                 bne     locret_D49A
                 ldaa    SwitchPortAccessReg1
-                bita    #%1000000
+                bita    #%01000000
                 bne     locret_D49A
                 ldaa    BatteryVolts
                 cmpa    #$A0
                 bcs     locret_D49A
-                ldaa    8,x
+                ldaa    $08,x
                 ldab    #$A0
-                cmpa    #$C
+                cmpa    #$0C
                 beq     loc_D487
                 cmpa    #$19
                 bne     loc_D495
@@ -7299,13 +7299,13 @@ loc_D49B:
                 bset    Ram_30, %10000000
                 rts
 loc_D49F:
-                bset    8,y, %100000
+                bset    8,y, %00100000
                 cli
                 ldaa    BitFlags6a_t3
                 bita    #$60
                 bne     loc_D4C4
                 ldaa    PPROG_EEPROMControlReg
-                bita    #2
+                bita    #$02
                 bne     loc_D4C4
                 ldd     #$B618
                 tba
@@ -7314,7 +7314,7 @@ loc_D49F:
                 decb
                 staa    DRBOffsetStored_HB
                 stab    DRBOffsetStored_LB
-                bset    BitFlags6a_t3, %1000000
+                bset    BitFlags6a_t3, %01000000
 loc_D4C4:
                 ldd     #$4488
                 jsr     ThrowNonCriticalError
@@ -7323,11 +7323,11 @@ loc_D4C4:
                 ldaa    SwitchPortAccessReg1
                 anda    #$FE
                 staa    SwitchPortAccessReg1
-                ldab    #3
+                ldab    #$03
 loc_D4D7:
                 decb
                 bne     loc_D4D7
-                oraa    #1
+                oraa    #$01
                 staa    SwitchPortAccessReg1
 loc_D4DF:
                 cli
@@ -7348,9 +7348,9 @@ locret_D4F8:
 ;;
 sub_D4F9:
                 ldab    #$40
-                brset   IPL1, %1000000, loc_D519
+                brset   IPL1, %01000000, loc_D519
                 ldaa    DRBPointer1
-                cmpa    #$A
+                cmpa    #$0A
                 bne     loc_D508
                 jmp     loc_D03A
 loc_D508:
@@ -7361,14 +7361,14 @@ loc_D508:
                 bmi     loc_D53D
                 bra     loc_D53C
 loc_D513:
-                brset   BitFlags6a_t3, %100, loc_D53D
+                brset   BitFlags6a_t3, %00000100, loc_D53D
                 bra     loc_D53C
 loc_D519:
                 ldx     KeyOnOrEngineRunningTime
-                cpx     #3
+                cpx     #$03
                 bls     loc_D53D
                 bclr    Ram_05, %11000000
-                brclr   PIA1_Buffer_t3, %1000000, loc_D53C
+                brclr   PIA1_Buffer_t3, %01000000, loc_D53C
                 ldaa    b5C_IPL1_t3
                 bita    byte_89DC
                 bne     loc_D53C
@@ -7391,13 +7391,13 @@ sub_D545:
                 ldaa    BitFlags27
                 bita    #%11000000
                 beq     locret_D591
-                brset   IPL1, %1000000, loc_D555
-                brset   BitFlags6a_t3, %100, loc_D589
+                brset   IPL1, %01000000, loc_D555
+                brset   BitFlags6a_t3, %00000100, loc_D589
                 bra     loc_D58E
 loc_D555:
-                brset   b5C_IPL1_t3, %100000, loc_D58E
+                brset   b5C_IPL1_t3, %00100000, loc_D58E
                 ldaa    Counter_MainLoop
-                bita    #%111100
+                bita    #%00111100
                 bne     loc_D585
                 ldaa    TargetBatteryVolts
                 suba    BatteryVolts
@@ -7411,21 +7411,21 @@ loc_D555:
                 inca
                 cmpa    #$56
                 bcs     loc_D582
-                bset    Ram_30, %100000
+                bset    Ram_30, %00100000
                 bra     loc_D58E
 loc_D57E:
-                bclr    Ram_30, %100000
+                bclr    Ram_30, %00100000
 loc_D581:
                 clra
 loc_D582:
                 staa    UNe_64B8
 loc_D585:
-                brset   Ram_30, %100000, loc_D58E
+                brset   Ram_30, %00100000, loc_D58E
 loc_D589:
-                bset    PIA2_Buffer_t3, %100
+                bset    PIA2_Buffer_t3, %00000100
                 bra     locret_D591
 loc_D58E:
-                bclr    PIA2_Buffer_t3, %100
+                bclr    PIA2_Buffer_t3, %00000100
 locret_D591:
                 rts
 ;;
@@ -7455,10 +7455,10 @@ locret_D5B9:
                 rts
 ;;
 sub_D5BA:
-                brclr   IPL1, %1000000, locret_D5F3
-                brset   BitFlags6d_t3, %100, locret_D5F3
-                brset   BitFlags6a_t3, %1000000, locret_D5F3
-                bset    BitFlags6d_t3, %100
+                brclr   IPL1, %01000000, locret_D5F3
+                brset   BitFlags6d_t3, %00000100, locret_D5F3
+                brset   BitFlags6a_t3, %01000000, locret_D5F3
+                bset    BitFlags6d_t3, %00000100
                 brclr   ErrorBitRegisterStored3, %11111111, loc_D5EC
                 ldaa    ErrorCodeUpdateKeyOnCount
                 cmpa    #$32
@@ -7487,10 +7487,10 @@ locret_D5F3:
                 rts
 ;;
 sub_D5F4:
-                anda    #$F
+                anda    #$0F
                 ldab    ERRORCODERESETTIMERIN_UN_ERRORCODEIN_LN_VAR
                 beq     loc_D603
-                andb    #$F
+                andb    #$0F
                 cba
                 bne     locret_D60A
                 ldaa    ERRORCODERESETTIMERIN_UN_ERRORCODEIN_LN_VAR
@@ -7501,7 +7501,7 @@ loc_D603:
 locret_D60A:
                 rts
 loc_D60B:
-                ldab    #1
+                ldab    #$01
 loc_D60D:
                 deca
                 beq     loc_D613
@@ -7519,7 +7519,7 @@ loc_D613:
 sub_D61E:
                 ldab    EngineRpm_HB
                 cmpb    #$7D
-                ldaa    #0
+                ldaa    #$00
                 bcc     loc_D63C
                 subb    #$10
                 bcc     loc_D62B
@@ -7546,7 +7546,7 @@ locret_D649:
                 rts
 ;;
 sub_D64A:
-                brclr   Ram_05, 1, loc_D684
+                brclr   Ram_05, %00000001, loc_D684
                 ldab    BatteryVolts
                 cmpb    byte_89E6
                 bcs     loc_D675
@@ -7575,33 +7575,33 @@ loc_D67E:
                 ldd     #$2828
                 jsr     ThrowNonCriticalError
 loc_D684:
-                brset   BitFlags2b, %1000000, locret_D6A0
+                brset   BitFlags2b, %01000000, locret_D6A0
                 ldaa    UNe_64B9
                 anda    #$1F
                 cmpa    #$1F
                 bne     locret_D6A0
-                brset   b5d_IPL2, %1000000, locret_D6A0
-                ldd     #$181
+                brset   b5d_IPL2, %01000000, locret_D6A0
+                ldd     #$0181
                 jsr     ThrowNonCriticalError
                 bcc     locret_D6A0
-                bset    b5d_IPL2, %1000000
+                bset    b5d_IPL2, %01000000
 locret_D6A0:
                 rts
 ;;
 sub_D6A1:
-                brclr   IPL1, %1000000, locret_D6E9
+                brclr   IPL1, %01000000, locret_D6E9
                 ldd     KeyOnOrEngineRunningTime
-                cmpa    #$B
+                cmpa    #$0B
                 bcs     locret_D6E9
                 ldaa    CoolantTemp
                 cmpa    byte_89FA
                 bcs     locret_D6E9
                 bitb    #$1F
                 bne     locret_D6E9
-                brset   BitFlags27, 1, loc_D6BE
-                brclr   BitFlags68_t3, %10000, locret_D6E9
+                brset   BitFlags27, %00000001, loc_D6BE
+                brclr   BitFlags68_t3, %00010000, locret_D6E9
 loc_D6BE:
-                brset   StartupSwitchMirror1, %100000, locret_D6E9
+                brset   StartupSwitchMirror1, %00100000, locret_D6E9
                 brclr   BitFlags66_t3, %10000000, locret_D6E9
                 ldaa    EngineRpm_HB
                 cmpa    byte_89F8
@@ -7610,13 +7610,13 @@ loc_D6BE:
                 cmpa    byte_89F9
                 bcc     locret_D6E9
                 ldaa    VehicleSpeedx8_Scaled
-                cmpa    #2
+                cmpa    #$02
                 bcc     locret_D6E9
-                brset   b5D_IPL2_t3, %10000, locret_D6E9
+                brset   b5D_IPL2_t3, %00010000, locret_D6E9
                 ldd     #$23A0
                 jsr     ThrowNonCriticalError
                 bcc     locret_D6E9
-                bset    b5D_IPL2_t3, %10000
+                bset    b5D_IPL2_t3, %00010000
 locret_D6E9:
                 rts
 ;;
@@ -7626,7 +7626,7 @@ sub_D6EA:
                 beq     loc_D6F2
                 rts
 loc_D6F2:
-                brset   IPL1, %1000000, loc_D6F9
+                brset   IPL1, %01000000, loc_D6F9
                 jmp     loc_D73C
 loc_D6F9:
                 ldaa    KeyOnOrEngineRunningTime
@@ -7635,7 +7635,7 @@ loc_D6F9:
                 ldaa    CoolantTemp
                 cmpa    #$CD
                 bcs     loc_D73C
-                brclr   BitFlags2e, %100, loc_D741
+                brclr   BitFlags2e, %00000100, loc_D741
                 ldaa    Counter_O2Diagnostics
                 cmpa    #$13
                 bcs     loc_D737
@@ -7645,16 +7645,16 @@ loc_D6F9:
                 ldaa    Timer_O2MiddleDiagnostics
                 cmpa    #$2A
                 bcs     loc_D72C
-                brset   b5d_IPL2, %10, loc_D72A
+                brset   b5d_IPL2, %00000010, loc_D72A
                 ldd     #$2081
                 jsr     ThrowNonCriticalError
                 bcc     locret_D79A
-                bset    b5d_IPL2, %10
+                bset    b5d_IPL2, %00000010
 loc_D72A:
                 bra     locret_D79A
 loc_D72C:
                 ldab    Counter_MainLoop
-                bitb    #%1111111
+                bitb    #%01111111
                 bne     locret_D79A
                 inca
                 staa    Timer_O2MiddleDiagnostics
@@ -7664,7 +7664,7 @@ loc_D737:
                 staa    Counter_O2Diagnostics
                 bra     locret_D79A
 loc_D73C:
-                bclr    BitFlags2e, %100
+                bclr    BitFlags2e, %00000100
                 bra     loc_D771
 loc_D741:
                 ldaa    O2SensorVolts
@@ -7675,20 +7675,20 @@ loc_D741:
                 ldaa    Timer_O2MiddleDiagnostics
                 cmpa    #$15
                 bcs     loc_D768
-                bset    BitFlags2e, %100
+                bset    BitFlags2e, %00000100
                 clra
                 staa    Timer_O2MiddleDiagnostics
                 staa    Counter_O2Diagnostics
                 sei
                 ldaa    PIA3_Buffer_t3
-                oraa    #8
+                oraa    #$08
                 staa    PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 cli
                 bra     locret_D79A
 loc_D768:
                 ldab    Counter_MainLoop
-                bitb    #%1111111
+                bitb    #%01111111
                 bne     loc_D774
                 inca
                 bra     loc_D772
@@ -7970,11 +7970,11 @@ sub_D977:
                 ldaa    CoolantTemp
                 cmpa    byte_89E1
                 bcs     loc_D987
-                bset    BitFlags6d_t3, %10
+                bset    BitFlags6d_t3, %00000010
                 bra     locret_D9AC
 loc_D987:
-                brset   BitFlags6d_t3, %10, locret_D9AC
-                brclr   IPL1, %1000000, locret_D9AC
+                brset   BitFlags6d_t3, %00000010, locret_D9AC
+                brclr   IPL1, %01000000, locret_D9AC
                 ldaa    KeyOnOrEngineRunningTime
                 cmpa    #$FF
                 bne     locret_D9AC
@@ -7994,93 +7994,93 @@ loc_D9AD:
                 ldd     #$2101
                 jsr     ThrowNonCriticalError
                 bcc     locret_D9B8
-                bset    BitFlags6d_t3, %10
+                bset    BitFlags6d_t3, %00000010
 locret_D9B8:
                 rts
 ;;
 sub_D9B9:
-                brset   BitFlags2d, %1000, loc_D9EC
-                brclr   BitFlags2d, %100, loc_D9EC
-                brclr   IPL1, %1000000, loc_D9EC
+                brset   BitFlags2d, %00001000, loc_D9EC
+                brclr   BitFlags2d, %00000100, loc_D9EC
+                brclr   IPL1, %01000000, loc_D9EC
                 sei
                 ldaa    BitFlags6a_t3
-                bita    #%1100000
+                bita    #%01100000
                 bne     loc_D9EA
-                bset    BitFlags2d, %1000
+                bset    BitFlags2d, %00001000
                 ldx     #$B613
-                ldaa    0,x
+                ldaa    $00,x
                 inca
                 beq     loc_D9EA
                 cmpa    byte_8810
                 bcs     loc_D9DF
-                bset    BitFlags2d, %10
+                bset    BitFlags2d, %00000010
 loc_D9DF:
                 staa    DRBOffsetStored_LB
                 ldaa    #$13
                 staa    DRBOffsetStored_HB
-                bset    BitFlags6a_t3, %1000000
+                bset    BitFlags6a_t3, %01000000
 loc_D9EA:
                 cli
                 nop
 loc_D9EC:
                 sei
-                brset   BitFlags6a_t3, %1000000, loc_DA6F
+                brset   BitFlags6a_t3, %01000000, loc_DA6F
                 ldx     #$B616
-                brclr   BitFlags2d, %10000, loc_DA30
-                brset   BitFlags2d, 1, loc_DA30
+                brclr   BitFlags2d, %00010000, loc_DA30
+                brset   BitFlags2d, %00000001, loc_DA30
                 ldaa    #$16
                 ldab    #$4A
-                brclr   BitFlags6a_t3, %100000, loc_DA27
+                brclr   BitFlags6a_t3, %00100000, loc_DA27
                 cmpa    DRBOffsetStored_HB
                 beq     loc_DA20
                 inca
                 cmpa    DRBOffsetStored_HB
                 bne     loc_DA30
-                bset    BitFlags6a_t3, %1000000
-                bclr    BitFlags6a_t3, %100000
-                bset    BitFlags2d, 1
+                bset    BitFlags6a_t3, %01000000
+                bclr    BitFlags6a_t3, %00100000
+                bset    BitFlags2d, %00000001
                 ldaa    #$13
                 clrb
                 stab    Counter_ACControl1
                 bra     loc_DA2A
 loc_DA20:
-                bset    BitFlags6a_t3, %1000000
+                bset    BitFlags6a_t3, %01000000
                 inca
                 comb
                 bra     loc_DA2A
 loc_DA27:
-                bset    BitFlags6a_t3, %1100000
+                bset    BitFlags6a_t3, %01100000
 loc_DA2A:
                 staa    DRBOffsetStored_HB
                 stab    DRBOffsetStored_LB
 loc_DA30:
-                ldaa    1,x
+                ldaa    $01,x
                 coma
-                cmpa    0,x
+                cmpa    $00,x
                 bne     loc_DA40
                 cmpa    #$4A
                 bne     loc_DA40
-                bset    BitFlags2d, %100
+                bset    BitFlags2d, %00000100
                 bra     loc_DA43
 loc_DA40:
-                bclr    BitFlags2d, %100
+                bclr    BitFlags2d, %00000100
 loc_DA43:
                 cli
-                brclr   BitFlags2d, %10, locret_DA70
+                brclr   BitFlags2d, %00000010, locret_DA70
                 sei
-                brset   BitFlags6a_t3, %1000000, loc_DA6F
+                brset   BitFlags6a_t3, %01000000, loc_DA6F
                 ldaa    #$16
                 ldab    #$EE
-                brclr   BitFlags6a_t3, %100000, loc_DA66
+                brclr   BitFlags6a_t3, %00100000, loc_DA66
                 cmpa    DRBOffsetStored_HB
                 bne     loc_DA6F
                 inca
-                bset    BitFlags6a_t3, %1000000
-                bclr    BitFlags6a_t3, %100000
+                bset    BitFlags6a_t3, %01000000
+                bclr    BitFlags6a_t3, %00100000
                 bclr    BitFlags2d, %10
                 bra     loc_DA69
 loc_DA66:
-                bset    BitFlags6a_t3, %1100000
+                bset    BitFlags6a_t3, %01100000
 loc_DA69:
                 staa    DRBOffsetStored_HB
                 stab    DRBOffsetStored_LB
@@ -8090,9 +8090,9 @@ locret_DA70:
                 rts
 ;;
 sub_DA71:
-                brset   BitFlags21, %100000, loc_DAE5
+                brset   BitFlags21, %00100000, loc_DAE5
                 ldaa    b5d_IPL2
-                bita    #%11000
+                bita    #%00011000
                 bne     loc_DAE5
                 ldaa    TargetBatteryVolts
                 sei
@@ -8107,8 +8107,8 @@ loc_DA7E:
                 ldd     EngineRpm_HB
                 cpd     byte_89EE
                 bcs     loc_DAE5
-                ldaa    #$F
-                brclr   BitFlags2e, 1, loc_DA9D
+                ldaa    #$0F
+                brclr   BitFlags2e, %00000001, loc_DA9D
                 clra
 loc_DA9D:
                 anda    Counter_MainLoop
@@ -8118,64 +8118,64 @@ loc_DA9D:
                 beq     loc_DAA8
                 staa    BatVoltsDiagCounter
 loc_DAA8:
-                brset   BitFlags2e, 1, loc_DAB8
+                brset   BitFlags2e, %00000001, loc_DAB8
                 cmpa    byte_89F0
                 bcs     locret_DAB7
                 clra
                 staa    BatVoltsDiagCounter
-                bset    BitFlags2e, 1
+                bset    BitFlags2e, %00000001
 locret_DAB7:
                 rts
 loc_DAB8:
-                brset   BitFlags21, %10000, loc_DAC8
+                brset   BitFlags21, %00010000, loc_DAC8
                 cmpa    byte_89F1
                 bcs     locret_DAB7
                 clra
                 staa    BatVoltsDiagCounter
-                bset    BitFlags21, %10000
+                bset    BitFlags21, %00010000
                 rts
 loc_DAC8:
                 cmpa    byte_89F3
                 bcs     locret_DAB7
                 clra
                 staa    BatVoltsDiagCounter
-                bclr    BitFlags21, %10000
-                ldd     #$58A
+                bclr    BitFlags21, %00010000
+                ldd     #$058A
                 jsr     ThrowNonCriticalError
                 bcc     locret_DAB7
-                bset    b5d_IPL2, %1000
-                bclr    BitFlags2e, 1
-                bclr    BitFlags21, %110000
+                bset    b5d_IPL2, %00001000
+                bclr    BitFlags2e, %00000001
+                bclr    BitFlags21, %00110000
                 rts
 loc_DAE5:
                 clra
                 staa    BatVoltsDiagCounter
-                bclr    BitFlags2e, 1
-                bclr    BitFlags21, %110000
+                bclr    BitFlags2e, %00000001
+                bclr    BitFlags21, %00110000
                 rts
 ;;
 sub_DAEF:
                 ldy     #LDXi_6485
                 brset   DRBSerialMode, %10000000, loc_DB60
-                brclr   DRBSerialMode, %1000000, loc_DB60
+                brclr   DRBSerialMode, %01000000, loc_DB60
                 ldaa    BAUD_SerialBaudRate
                 cmpa    #$25
                 bne     locret_DB5F
                 ldab    SCDR_SerialData
                 ldaa    SCSR_SerialStatus
-                bita    #%100000
+                bita    #%00100000
                 beq     loc_DB64
-                bita    #%1110
+                bita    #%00001110
                 bne     loc_DB5B
-                brset   0,y, %11100000, loc_DB80
+                brset   $00,y, %11100000, loc_DB80
                 ldaa    #$F8
-                brset   0,y, %10000000, loc_DB32
+                brset   $00,y, %10000000, loc_DB32
                 deca
-                brset   0,y, %1100000, loc_DB32
+                brset   $00,y, %01100000, loc_DB32
                 ldaa    #$F5
-                brset   0,y, %1000000, loc_DB32
+                brset   $00,y, %01000000, loc_DB32
                 ldaa    #$F3
-                brset   0,y, %100000, loc_DB32
+                brset   $00,y, %00100000, loc_DB32
                 ldaa    #$14
 loc_DB32:
                 cba
@@ -8206,8 +8206,8 @@ loc_DB60:
                 clr     LDXi_6485
                 rts
 loc_DB64:
-                brset   0,y, %11100000, loc_DB70
-                brclr   0,y, %11100000, loc_DB60
+                brset   $00,y, %11100000, loc_DB70
+                brclr   $00,y, %11100000, loc_DB60
                 bra     loc_DB5B
 loc_DB70:
                 ldaa    DRBPointer1
@@ -8222,64 +8222,64 @@ loc_DB70:
 loc_DB80:
                 ldaa    #$28
                 staa    DRBPointer1
-                brset   0,y, %1000, loc_DBCE
-                brset   0,y, %10000, loc_DB96
-                bset    0,y, %10000
+                brset   $00,y, %00001000, loc_DBCE
+                brset   $00,y, %00010000, loc_DB96
+                bset    $00,y, %00010000
                 stab    DRBPointer2
                 bra     loc_DB5B
 loc_DB96:
                 cmpb    DRBPointer2
                 bne     loc_DBBF
-                bclr    0,y, %10000
+                bclr    $00,y, %00010000
                 tba
                 ldab    LDXi_6485
-                andb    #7
-                cmpb    #4
+                andb    #$07
+                cmpb    #$04
                 beq     loc_DBB4
                 ldx     #UNe_6481
                 abx
-                staa    0,x
+                staa    $00,x
                 inc     LDXi_6485
                 jmp     loc_DB5B
 loc_DBB4:
                 cmpa    #$12
                 bne     loc_DBBC
-                bclr    0,y, %111
+                bclr    $00,y, %00000111
 loc_DBBC:
                 jmp     loc_DB5B
 loc_DBBF:
-                bset    0,y, %1000
+                bset    $00,y, %00001000
                 cmpb    #$12
                 bne     loc_DBD2
 loc_DBC7:
-                bset    0,y, %10000
+                bset    $00,y, %00010000
                 jmp     loc_DB5B
 loc_DBCE:
                 cmpb    #$12
                 beq     loc_DBD9
 loc_DBD2:
-                bclr    0,y, %10000
+                bclr    $00,y, %00010000
                 jmp     loc_DB5B
 loc_DBD9:
-                brclr   0,y, %10000, loc_DBC7
-                bclr    0,y, %11111
+                brclr   $00,y, %00010000, loc_DBC7
+                bclr    $00,y, %00011111
                 bra     loc_DBBC
 sub_DBE4:
-                brset   DRBSerialMode, %1000000, loc_DBEC
+                brset   DRBSerialMode, %01000000, loc_DBEC
                 rts
 loc_DBE9:
                 jmp     loc_DD9C
 loc_DBEC:
-                brset   DRBSerialMode, %1110000, loc_DBE9
+                brset   DRBSerialMode, %01110000, loc_DBE9
                 ldab    SCDR_SerialData
                 ldaa    SCSR_SerialStatus
-                bita    #%100000
+                bita    #%00100000
                 bne     loc_DBFB
                 rts
 loc_DBFB:
                 ldx     #FDRVar0
-                ldaa    0,x
-                bita    #%11
+                ldaa    $00,x
+                bita    #%00000011
                 beq     loc_DC07
                 jmp     loc_DC69
 loc_DC07:
@@ -8315,27 +8315,27 @@ loc_DC38:
                 bne     loc_DC0B
                 cmpb    #$F8
                 bne     loc_DC45
-                ldaa    #2
+                ldaa    #$02
                 jmp     loc_DD9A
 loc_DC45:
                 cmpb    #$F9
                 bne     loc_DC4E
-                ldaa    #1
+                ldaa    #$01
                 jmp     loc_DD9A
 loc_DC4E:
                 cmpb    #$FB
                 bne     loc_DC0B
                 ldy     EngineRpm_HB
-                cpy     #$100
+                cpy     #$0100
                 bhi     loc_DC60
-                ldaa    #5
+                ldaa    #$05
                 jmp     loc_DD9A
 loc_DC60:
                 ldd     #$17
                 jsr     sub_DDA1
                 jmp     loc_DD9A
 loc_DC69:
-                bita    #1
+                bita    #%00000001
                 beq     loc_DC70
                 jmp     loc_DC7D
 loc_DC70:
@@ -8365,7 +8365,7 @@ loc_DC90:
                 bra     loc_DCCF
 loc_DC9A:
                 ldy     FDRVar3
-                ldab    0,y
+                ldab    $00,y
                 ldaa    #$40
                 bra     loc_DCCF
 loc_DCA5:
@@ -8375,15 +8375,15 @@ loc_DCA9:
                 jsr     sub_DDA1
                 cmpb    #$1B
                 bne     loc_DCB3
-                bset    DRBSerialMode, %1000000
+                bset    DRBSerialMode, %01000000
 loc_DCB3:
                 jmp     loc_DD9C
 loc_DCB6:
-                ldaa    0,x
-                bita    #%100
+                ldaa    $00,x
+                bita    #%00000100
                 beq     loc_DCCD
                 ldy     EngineRpm_HB
-                cpy     #$100
+                cpy     #$0100
                 bcs     loc_DCCD
                 ldab    #$17
                 jsr     sub_DDA1
@@ -8391,16 +8391,16 @@ loc_DCB6:
 loc_DCCD:
                 ldaa    #$80
 loc_DCCF:
-                oraa    0,x
+                oraa    $00,x
                 jmp     loc_DD9A
 loc_DCD4:
                 sei
                 ldy     FDRVar3
                 cpy     #XIRQ
                 bcc     loc_DCEC
-                stab    0,y
+                stab    $00,y
 loc_DCE2:
-                ldab    0,y
+                ldab    $00,y
                 jsr     sub_DDA1
                 cli
                 jmp     loc_DD9C
@@ -8408,28 +8408,28 @@ loc_DCEC:
                 ldx     #UNk_64D0
                 ldy     #loc_DD0F
 loc_DCF3:
-                ldaa    0,y
-                staa    0,x
+                ldaa    $00,y
+                staa    $00,x
                 inx
                 iny
                 cpy     #loc_DD2C
                 bne     loc_DCF3
                 ldx     #UNk_64D0
                 ldy     FDRVar3
-                jsr     0,x
+                jsr     $00,x
                 ldx     #FDRVar0
                 bra     loc_DCE2
 loc_DD0F:
                 ldaa    #$AA
-                staa    loc_D555
+                staa    $D555
                 lsra
-                staa    loc_AAA9+1
+                staa    $AAAA
                 ldaa    #$A0
-                staa    loc_D555
-                stab    0,y
-                ldx     #0
+                staa    $D555
+                stab    $00,y
+                ldx     #$00
 loc_DD23:
-                cmpb    0,y
+                cmpb    $00,y
                 beq     locret_DD2B
                 dex
                 bne     loc_DD23
@@ -8447,7 +8447,7 @@ loc_DD2C:
                 asla
                 bcs     loc_DD42
                 stab    FDRVar2
-                ldaa    #8
+                ldaa    #$08
                 bra     loc_DD63
 loc_DD42:
                 stab    FDRVar1
@@ -8469,13 +8469,13 @@ loc_DD5A:
 loc_DD61:
                 ldaa    #$80
 loc_DD63:
-                oraa    0,x
+                oraa    $00,x
                 jmp     loc_DD9A
 loc_DD68:
                 ldx     FDRVar3
                 ldy     FDRVar1
                 ldab    SCDR_SerialData
-                ldaa    0,x
+                ldaa    $00,x
                 staa    SCDR_SerialData
                 inx
                 dey
@@ -8541,7 +8541,7 @@ loc_DDCF:
                 ldab    LDXi_6485
                 addb    #$20
                 stab    LDXi_6485
-                bset    DRBSerialMode, %110000
+                bset    DRBSerialMode, %00110000
                 ldd     SCSR_SerialStatus
                 pulx
                 rts
@@ -8558,70 +8558,70 @@ loc_DDF0:
                 staa    Temp3
                 tba
                 ldab    #$40
-                ldy     #$1000
+                ldy     #$00001000
                 ldx     #SwitchPortAccessReg1
                 sei
-                bset    0,x, %1000
-                bclr    8,y, %100000
+                bset    0,x, %00001000
+                bclr    8,y, %00100000
                 cmpb    SPSR_SerialPeripheralStatus
                 staa    SPDR_SerialPeripheralDataIO
-                bset    2,x, %1000
-                bclr    2,x, %1000
+                bset    2,x, %00001000
+                bclr    2,x, %00001000
                 nop
                 ldaa    SPDR_SerialPeripheralDataIO
                 cmpa    SPSR_SerialPeripheralStatus
                 ldaa    Temp0
 loc_DE22:
-                brclr   0,x, %1000, loc_DE2C
+                brclr   0,x, %00001000, loc_DE2C
                 decb
                 bne     loc_DE22
                 jmp     loc_DEC5
 loc_DE2C:
                 staa    SPDR_SerialPeripheralDataIO
-                bset    2,x, %1000
-                bclr    2,x, %1000
+                bset    2,x, %00001000
+                bclr    2,x, %00001000
                 nop
                 ldaa    SPDR_SerialPeripheralDataIO
                 staa    Temp0
                 cmpa    SPSR_SerialPeripheralStatus
                 ldaa    Temp1
 loc_DE42:
-                brclr   0,x, %1000, loc_DE4C
+                brclr   0,x, %00001000, loc_DE4C
                 decb
                 bne     loc_DE42
                 jmp     loc_DEC5
 loc_DE4C:
                 staa    SPDR_SerialPeripheralDataIO
-                bset    2,x, %1000
-                bclr    2,x, %1000
+                bset    2,x, %00001000
+                bclr    2,x, %00001000
                 nop
                 ldaa    SPDR_SerialPeripheralDataIO
                 staa    Temp1
                 cmpa    SPSR_SerialPeripheralStatus
                 ldaa    Temp2
 loc_DE62:
-                brclr   0,x, %1000, loc_DE6C
+                brclr   0,x, %00001000, loc_DE6C
                 decb
                 bne     loc_DE62
                 jmp     loc_DEC5
 loc_DE6C:
                 staa    SPDR_SerialPeripheralDataIO
-                bset    2,x, %1000
-                bclr    2,x, %1000
+                bset    2,x, %00001000
+                bclr    2,x, %00001000
                 nop
                 ldaa    SPDR_SerialPeripheralDataIO
                 staa    Temp2
                 cmpa    SPSR_SerialPeripheralStatus
                 ldaa    Temp3
 loc_DE82:
-                brclr   0,x, %1000, loc_DE8B
+                brclr   0,x, %00001000, loc_DE8B
                 decb
                 bne     loc_DE82
                 bra     loc_DEC5
 loc_DE8B:
                 staa    SPDR_SerialPeripheralDataIO
-                bset    2,x, %1000
-                bclr    2,x, %1000
+                bset    2,x, %00001000
+                bclr    2,x, %00001000
                 nop
 loc_DE95:
                 brset   $29,y, %10000000, loc_DE9F
@@ -8630,7 +8630,7 @@ loc_DE95:
                 bra     loc_DEC5
 loc_DE9F:
                 ldaa    SPDR_SerialPeripheralDataIO
-                bset    8,y, %100000
+                bset    8,y, %00100000
                 cli
                 suba    Temp0
                 suba    Temp1
@@ -8640,9 +8640,9 @@ loc_DE9F:
                 anda    #$F
                 cmpa    #1
                 bne     locret_DEC7
-                bset    CCDFlags5, %1000000
+                bset    CCDFlags5, %01000000
                 brset   CCDFlags6, %10000000, locret_DEC7
-                bset    Counter_SpeedSensorInterrupt_HB_X, %10000
+                bset    Counter_SpeedSensorInterrupt_HB_X, %00010000
 loc_DEC5:
                 cli
                 nop
@@ -8653,7 +8653,7 @@ sub_DEC8:
                 ldab    Counter_MainLoop
                 andb    #$F
                 bne     loc_DF0B
-                brset   Counter_SpeedSensorInterrupt_HB_X, %1000, loc_DEF2
+                brset   Counter_SpeedSensorInterrupt_HB_X, %00001000, loc_DEF2
                 ldaa    KeyOnOrEngineRunningTime
                 cmpa    #$83
                 bcs     loc_DF08
@@ -8668,7 +8668,7 @@ sub_DEC8:
                 stab    CCDFlags4_BodyCompFlags4_X
                 cmpb    #$71
                 bcs     loc_DF0B
-                bset    Counter_SpeedSensorInterrupt_HB_X, %1000
+                bset    Counter_SpeedSensorInterrupt_HB_X, %00001000
                 bra     loc_DF08
 loc_DEF2:
                 ldaa    TargetBatteryVolts
@@ -8704,32 +8704,32 @@ loc_DF25:
                 bne     locret_DF32
                 ldaa    byte_8014
                 beq     loc_DF33
-                bclr    CCDFlags5, %100000
+                bclr    CCDFlags5, %00100000
 locret_DF32:
                 rts
 loc_DF33:
                 ldaa    PPROG_EEPROMControlReg
-                bita    #%10
+                bita    #%00000010
                 bne     loc_DF47
-                bclr    Counter_SpeedSensorInterrupt_HB_X, %100000
+                bclr    Counter_SpeedSensorInterrupt_HB_X, %00100000
                 ldaa    $B612
                 bita    #1
                 beq     loc_DF47
-                bset    Counter_SpeedSensorInterrupt_HB_X, %100000
+                bset    Counter_SpeedSensorInterrupt_HB_X, %00100000
 loc_DF47:
                 ldaa    Counter_MainLoop
-                bita    #%11
+                bita    #%00000011
                 bne     loc_DFAC
-                brclr   CCDFlags5, %1000000, loc_DF6F
+                brclr   CCDFlags5, %01000000, loc_DF6F
                 bset    CCDFlags5, %10000000
-                bclr    CCDFlags5, %1100000
-                bclr    CCDFlags6, %1111111
+                bclr    CCDFlags5, %01100000
+                bclr    CCDFlags6, %01111111
                 brset   CCDFlags6, %10000000, loc_DFAC
                 ldaa    BitFlags6a_t3
-                bita    #%1100000
+                bita    #%01100000
                 bne     loc_DFAC
                 ldaa    $B612
-                bita    #%10
+                bita    #%00000010
                 beq     loc_DFAC
                 anda    #$FD
                 bra     loc_DF98
@@ -8748,32 +8748,32 @@ loc_DF81:
                 bra     loc_DFAC
 loc_DF86:
                 ldaa    BitFlags6a_t3
-                bita    #%1100000
+                bita    #%01100000
                 bne     loc_DFAC
                 ldaa    $B612
-                bita    #%10
+                bita    #%00000010
                 bne     loc_DFAC
                 bset    CCDFlags6, %10000000
                 oraa    #2
 loc_DF98:
                 sei
-                brclr   BitFlags6a_t3, %1000000, loc_DFA0
+                brclr   BitFlags6a_t3, %01000000, loc_DFA0
                 cli
                 bra     loc_DFAC
 loc_DFA0:
-                bset    BitFlags6a_t3, %1000000
+                bset    BitFlags6a_t3, %01000000
                 cli
                 staa    DRBOffsetStored_LB
                 ldaa    #$12
                 staa    DRBOffsetStored_HB
 loc_DFAC:
-                brclr   CCDFlags5, %10000, loc_DFC0
+                brclr   CCDFlags5, %00010000, loc_DFC0
                 brset   CCDFlags5, %10000000, locret_DFBF
                 ldaa    CCDFlags6
                 anda    #$7F
                 cmpa    #$2D
                 bcs     locret_DFBF
-                bset    CCDFlags5, %100000
+                bset    CCDFlags5, %00100000
 locret_DFBF:
                 rts
 loc_DFC0:
@@ -8783,9 +8783,9 @@ loc_DFC0:
                 bita    #%1100000
                 bne     locret_E010
                 ldaa    $B612
-                bita    #1
+                bita    #%00000001
                 bne     loc_DFDB
-                bita    #%10
+                bita    #%00000010
                 bne     loc_E00A
                 bra     loc_E00D
 loc_DFDB:
@@ -8797,17 +8797,16 @@ loc_DFDB:
                 bra     loc_E007
 loc_DFE9:
                 sei
-                brclr   BitFlags6a_t3, %1000000, loc_DFF1
+                brclr   BitFlags6a_t3, %01000000, loc_DFF1
                 cli
                 bra     locret_E010
 loc_DFF1:
-                bset    BitFlags6a_t3, %1000000
+                bset    BitFlags6a_t3, %01000000
                 cli
                 adda    #4
                 cmpa    #$4C
                 bcs     loc_DFFD
                 anda    #$FE
-                org $DFFD
 loc_DFFD:
                 anda    #$FD
                 staa    DRBOffsetStored_LB
@@ -11413,7 +11412,7 @@ sub_F36D:
                 brclr   BitFlags_BF_t3, %10000000, locret_F3AF
                 ldab    TimerOverflowsBetweenCamPulses
                 bne     locret_F3AF
-                brclr   IPL1, 1, locret_F3AF
+                brclr   IPL1, %00000001, locret_F3AF
                 ldab    TCTL1_TimerControlReg1
                 eorb    #1
                 bitb    #1

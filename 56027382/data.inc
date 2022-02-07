@@ -88,11 +88,9 @@ byte_8053:      db $03
                 db $2F, $90, $01, $05
                 db $9C, $FF
 
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
+ REPEAT 31-( * - TL_RPM3DInputModifierFromRPM )
+    fcb $FF
+ ENDR
 
 byte_8072:      db $03, $93
 byte_8074:      db $87, $00
@@ -291,10 +289,9 @@ byte_84B4:      db $04
                 db $3E, $C0, $01, $57
                 db $6D, $FF
 
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
+ REPEAT 31-( * - byte_84B4 )
+    fcb $FF
+ ENDR
 
 TL_O2LoLimitForInMiddleDetermination:
 byte_84D3:      db $05
@@ -306,18 +303,9 @@ byte_84D3:      db $05
                 db $18, $18, $18, $18, $18, $18, $18, $18, $18
                 db $18, $18, $18, $18, $18, $18, $18, $18, $18
 
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+ REPEAT 156-( * - TL_O2LoLimitForInMiddleDetermination )
+    fcb $FF
+ ENDR
 
 TL_O2HiLimitForInMiddleDetermination:
 byte_856F:      db $05
@@ -329,18 +317,9 @@ byte_856F:      db $05
                 db $20, $20, $20, $20, $20, $20, $20, $20, $20
                 db $20, $20, $20, $20, $20, $20, $20, $20, $20
 
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+ REPEAT 156-( * - TL_O2HiLimitForInMiddleDetermination )
+    fcb $FF
+ ENDR
 
 byte_860B:      db $0B
 byte_860C:      db $10
@@ -358,13 +337,11 @@ byte_8617:      db $05
 byte_8618:      db $8C
 byte_8619:      db $C0
 byte_861A:      db $0B
-byte_861B:      db $15
-                db $20
+byte_861B:      db $15, $20
 byte_861D:      db $26
 byte_861E:      db $10
 byte_861F:      db $A0
-byte_8620:      db $C0
-                db $C0
+byte_8620:      db $C0, $C0
 byte_8622:      db $D6
 byte_8623:      db $08
 byte_8624:      db $0B
@@ -372,16 +349,8 @@ byte_8625:      db $1D
 byte_8626:      db $FF
 byte_8627:      db $01
 byte_8628:      db $38
-byte_8629:      db $10
-                db $07
-                db $A0
-                db $00
-                db $C0
-byte_862E:      db $08
-                db $03
-                db $90
-                db $00
-                db $E0
+byte_8629:      db $10, $07, $A0, $00, $C0
+byte_862E:      db $08, $03, $90, $00, $E0
 byte_8633:      db $A8
 byte_8634:      db $68
 byte_8635:      db $10
@@ -394,12 +363,10 @@ byte_863B:      db $24
 byte_863C:      db $56
 byte_863D:      db $F1
 byte_863E:      db $17
-byte_863F:      db $00
-                db $01
+byte_863F:      db $00, $01
 byte_8641:      db $6E
 byte_8642:      db $A0
-byte_8643:      db $03
-                db $84
+byte_8643:      db $03, $84
 byte_8645:      db $02
 byte_8646:      db $C0
 byte_8647:      db $F0
@@ -408,28 +375,20 @@ byte_8649:      db $01
 byte_864A:      db $08
 byte_864B:      db $0A
 byte_864C:      db $9A
-byte_864D:      db $00
-                db $00
-byte_864F:      db $03
-                db $0A
+byte_864D:      db $00, $00
+byte_864F:      db $03, $0A
 byte_8651:      db $00
 byte_8652:      db $02
-byte_8653:      db $02
-                db $F0
-byte_8655:      db $9C
-                db $40
-byte_8657:      db $01
-                db $90
+byte_8653:      db $02, $F0
+byte_8655:      db $9C, $40
+byte_8657:      db $01, $90
 byte_8659:      db $E0
 byte_865A:      db $08
-byte_865B:      db $B2
-                db $20
-byte_865D:      db $01
-                db $90
+byte_865B:      db $B2, $20
+byte_865D:      db $01, $90
 byte_865F:      db $80
 byte_8660:      db $01
-byte_8661:      db $00
-                db $B6
+byte_8661:      db $00, $B6
 byte_8663:      db $0F
 byte_8664:      db $1C
 byte_8665:      db $1C
@@ -439,14 +398,18 @@ byte_8666:      db $02
                 db $05, $00, $01, $6E
                 db $0C, $0A
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 11-( * - TL_SparkAdvanceAddedWhenRpmBelowControl_FromDeltaRpm )
+    fcb $FF
+ ENDR
                 
 TL_SparkAdvanceRetardedWhenRpmAboveControl_FromDeltaRpm:
 byte_8671:      db $02
                 db $05, $00, $FF, $9A
                 db $0F, $FC
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 11-( * - TL_SparkAdvanceRetardedWhenRpmAboveControl_FromDeltaRpm )
+    fcb $FF
+ ENDR
 
 TL_MinVoltageForAis
 byte_867C:      db $71
@@ -599,14 +562,18 @@ byte_8789:      db $04
                 db $C8, $94, $FF, $80
                 db $F0, $80
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 19-( * - TL_AISDecel_FromBaro )
+    fcb $FF
+ ENDR
 
 TL_DecelAisBaseAirflowCurveOffset_FromTime:
 byte_879C:      db $02
                 db $0B, $00, $00, $00
                 db $1B, $00
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 11-( * - TL_DecelAisBaseAirflowCurveOffset_FromTime )
+    fcb $FF
+ ENDR
 
 TL_AISDecel_FromTemp:
 byte_87A7:      db $04
@@ -615,7 +582,9 @@ byte_87A7:      db $04
                 db $A8, $10, $FF, $9A
                 db $D0, $00
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 19-( * - TL_AISDecel_FromTemp )
+    fcb $FF
+ ENDR
 
 TL_AdditionToControlMap:
 byte_87BA:      db $04
@@ -635,7 +604,9 @@ byte_87D4:      db $02
                 db $90, $FF, $00, $00
                 db $C7, $FF
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 11-( * - TL_TempTermForMapOffset_FromTemp )
+    fcb $FF
+ ENDR
 
 TL_DecelAisOpenStepsFromNeg_FromDeltaMap:
 byte_87DF:      db $04
@@ -708,22 +679,24 @@ byte_882E:      db $06
                 db $54, $A8
 
 byte_8845:      db $04
-                db $1F, $F, $00, $F7
+                db $1F, $0F, $00, $F7
                 db $74, $61, $00, $00
                 db $8A, $61, $00, $00
                 db $8A, $A8
 
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
+ REPEAT 23-( * - byte_8845 )
+    fcb $FF
+ ENDR
 
 byte_885C:      db $04
-                db $1F, $F, $00, $F7
+                db $1F, $0F, $00, $F7
                 db $74, $61, $00, $00
                 db $8A, $61, $00, $00
                 db $8A, $A8
 
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
+ REPEAT 23-( * - byte_885C )
+    fcb $FF
+ ENDR
 
 TL_PTUMinLockTemperature:
 byte_8873:      db $B8
@@ -745,18 +718,19 @@ byte_887C:      db $00
 
 TL_UpperLimitForPTULock:
 byte_887D:      db $04
-                db $64, $F, $00, $00
+                db $64, $0F, $00, $00
                 db $64, $2E, $00, $AB
                 db $82, $42, $00, $00
                 db $82, $A8
 
 TL_LowerLimitForPTULock:
                 db $02
-                db $64, $F, $00, $00
+                db $64, $0F, $00, $00
                 db $96, $0F
 
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
+ REPEAT 15-( * - TL_LowerLimitForPTULock )
+    fcb $FF
+ ENDR
 
 TL_UpperLimitForPTUUnlock:
 byte_889B:      db $04
@@ -907,10 +881,12 @@ byte_8905:      db $05
                 db $00, $00, $00, $30
                 db $10, $03, $00, $1B
                 db $40, $08, $00, $20
-                db $80, $10, $00, $C
+                db $80, $10, $00, $0C
                 db $FF, $16
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 23-( * - TL_CruiseControlVacRegularGainCurve_FromDeltaSpeed )
+    fcb $FF
+ ENDR
 
 TL_CruiseControlVacAcceleratedGainCurve_FromDeltaSpeed:
 byte_891C:      db $04
@@ -934,7 +910,9 @@ byte_893A:      db $05
                 db $B0, $60, $FF, $00
                 db $D0, $40
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 23-( * - TL_CruiseControlAdditionalSetupPulseForResume_FromSpeedDifference )
+    fcb $FF
+ ENDR
 
 TL_CruiseControlAdditionalSetupPulseForResume_FromSpeedDifference2:
 byte_8951:      db $04
@@ -943,10 +921,9 @@ byte_8951:      db $04
                 db $94, $86, $00, $14
                 db $C6, $8A
 
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
+ REPEAT 31-( * - TL_CruiseControlAdditionalSetupPulseForResume_FromSpeedDifference2 )
+    fcb $FF
+ ENDR
 
 TL_CruiseControlSpeedGainFactor_FromSpeed:
 byte_8970:      db $04
@@ -973,36 +950,45 @@ byte_8999:      db $02
                 db $20, $E8, $FE, $80
                 db $30, $D0
 
-                db $FF, $FF, $FF, $FF
-                db $FF, $FF, $FF, $FF
+ REPEAT 15-( * - TL_UnknownTableForCruiseControl1 )
+    fcb $FF
+ ENDR
 
 TL_UnknownTableForCruiseControl2:
 byte_89A8:      db $02
                 db $A0, $03, $00, $18
                 db $C0, $06
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 11-( * - TL_UnknownTableForCruiseControl2 )
+    fcb $FF
+ ENDR
 
 TL_UnknownTableForCruiseControl3:
 byte_89B3:      db $02
                 db $A8, $80, $FE, $ED
                 db $D0, $55
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 11-( * - TL_UnknownTableForCruiseControl3 )
+    fcb $FF
+ ENDR
 
 TL_UnknownTableForCruiseControl4:
 byte_89BE:      db $02
                 db $A0, $03, $00, $18
                 db $C0, $06
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 11-( * - TL_UnknownTableForCruiseControl4 )
+    fcb $FF
+ ENDR
 
 TL_UnknownTableForCruiseControl5:
 byte_89C9:      db $02
                 db $A8, $80, $FE, $ED
                 db $D0, $55
 
-                db $FF, $FF, $FF, $FF
+ REPEAT 11-( * - TL_UnknownTableForCruiseControl5 )
+    fcb $FF
+ ENDR
 
 TL_ErrorBitsMask1:
                 db $00

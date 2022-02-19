@@ -4910,9 +4910,9 @@ sub_BCF2:
         ldaa    PPROG_EEPROMControlReg
         bita    #$02
         bne     locret_BD33
-        ldaa    $B7E1
+        ldaa    MCU_eeprom + $1E1
         coma
-        cmpa    $B7E0
+        cmpa    MCU_eeprom + $1E0
         beq     loc_BD08
         ldaa    #$08
 
@@ -4938,7 +4938,7 @@ loc_BD1C:
 
 loc_BD22:
         staa    <Ram_4B
-        ldaa    $B7EF
+        ldaa    MCU_eeprom + $1EF
         cmpa    #$55
         bne     loc_BD30
         bset    <BitFlags6a_t3 $02

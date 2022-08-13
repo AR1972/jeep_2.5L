@@ -1,0 +1,7 @@
+Thumbs.db
+*.log
+*.obj
+*.pdb
+*.sdf
+*.opensdf
+SBEC_utils.sdf

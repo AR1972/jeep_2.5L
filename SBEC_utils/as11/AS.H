@@ -8,9 +8,9 @@
  
 #define MAXBUF  256
 #define MAXOP 10 /* longest mnemonic */
-#define MAXLAB 16
-#define E_LIMIT 32
-#define P_LIMIT 64
+#define MAXLAB 20
+#define E_LIMIT 16
+#define P_LIMIT 512
  
 /* Character Constants */
 #define NEWLINE '\n'
@@ -108,4 +108,5 @@ struct oper { /* an entry in the mnemonic table */
 };
  
 FILE    *Objfil =0;             /* object file's file descriptor*/
-char    Obj_name[] = { "m.out" };
+char    *Obj_name =0;
+char    *Obj_short = 0;

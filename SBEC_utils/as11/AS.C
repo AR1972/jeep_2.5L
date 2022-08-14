@@ -17,7 +17,7 @@ char    **argv;
  Gargv = argv;    /* make names globally accessible */
  N_files = argc-1;
  initialize();
- 
+ fprintf(Objfil,"S0030000FC\n"); /* optional S0 record */
  Cfn = 0;
  np = argv;
  while( ++Cfn <= N_files )
@@ -42,6 +42,10 @@ char    **argv;
   fprintf(Objfil,"S9030000FC\n"); /* at least give a decent ending */
   }
  printf("Errors: %d\n",Err_count);/* necessary for brain-damaged system */
+ if (Obj_name != NULL)
+  free(Obj_name);
+ if (Obj_short != NULL)
+  free(Obj_short);
  exit(Err_count);
 }
  
@@ -58,7 +62,11 @@ initialize()
  Lflag     = 1;
  Cflag     = 0;
  Line[MAXBUF-1] = NEWLINE;       /* guard against garbage input */
- 
+ Obj_name = alloc(256);
+ Obj_short = alloc(256);
+ sprintf(Obj_short, "%s", *++Gargv);
+ strip_ext(Obj_short);
+ sprintf(Obj_name, "%s.s19\0", Obj_short);
  if( (Objfil = fopen(Obj_name,"w")) == NULL)
   fatal("Can't create object file");
  fwdinit();      /* forward ref init */
@@ -188,4 +196,17 @@ process()
   do_op(i->opcode,i->class);
   if(Cflag)Ctotal += Cycles;
   }
+}
+
+strip_ext(char *fname)
+{
+    char *end = fname + strlen(fname);
+
+    while (end > fname && *end != '.' && *end != '\\' && *end != '/') {
+        --end;
+    }
+    if ((end > fname && *end == '.') &&
+        (*(end - 1) != '\\' && *(end - 1) != '/')) {
+        *end = '\0';
+    }
 }

@@ -54,9 +54,16 @@ eval()
   Optr++;
   }
  left = get_term();         /* pickup first part of expression */
- 
+
+ if (*Optr == BLANK || *Optr == TAB) /* one space or tab allowed in expression */
+  *Optr++;
+
  while( is_op(*Optr)){
   o = *Optr++; /* pickup connector and skip */
+
+ if (*Optr == BLANK || *Optr == TAB) /* one space or tab allowed in expression */
+  *Optr++;
+
   right = get_term();     /* pickup current rightmost side */
   switch(o){
    case '+': left += right; break;

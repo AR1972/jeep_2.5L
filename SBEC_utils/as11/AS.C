@@ -129,7 +129,7 @@ parse_line()
  register char *ptrto = Label;
  char *skip_white();
  
- if( *ptrfrm == '*' || *ptrfrm == '\n' )
+ if( *ptrfrm == '*' || *ptrfrm == '\n' || *ptrfrm == ';')
   return(0);      /* a comment line */
  
  while( delim(*ptrfrm)== NO )
@@ -151,6 +151,10 @@ parse_line()
   *ptrto++ = *ptrfrm++;
  *ptrto = EOS;
  
+// handle comments preceeded by whitespace
+ if( *Op == '*' || *Op == ';')
+    return(0);
+
 #ifdef DEBUG
  printf("Label-%s-\n",Label);
  printf("Op----%s-\n",Op);

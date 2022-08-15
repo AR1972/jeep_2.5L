@@ -1,3 +1,4 @@
+#include "func.h"
 /*
  *      eval --- evaluate expression
  *

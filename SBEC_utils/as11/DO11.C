@@ -1,3 +1,4 @@
+#include "func.h"
 /*
  *      MC68HC11 specific processing
  */
@@ -29,6 +30,7 @@ localinit()
  * Called with the base opcode and it's class. Optr points to
  * the beginning of the operand field.
  */
+void
 do_op(opcode,class)
 int opcode; /* base opcode */
 int class; /* mnemonic class */
@@ -173,6 +175,7 @@ int class;
   return(op-12);
  else
   fatal("bitop");
+ return(0);
 }
  
 /*

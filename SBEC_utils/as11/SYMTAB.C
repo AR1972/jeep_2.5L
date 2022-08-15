@@ -1,4 +1,4 @@
- 
+#include "func.h"
 #define HASHSIZE 100                            /* width of hash table */
 static struct nlist *hashtab[HASHSIZE] = {0};   /* symbol table */
  
@@ -23,8 +23,6 @@ char    *str;
 int     val;
 {
  register struct nlist *np;
- struct nlist *lookup();
- char *malloc();
  int     i;
  
  if( !alpha(*str) ){
@@ -73,7 +71,7 @@ lookup(name)
 char    *name;
 {
  struct nlist *np;
- int     i;
+// int     i;
  
  for( np = hashtab[hash(name)] ; np != NULL ; np = np->next)
   if( strcmp(name,np->name)==0 ){

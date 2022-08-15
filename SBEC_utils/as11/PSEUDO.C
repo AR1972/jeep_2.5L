@@ -1,3 +1,4 @@
+#include "func.h"
 /*
  * pseudo --- pseudo op processing
  */
@@ -40,7 +41,7 @@ do_pseudo(op)
 int op; /* which op */
 {
  char fccdelim;
- int     j;
+// int     j;
  int     fill;
  //char* skip_white();
  

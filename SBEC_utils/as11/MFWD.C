@@ -1,3 +1,4 @@
+#include "func.h"
 /*
  *      in memory version of forward ref handler
  */
@@ -18,7 +19,6 @@ int Fleft = 0;
  */
 fwdinit()
 {
- char *malloc();
  
  Fbase = (struct fref *)malloc( sizeof(struct fref) * MAXFWD );
  if( Fbase == (struct fref *)NULL )

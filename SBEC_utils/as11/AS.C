@@ -1,5 +1,4 @@
-char mapdn();
-char *alloc();
+#include "func.h"
 /*
  *      as ---  cross assembler main program
  */
@@ -8,7 +7,6 @@ int     argc;
 char    **argv;
 {
  char    **np;
- FILE    *fopen();
  
  if(argc < 2){
   printf("Usage: %s [files]\n",*argv);
@@ -51,7 +49,6 @@ char    **argv;
  
 initialize()
 {
- FILE    *fopen();
  
 #ifdef DEBUG
  printf("Initializing\n");
@@ -109,7 +106,6 @@ make_pass()
  */
 getaline()
 {
- char *fgets();
  register char *p = Line;
  int remaining = MAXBUF-2;       /* space left in Line */
  int len;                        /* line length */
@@ -135,7 +131,6 @@ parse_line()
 {
  register char *ptrfrm = Line;
  register char *ptrto = Label;
- char *skip_white();
  
  if( *ptrfrm == '*' || *ptrfrm == '\n' || *ptrfrm == ';')
   return(0);      /* a comment line */
@@ -177,7 +172,6 @@ parse_line()
 process()
 {
  register struct oper *i;
- struct oper *mne_look();
  
  Old_pc = Pc;            /* setup `old' program counter */
  Optr = Operand;         /* point to beginning of operand field */

@@ -1,3 +1,4 @@
+#include "func.h"
 /*
  *      fatal --- fatal error handler
  */
@@ -85,11 +86,13 @@ emit(byte)
  Pc++;
  if(E_total == E_LIMIT)
   f_record();
+ return(NO);
 }
  
 /*
  *      f_record --- flush record out in `S1' format
  */
+void
 f_record()
 {
  int     i;
@@ -124,7 +127,7 @@ char    *hexstr = { "0123456789ABCDEF" } ;
 hexout(byte)
 int     byte;
 {
- char hi,lo;
+// char hi,lo;
  
  byte = lobyte(byte);
  fprintf(Objfil,"%c%c",hexstr[byte>>4],hexstr[byte&017]);
@@ -265,7 +268,6 @@ char *
 alloc(nbytes)
 int nbytes;
 {
- char *malloc();
  
  return(malloc(nbytes));
 }

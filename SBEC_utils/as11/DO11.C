@@ -1,4 +1,5 @@
 #include "func.h"
+#include "AS.H"
 /*
  *      MC68HC11 specific processing
  */
@@ -20,7 +21,7 @@ int     yflag = 0;      /* YNOIMM, YLIMM, and CPD flag */
 /*
  *      localinit --- machine specific initialization
  */
-localinit()
+void localinit()
 {
 }
  
@@ -30,10 +31,7 @@ localinit()
  * Called with the base opcode and it's class. Optr points to
  * the beginning of the operand field.
  */
-void
-do_op(opcode,class)
-int opcode; /* base opcode */
-int class; /* mnemonic class */
+void do_op(int opcode,int class)
 {
  int     dist;   /* relative branch distance */
  int     amode;  /* indicated addressing mode */
@@ -162,10 +160,7 @@ int class; /* mnemonic class */
 /*
  *      bitop --- adjust opcode on bit manipulation instructions
  */
-bitop(op,mode,class)
-int op;
-int mode;
-int class;
+int bitop(int op,int mode,int class)
 {
  if( mode == INDX || mode == INDY )
   return(op);
@@ -181,12 +176,7 @@ int class;
 /*
  *      do_gen --- process general addressing modes
  */
-do_gen(op,mode,pnorm,px,py)
-int     op;     /* base opcode */
-int     mode;   /* addressing mode */
-int     pnorm;  /* page for normal addressing modes: IMM,DIR,EXT */
-int     px;     /* page for INDX addressing */
-int     py;     /* page for INDY addressing */
+void do_gen(int op,int mode,int pnorm,int px,int py)
 {
  switch(mode){
  case LIMMED:
@@ -252,8 +242,7 @@ int     py;     /* page for INDY addressing */
 /*
  *      do_indexed --- handle all wierd stuff for indexed addressing
  */
-do_indexed(op)
-int op;
+void do_indexed(int op)
 {
  char c;
  
@@ -272,8 +261,7 @@ int op;
 /*
  *      epage --- emit page prebyte
  */
-epage(p)
-int p;
+void epage(int p)
 {
  if( p != PAGE1 )        /* PAGE1 means no prebyte */
   emit(p);

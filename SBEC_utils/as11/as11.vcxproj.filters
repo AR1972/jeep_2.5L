@@ -18,18 +18,33 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="AS.H">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="func.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="as11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="as11.cpp">
+    <ClCompile Include="DO11.C">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EVAL.C">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MFWD.C">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PSEUDO.C">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SYMTAB.C">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UTIL.C">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

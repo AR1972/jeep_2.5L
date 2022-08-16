@@ -1,4 +1,5 @@
 #include "func.h"
+#include "AS.H"
 /*
  *      in memory version of forward ref handler
  */
@@ -17,7 +18,7 @@ int Fleft = 0;
 /*
  *      fwdinit --- initialize forward ref array
  */
-fwdinit()
+void fwdinit()
 {
  
  Fbase = (struct fref *)malloc( sizeof(struct fref) * MAXFWD );
@@ -30,7 +31,7 @@ fwdinit()
 /*
  *      fwdreinit --- reinitialize forward ref file
  */
-fwdreinit()
+void fwdreinit()
 {
  Fnext->f_fno = Fnext->f_line = 0;
  Fnext = Fbase;
@@ -42,7 +43,7 @@ fwdreinit()
 /*
  *      fwdmark --- mark current file/line as containing a forward ref
  */
-fwdmark()
+void fwdmark()
 {
  if( Fleft != 0 ){
   Fnext->f_fno = Cfn;
@@ -57,7 +58,7 @@ fwdmark()
 /*
  *      fwdnext --- get next forward ref
  */
-fwdnext()
+void fwdnext()
 {
  Ffn = Fnext->f_fno;
  F_ref = Fnext->f_line;

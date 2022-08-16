@@ -6,6 +6,10 @@
 void fatal(char* str)
 {
  printf("%s\n",str);
+ if (Obj_name != NULL)
+	 free(Obj_name);
+ if (Obj_short != NULL)
+	 free(Obj_short);
  exit(-1);
 }
  
@@ -267,3 +271,4 @@ char *t;
  return(*s - *t);
 }
 */
+

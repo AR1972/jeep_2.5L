@@ -1,3 +1,4 @@
+#pragma once
 void exit(int status);
 void free(void *ptr);
 void re_init();
@@ -47,3 +48,4 @@ struct nlist* lookup(char* name);
 struct oper* mne_look(char* str);
 void hexout(int byte);
 void* malloc(int n);
+

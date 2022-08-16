@@ -299,3 +299,4 @@ struct oper* mne_look(char* str)
  
  return(NULL);
 }
+

@@ -93,6 +93,9 @@
     <ClCompile Include="SYMTAB.C" />
     <ClCompile Include="UTIL.C" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ASM.DOC" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

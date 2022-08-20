@@ -1,0 +1,11 @@
+Thumbs.db
+a09.tlog
+a09.tlog/*
+*.log
+*.obj
+*.pdb
+*.sdf
+*.opensdf
+a09.sdf
+Release
+Release/*

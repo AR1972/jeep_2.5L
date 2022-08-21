@@ -333,14 +333,14 @@
 
 #define VERSION      "1.56"
 #define VERSNUM      "$0138"            /* can be queried as &VERSION        */
-#define RMBDEFCHR    "$00"
+#define RMBDEFCHR    "$3F"
 
 #define MAXFILES     128
 #define MAXLABELS    8192
 #define MAXMACROS    1024
 #define MAXTEXTS     1024
 #define MAXRELOCS    32768
-#define MAXIDLEN     32
+#define MAXIDLEN     32*3
 #define MAXLISTBYTES 7
 #define FNLEN        256
 #define LINELEN      1024

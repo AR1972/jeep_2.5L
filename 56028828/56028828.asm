@@ -1,3 +1,4 @@
+ ORG 0
 ;
 ; Data_start: address defines where the EPROM begins, in the
 ; memory map, 4 and 6 cylinder ECU's this should be set to
@@ -11,7 +12,8 @@ Data_start equ $8000
 ;
  IF Data_start <= $2000
 Code_start equ $4000
- ELIF Data_start == $8000
+ ENDIF
+ IF Data_start == $8000
 Code_start equ $9400
  ENDIF
 ;
@@ -23,9 +25,9 @@ MCU_eeprom equ $B600
 ;
 ; null bytes for 64k EEPROM
 ;
- DCB.B Data_start, $00
+ fcb 0
+ bsz Data_start-*
 ;
-#include defines.inc
 ;
 ; base address for TI chip, correct values are $0400 for 94
 ; and later 8 cylinder ECU's, $6400 for 94 and later 4,6
@@ -33,21 +35,19 @@ MCU_eeprom equ $B600
 ;
  IF Data_start <= $2000
 BaseAddr equ $0400
- ELIF Data_start == $8000
+ ENDIF
+ IF Data_start == $8000
 BaseAddr equ $6400
  ENDIF
-;
-; config for transmission type, correct values are ATX for
-; automatic transmission, MTX for manual transmission.
-;
-TransType equ MTX
 ;
 ; 1 to remove emissions maintenance reminder code
 ;
 NOEMR equ 0
 ;
+ include defines.inc
+;
  ORG Data_start
-#include data.inc
+ include data.inc
 
  ORG Code_start
 XIRQ:
@@ -4103,8 +4103,7 @@ loc_AF1D:
  IF Data_start == $8000
 
  ORG MCU_eeprom
- DCB.B $200, $FF
-
+ fill $FF, $200
  ENDIF
 ;>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
 
@@ -13990,7 +13989,7 @@ loc_F865:
  IF Data_start <= $2000
 
  ORG MCU_eeprom
- DCB.B $200, $FF
+ fill $FF, $200
 
  ENDIF
 ;>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<

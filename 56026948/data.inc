@@ -32,7 +32,7 @@ byte_8014:  fcb $00
 ; bit 1: 1 = manual transmission, 0 = auto transmission
 
 TL_CONF01:
-byte_8015:  fcb %01000000+TransType
+byte_8015:  fcb %01000000+ATX
 ;------------------------------------------------------------------------------
 ; bit 8: unknown
 ; bit 7: unknown
@@ -356,14 +356,14 @@ unk_846F:
         fcb $24, $34, $0C, $AB
         fcb $2A, $80
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 unk_8482:
         fcb $02
         fcb $00, $00, $00, $00
         fcb $FF, $00
 
- DCB.B $0C, $FF ; 12 bytes of 0xFF
+ fill $FF, $0C
 
 TL_TL_8481:
 word_8495:  fdb $7D00
@@ -422,7 +422,7 @@ unk_84EE:
         fcb $3F, $C0, $04, $33
         fcb $4E, $FF
 
- DCB.B $0C, $FF ; 12 bytes of 0xFF
+ fill $FF, $0C
 
 TL_O2LoLimitForInMiddleDetermination:
 unk_850D:
@@ -435,7 +435,7 @@ unk_850D:
         fcb $16, $16, $16, $16, $16, $16, $16, $16, $16
         fcb $16, $16, $16, $16, $16, $16, $16, $16, $16
 
- DCB.B $6C, $FF ; 108 bytes of 0xFF
+ fill $FF, $6C
 
 TL_O2HiLimitForInMiddleDetermination:
 unk_85A9:
@@ -448,7 +448,7 @@ unk_85A9:
         fcb $1E, $1E, $20, $20, $20, $20, $21, $22, $22
         fcb $22, $22, $22, $22, $24, $24, $24, $22, $22
 
- DCB.B $6C, $FF ; 108 bytes of 0xFF
+ fill $FF, $6C
 
 byte_8645:  fcb $0A
 byte_8646:  fcb $0A
@@ -542,7 +542,7 @@ unk_86A0:
         fcb $05, $00, $02, $00
         fcb $0C, $0E
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 TL_SparkAdvanceRetardedWhenRpmAboveControl_FromDeltaRpm:
 unk_86AB:
@@ -607,7 +607,7 @@ unk_8704:
         fcb $00, $04, $FF, $33
         fcb $05, $00
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 TL_AisPosition_FromThrottle:
 unk_870F:
@@ -655,7 +655,7 @@ unk_875E:
         fcb $00, $0D, $FE, $60
         fcb $08, $00
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 byte_8769:  fcb $5A
 byte_876A:  fcb $64
@@ -727,14 +727,14 @@ unk_87C4:
         fcb $C8, $EC, $00, $80
         fcb $F0, $00
 
- DCB.B $08, $FF ; 8 bytes of 0xFF
+ fill $FF, $08
 
 unk_87D7:
         fcb $02
         fcb $00, $0A, $FE, $00
         fcb $05, $00
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 TL_AISDecel_FromTemp:
 unk_87E2:
@@ -766,7 +766,7 @@ unk_880F:
         fcb $90, $FF, $00, $00
         fcb $C7, $FF
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 TL_DecelAisOpenStepsFromNeg_FromDeltaMap:
 unk_881A:
@@ -872,7 +872,7 @@ unk_8883:
         fcb $8A, $61, $00, $00
         fcb $8A, $A8
 
- DCB.B $08, $FF ; 8 bytes of 0xFF
+ fill $FF, $08
 
 unk_889A:
         fcb $04
@@ -881,7 +881,7 @@ unk_889A:
         fcb $8A, $61, $00, $00
         fcb $8A, $A8
 
- DCB.B $08, $FF ; 8 bytes of 0xFF
+ fill $FF, $08
 
 TL_PTUMinLockTemperature:
 byte_88B1:  fcb $B8
@@ -922,7 +922,7 @@ TL_LowerLimitForPTULock:
         fcb $64, $0F, $00, $00
         fcb $96, $0F
 
- DCB.B $08, $FF ; 8 bytes of 0xFF
+ fill $FF, $08
 
 TL_UpperLimitForPTUUnlock:
 unk_88D9:
@@ -937,7 +937,7 @@ TL_LowerLimitForPTUUnlock:
         fcb $5E, $05, $00, $00
         fcb $96, $05
 
- DCB.B $08, $FF ; 8 bytes of 0xFF
+ fill $FF, $08
 
 byte_88F7:  fcb $50
 byte_88F8:  fcb $20
@@ -1010,7 +1010,7 @@ unk_8943:
         fcb $80, $0E, $00, $0C
         fcb $FF, $14
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 unk_895A:
         fcb $04
@@ -1042,7 +1042,7 @@ unk_898F:
         fcb $C6, $83, $00, $00
         fcb $EE, $83
 
- DCB.B $10, $FF ; 16 bytes of 0xFF
+ fill $FF, $10
 
 unk_89AE:
         fcb $04
@@ -1057,28 +1057,28 @@ unk_89BD:
         fcb $16, $18, $FF, $A3
         fcb $2C, $10
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 unk_89CC:
         fcb $02
         fcb $02, $0C, $07, $00
         fcb $04, $1A
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 unk_89D7:
         fcb $02
         fcb $20, $E0, $FF, $00
         fcb $30, $D0
 
- DCB.B $08, $FF ; 8 bytes of 0xFF
+ fill $FF, $08
 
 unk_89E6:
         fcb $02
         fcb $90, $00, $00, $60
         fcb $98, $03
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 unk_89F1:
         fcb $03
@@ -1232,7 +1232,7 @@ unk_8ABA:
             fcb $00, $00, $03, $04, $02, $02, $02, $00, $00
             fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
 
- DCB.B $6C, $FF
+ fill $FF, $6C
 
 word_8B56:
         fcb $00, $7A

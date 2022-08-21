@@ -80,11 +80,9 @@
     </Link>
     <PreBuildEvent>
       <Command>IF EXIST chipid.h DEL chipid.h
-..\..\bin\asm11 chipid.asm -nologo
-..\..\bin\mot2bin chipid.s19 chipid.bin
+..\..\bin\a09 chipid.asm
 ..\..\bin\bin2h chipid.bin chipid.h -id=chipid
-IF EXIST chipid.bin DEL chipid.bin
-IF EXIST chipid.s19 DEL chipid.s19</Command>
+IF EXIST chipid.bin DEL chipid.bin</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

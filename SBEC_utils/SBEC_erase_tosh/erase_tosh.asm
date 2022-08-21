@@ -4,7 +4,6 @@
 
     ORG $0000
 
-THE_BEGIN:
 Start:
     ldS     #$FF        ; stack pointer = 0xFF
     ldX     #$1000      ; config 68HC11 registers
@@ -59,9 +58,5 @@ WaitForSCI:
     bne     SendByte
     stop
 
-THE_END:
-
                              ; pad bootstrap to 256 total bytes
- REPEAT 256-(THE_END-THE_BEGIN)
-    fcb 0x00
- ENDR
+    bsz     256-*

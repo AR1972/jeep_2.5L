@@ -57,5 +57,3 @@ WaitForSCI:
     bne     SendByte    ; loop until X = 0x0000
 Done:
     stop
-
-

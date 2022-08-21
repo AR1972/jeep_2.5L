@@ -77,11 +77,9 @@
     </Link>
     <PreBuildEvent>
       <Command>IF EXIST erase_tosh.h DEL erase_tosh.h
-..\..\bin\asm11 -nologo erase_tosh.asm
-..\..\bin\mot2bin erase_tosh.s19 erase_tosh.bin
+..\..\bin\a09 erase_tosh.asm
 ..\..\bin\bin2h erase_tosh.bin erase_tosh.h -id=erase_tosh
-IF EXIST erase_tosh.bin DEL erase_tosh.bin
-IF EXIST erase_tosh.s19 DEL erase_tosh.s19</Command>
+IF EXIST erase_tosh.bin DEL erase_tosh.bin</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

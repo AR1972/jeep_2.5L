@@ -127,11 +127,9 @@
     </Link>
     <PreBuildEvent>
       <Command>IF EXIST dump.h DEL dump.h
-..\..\bin\asm11 -nologo dump.asm
-..\..\bin\mot2bin dump.s19 dump.bin
+..\..\bin\a09 dump.asm
 ..\..\bin\bin2h dump.bin dump.h -id=dump
-IF EXIST dump.bin DEL dump.bin
-IF EXIST dump.s19 DEL dump.s19</Command>
+IF EXIST dump.bin DEL dump.bin</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

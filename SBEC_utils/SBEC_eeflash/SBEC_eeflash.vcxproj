@@ -84,11 +84,9 @@
     </Link>
     <PreBuildEvent>
       <Command>IF EXIST eeflash.h DEL eeflash.h
-..\..\bin\asm11 -nologo eeflash.asm
-..\..\bin\mot2bin eeflash.s19 eeflash.bin
+..\..\bin\a09 eeflash.asm
 ..\..\bin\bin2h eeflash.bin eeflash.h -id=eeflash
-IF EXIST eeflash.bin DEL eeflash.bin
-IF EXIST eeflash.s19 DEL eeflash.s19</Command>
+IF EXIST eeflash.bin DEL eeflash.bin</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

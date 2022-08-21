@@ -4,7 +4,6 @@
 
     ORG $0000
 
-THE_BEGIN:
 Start:
     ldS     #$FF        ; stack pointer = 0xFF
     ldX     #$1000      ; config 68HC11 registers
@@ -36,7 +35,7 @@ LoopToFillRAM:
     beq     LoopToFillRAM
     staB    $00,Y
     inY
-    cpY     #Buffer + 64
+    cpY     #Buffer+64
     bne     LoopToFillRAM
     ldY     #$4119      ; 50ms
 wait_0:
@@ -46,7 +45,7 @@ wait_0:
 
 InitRetryCounter:
     ldaA    #$19
-    staA    RetryCounter
+    staA    <RetryCounter
 
 ProgramBytes:
     ldaA    #$40
@@ -66,7 +65,7 @@ ProgramBytes:
 
 Finished:
     ldaA    #$19
-    staA    RetryCounter
+    staA    <RetryCounter
 
 wait_1:
     ldY     #$1A0A      ; 20ms
@@ -91,7 +90,7 @@ WaitForSCI:
 
 XXX:
     stop
-    jmp     XXX
+    bra     XXX
 
 ByteVerified:
 ResetEEPROM:
@@ -104,7 +103,7 @@ ResetEEPROM:
     bsr     ShortDelayLoop
     inX
     inY
-    cpY     #Buffer + 64
+    cpY     #Buffer+64
     bne     InitRetryCounter
 
 SkipEEPROM:
@@ -127,13 +126,8 @@ RetryCounter:
     fcb   $19
     fcb   $00
 Buffer:
- REPEAT $40
-    fcb 0x00
- ENDR
-THE_END:
+    bsz     64
 
                         ; pad bootstrap to 256 total bytes
- REPEAT 256-(THE_END-THE_BEGIN)
-    fcb 0x00
- ENDR
+    bsz     256-*
 

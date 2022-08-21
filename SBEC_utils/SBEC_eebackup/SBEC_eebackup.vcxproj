@@ -82,11 +82,9 @@
     </Link>
     <PreBuildEvent>
       <Command>IF EXIST eebackup.h DEL eebackup.h
-..\..\bin\asm11 -nologo eebackup.asm
-..\..\bin\mot2bin eebackup.s19 eebackup.bin
+..\..\bin\a09 eebackup.asm
 ..\..\bin\bin2h eebackup.bin eebackup.h -id=eebackup
-IF EXIST eebackup.bin DEL eebackup.bin
-IF EXIST eebackup.s19 DEL eebackup.s19</Command>
+IF EXIST eebackup.bin DEL eebackup.bin</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -82,11 +82,9 @@
     </Link>
     <PreBuildEvent>
       <Command>IF EXIST eeerase.h DEL eeerase.h
-..\..\bin\asm11 -nologo eeerase.asm
-..\..\bin\mot2bin eeerase.s19 eeerase.bin
+..\..\bin\a09 eeerase.asm
 ..\..\bin\bin2h eeerase.bin eeerase.h -id=eeerase
-IF EXIST eeerase.bin DEL eeerase.bin
-IF EXIST eeerase.s19 DEL eeerase.s19</Command>
+IF EXIST eeerase.bin DEL eeerase.bin</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

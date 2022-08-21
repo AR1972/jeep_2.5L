@@ -77,11 +77,9 @@
     </Link>
     <PreBuildEvent>
       <Command>IF EXIST flash_st.h DEL flash_st.h
-..\..\bin\asm11 -nologo flash_st.asm
-..\..\bin\mot2bin flash_st.s19 flash_st.bin
+..\..\bin\a09 flash_st.asm
 ..\..\bin\bin2h flash_st.bin flash_st.h -id=flash_st
-IF EXIST flash_st.bin DEL flash_st.bin
-IF EXIST flash_st.s19 DEL flash_st.s19</Command>
+IF EXIST flash_st.bin DEL flash_st.bin</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

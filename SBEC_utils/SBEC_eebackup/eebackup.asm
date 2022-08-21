@@ -53,7 +53,5 @@ WaitForSCI:
 THE_END:
 
 ; pad bootstrap to 256 total bytes
- REPEAT 256-(THE_END-THE_BEGIN)
- fcb 0x00
- ENDR
+    bsz    256-*
 

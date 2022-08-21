@@ -4,7 +4,6 @@
 
     ORG $0000
 
-THE_BEGIN:
 Start:
     ldS     #$FF        ; stack pointer = 0xFF
     ldX     #$1000      ; config 68HC11 registers
@@ -81,7 +80,7 @@ ld_bytes:
     bsr     ShortDelayLoop      ; register the byte to be written
     cpY     #Buffer+$40         ; test to see if we have reached the end
     bne     ld_bytes            ; of the write buffer
-    brclr   Odd,$00000001,reset ; test if we need to load ODD bytes
+    brclr   <Odd $00000001 reset ; test if we need to load ODD bytes
     deX                         ;
     bsr     VerifyWriteComplete ; wait for the last byte loaded to be written
     inX
@@ -90,7 +89,7 @@ ld_bytes:
 
 Finished:
     ldaA    #$19                ; wait for programming voltage to be disconnected
-    staA    Delay               ; EEPROM and ECU need about 2 seconds before we
+    staA    <Delay               ; EEPROM and ECU need about 2 seconds before we
                                 ; start sending bytes or write verification or
                                 ; tends to fail.
 wait_1:
@@ -153,12 +152,7 @@ Delay:
     fcb $00
     fcb $00
 Buffer:
- REPEAT $40
-    fcb 0x00
- ENDR
-THE_END:
+    bsz     64
 
                              ; pad bootstrap to 256 total bytes
- REPEAT 256-(THE_END-THE_BEGIN)
-    fcb 0x00
- ENDR
+    bsz     256-*

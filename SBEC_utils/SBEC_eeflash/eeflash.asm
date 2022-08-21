@@ -7,10 +7,8 @@
 ; until 512 bytes has been written then send eeprom
 ; to PC for verification
 
-
     ORG $0000
 
-THE_BEGIN:
 Start:
     ldS    #$FF              ; stack pointer = 0xFF
     ldX    #$1000            ; config 68HC11 registers
@@ -52,17 +50,17 @@ FillBuffer:
     beq    FillBuffer        ; loop if no
     staB   $00,Y             ; store byte in buffer
     inY                      ; point to next byte in buffer
-    cpY    #Buffer + 64      ; check if buffer is full
+    cpY    #Buffer+64      ; check if buffer is full
     bne    FillBuffer        ; get next byte
     pshX
-    ldX    #$c8
+    ldX    #$C8
     bsr    Delay
     pulX
     ldY    #Buffer           ; point Y to beginning of buffer
 
 InitRetryCounter:
     ldaA   #$19
-    staA   RetryCounter
+    staA   <RetryCounter
 
 SkipCheck:
     ldaA   $00,Y             ; load byte from write buffer into A
@@ -106,6 +104,7 @@ WaitForSCI:
     inX                      ; point X to next byte
     cpX    #$B800
     bne    GetNextByte       ; loop until X = 0x0000
+Done:
     stop
 
 Delay:
@@ -116,7 +115,7 @@ Delay:
 ByteVerified:
     inX                      ; increment eeprom address (X)
     inY                      ; increment write buffer (Y)
-    cpY   #Buffer + 64
+    cpY   #Buffer+64
     bne   InitRetryCounter
     cpX   #$B800
     bne   Next64ByteBlock
@@ -125,12 +124,6 @@ ByteVerified:
 RetryCounter:
     fcb   $19
 Buffer:
- REPEAT $40
-    fcb 0x00
- ENDR
-THE_END:
-
+    bsz 64
                              ; pad bootstrap to 256 total bytes
- REPEAT 256-(THE_END-THE_BEGIN)
-    fcb 0x00
- ENDR
+    bsz 256-*

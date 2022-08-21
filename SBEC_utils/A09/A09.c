@@ -2021,15 +2021,15 @@ char objname[FNLEN + 1];                /* object file name                  */
 char srcname[FNLEN + 1];                /* source file name                  */
 
                                         /* assembler mode specifics:         */
-struct oprecord *optable = optable09;   /* used op table                     */
+struct oprecord *optable = optable11;   /* used op table                     */
                                         /* size of this table                */
-int optablesize = sizeof(optable09) / sizeof(optable09[0]);
-struct regrecord *regtable = regtable09;/* used register table               */
+int optablesize = sizeof(optable11) / sizeof(optable11[0]);
+struct regrecord *regtable = regtable11;/* used register table               */
                                         /* used bit register table           */
-struct regrecord *bitregtable = bitregtable09;
-int bitregtablesize = sizeof(bitregtable09) / sizeof(bitregtable09[0]);
-void scanoperands09(struct relocrecord *pp);
-void (*scanoperands)(struct relocrecord *) = scanoperands09;
+struct regrecord *bitregtable = bitregtable00;
+int bitregtablesize = sizeof(bitregtable00) / sizeof(bitregtable00[0]);
+void scanoperands11(struct relocrecord *pp);
+void (*scanoperands)(struct relocrecord *) = scanoperands11;
 
 char pass;                              /* Assembler pass = 1 or 2           */
 char relocatable = 0;                   /* relocatable object flag           */

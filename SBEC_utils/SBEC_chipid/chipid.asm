@@ -22,7 +22,7 @@ Start:
 ; give receiver around 50ms too apply 20 volts to pin 45
 
    ldX      #$014D*50   ; 50ms
-   jsr      wait
+   bsr      wait
 
    ldD      #$AA90
    staA     $D555       ; store $AA at address $D555
@@ -31,10 +31,10 @@ Start:
    staB     $D555       ; store $90 in address $D555
 
    ldX      #$014D*10   ; 10ms
-   jsr      wait
+   bsr      wait
 
    ldD      $A000       ; ID should now be at $A000
-   stD      mfg_id      ; copy ID from address to ram
+   stD      <mfg_id      ; copy ID from address to ram
 
    ldD      #$AAF0
    staA     $D555
@@ -43,13 +43,13 @@ Start:
    staB     $D555
 
    ldX      #$014D*10   ; 10ms
-   jsr      wait
+   bsr      wait
 
-   ldaB     mfg_id      ; send manufacture id to PC
-   jsr      send
+   ldaB     <mfg_id      ; send manufacture id to PC
+   bsr      send
 
-   ldaB     chp_id      ; send chip id to PC
-   jsr      send
+   ldaB     <chp_id      ; send chip id to PC
+   bsr      send
    stop
 
 send:

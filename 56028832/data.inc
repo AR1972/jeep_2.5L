@@ -30,7 +30,7 @@ byte_8014:  fcb $FF
 ; bit 2: unknown
 ; bit 1: 1 = manual transmission, 0 = auto transmission ???
 TL_CONF01:
-byte_8015:  fcb %10000000+TransType
+byte_8015:  fcb %10000000+ATX
 ;------------------------------------------------------------------------------
 TL_ConfigurationFlags2:
 byte_8016:  fcb $42
@@ -75,7 +75,7 @@ unk_8053:
             fcb $2F, $90, $01, $05
             fcb $9C, $FF
 
- DCB.B $0C, $FF ; 12 bytes of 0xFF
+ fill $FF, $0C
 
 TL_TL_806a:
             fcb $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
@@ -270,7 +270,7 @@ unk_842B:
             fcb $58, $00, $00, $00
             fcb $FF, $00
 
- DCB.B $0C, $FF ; 12 bytes of 0xFF
+ fill $FF, $0C
 
 tl_tl_843e:
 unk_843E:
@@ -295,14 +295,14 @@ unk_846F:
             fcb $60, $40, $02, $00
             fcb $80, $80
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 unk_8482:
             fcb $02
             fcb $00, $00, $00, $00
             fcb $FF, $00
 
- DCB.B $0C, $FF ; 12 bytes of 0xFF
+ fill $FF, $0C
 
 word_8495:
 TL_TL_8481: fdb $8000
@@ -356,7 +356,7 @@ unk_84EE:
             fcb $3E, $C0, $01, $57
             fcb $6D, $FF
 
- DCB.B $0C, $FF ; 12 bytes of 0xFF
+ fill $FF, $0C
 
 TL_O2LoLimitForInMiddleDetermination:
 unk_850D:
@@ -369,7 +369,7 @@ unk_850D:
             fcb $1A, $1A, $1A, $1A, $1A, $1A, $1A, $1A, $1A
             fcb $1A, $1A, $1A, $1A, $1A, $1A, $1A, $1A, $1A
 
- DCB.B $6C, $FF ; 108 bytes of 0xFF
+ fill $FF, $6C
 
 TL_O2HiLimitForInMiddleDetermination:
 unk_85A9:
@@ -382,7 +382,7 @@ unk_85A9:
             fcb $1E, $1E, $1E, $1E, $1E, $1E, $1E, $1E, $1E
             fcb $1E, $1E, $1E, $1E, $1E, $1E, $1E, $1E, $1E
 
- DCB.B $6C, $FF ; 108 bytes of 0xFF
+ fill $FF, $6C
 
 byte_8645:  fcb $0B
 byte_8646:  fcb $10
@@ -654,14 +654,14 @@ unk_87C4:
             fcb $C8, $EC, $00, $80
             fcb $F0, $00
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 unk_87D7:
             fcb $02
             fcb $0B, $00, $00, $00
             fcb $1B, $00
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 TL_AISDecel_FromTemp:
 unk_87E2:
@@ -671,7 +671,7 @@ unk_87E2:
             fcb $A8, $10, $FF, $9A
             fcb $D0, $00
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 TL_AdditionToControlMap:
 unk_87F5:
@@ -694,7 +694,7 @@ unk_880F:
             fcb $90, $FF, $00, $00
             fcb $C7, $FF
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 TL_DecelAisOpenStepsFromNeg_FromDeltaMap:
 unk_881A:
@@ -797,7 +797,7 @@ unk_8883:
             fcb $00, $00, $00, $00
             fcb $00, $00
 
- DCB.B $08, $FF ; 8 bytes of 0xFF
+ fill $FF, $08
 
 unk_889A:
             fcb $04
@@ -806,7 +806,7 @@ unk_889A:
             fcb $00, $00, $00, $00
             fcb $00, $00
 
- DCB.B $08, $FF ; 8 bytes of 0xFF
+ fill $FF, $08
 
 TL_PTUMinLockTemperature:
 byte_88B1:  fcb $58
@@ -848,7 +848,7 @@ TL_LowerLimitForPTULock:
             fcb $4C, $08, $00, $00
             fcb $96, $08
 
- DCB.B $04, $FF ; 8 bytes of 0xFF
+ fill $FF, $04
 
 TL_UpperLimitForPTUUnlock:
 unk_88D9:
@@ -864,7 +864,7 @@ TL_LowerLimitForPTUUnlock:
             fcb $46, $03, $00, $00
             fcb $96, $03
 
- DCB.B $04, $FF ; 8 bytes of 0xFF
+ fill $FF, $04
 
 byte_88F7:  fcb $00
 byte_88F8:
@@ -968,7 +968,7 @@ unk_8943:
             fcb $80, $10, $00, $0C
             fcb $FF, $16
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 TL_CruiseControlVacAcceleratedGainCurve_FromDeltaSpeed:
 unk_895A:
@@ -995,7 +995,7 @@ unk_8978:
             fcb $B0, $60, $FF, $00
             fcb $D0, $40
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 TL_CruiseControlAdditionalSetupPulseForResume_FromSpeedDifference2:
 unk_898F:
@@ -1005,7 +1005,7 @@ unk_898F:
             fcb $94, $86, $00, $14
             fcb $C6, $8A
 
- DCB.B $10, $FF ; 16 bytes of 0xFF
+ fill $FF, $10
 
 TL_CruiseControlSpeedGainFactor_FromSpeed:
 unk_89AE:
@@ -1036,7 +1036,7 @@ unk_89D7:
             fcb $20, $E8, $FE, $80
             fcb $30, $D0
 
- DCB.B $08, $FF ; 8 bytes of 0xFF
+ fill $FF, $08
 
 TL_UnknownTableForCruiseControl2:
 unk_89E6:
@@ -1044,7 +1044,7 @@ unk_89E6:
             fcb $90, $00, $00, $60
             fcb $A0, $06
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 TL_UnknownTableForCruiseControl3:
 unk_89F1:
@@ -1060,7 +1060,7 @@ unk_89FC:
             fcb $60, $00, $00, $00
             fcb $40, $00
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 TL_UnknownTableForCruiseControl5:
 unk_8A07:
@@ -1068,7 +1068,7 @@ unk_8A07:
             fcb $A8, $00, $00, $00
             fcb $D0, $00
 
- DCB.B $04, $FF ; 4 bytes of 0xFF
+ fill $FF, $04
 
 byte_8A12:  fcb $02
 unk_8A13:   fcb $20, $0D
@@ -1305,7 +1305,7 @@ unk_8ABA:
             fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
             fcb $00, $00, $00, $00, $00, $00, $00, $00, $00
 
- DCB.B $6C, $FF ; 108 bytes of 0xFF
+ fill $FF, $6C
 
 word_8B56:  fdb $0002
 

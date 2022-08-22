@@ -1,771 +1,1224 @@
-ATX                     equ %00000000
-MTX                     equ %00000001
-FourCyl                 equ %10000000
-SixCyl                  equ %01000000
-Ram_00                                             equ $0000
-Ram_01                                             equ $0001
-Ram_02                                             equ $0002
-MinimumTimerCountBeforeMainloopCanContinue         equ $0003
-Ram_04                                             equ $0004
-Ram_05                                             equ $0005
-LowestSessionTpsVolts                              equ $0006
-BitFlags36_t3                                      equ $0007
-b7_7_bt7                equ %10000000
-b6_7_UseAIS             equ %01000000
-b5_7_bt5                equ %00100000
-b4_7_bt4                equ %00010000
-b3_7_bt3                equ %00001000
-b2_7_bt2                equ %00000100
-b1_7_bt1                equ %00000010
-b0_7_bt0                equ %00000001
-CurrentAisPosition                                 equ $0008
-Timer_DacalCountdown                               equ $0009
-ValueFromAdaptiveMemory                            equ $000A
-Ram_0B                                             equ $000B
-Ram_0C                                             equ $000C
-BaroPressure                                       equ $000D
-Counter_SpeedSensorInterrupt_HB                    equ $000E
-Counter_SpeedSensorInterrupt_LB                    equ $000F
-BitFlags_36_t3                                     equ $0010
-b7_10_bt7               equ %10000000
-b6_10_UseAis            equ %01000000
-b5_10_a10b8             equ %00100000
-b4_10_AsdOn             equ %00010000
-b3_10_bt3               equ %00001000
-b2_10_bt2               equ %00000100
-b1_10_AIS1              equ %00000010
-b0_10_AIS0              equ %00000001
-Ram_11                                             equ $0011
-L002F_t3                                           equ $0012
-Ram_13                                             equ $0013
-CruiseControlVarT1                                 equ $0014
-ErrorBitRegister0                                  equ $0015
-ErrorBitRegister1                                  equ $0016
-ErrorBitRegister2                                  equ $0017
-ErrorBitRegister3                                  equ $0018
-ErrorBitRegisterStored0                            equ $0019
-ErrorBitRegisterStored1                            equ $001A
-ErrorBitRegisterStored2                            equ $001B
-ErrorBitRegisterStored3                            equ $001C
-ErrorCodeUpdateKeyOnCount                          equ $001D
-ErrorCodeUpdateKeyOnCount2                         equ $001E
-ErrorCodeUpdateKeyOnCount3                         equ $001F
-IPL1                                               equ $0020
-b7_20_bt7                       equ %10000000
-b6_20_FuelEngineNotRunning      equ %01000000
-b5_20_bt5                       equ %00100000
-b4_20_bt4                       equ %00010000
-b3_20_bt3                       equ %00001000
-b2_20_bt2                       equ %00000100
-b1_20_bt1                       equ %00000010
-b0_20_SearchBladeEndRef_INSYNC  equ %00000001
-BitFlags21                                         equ $0021
-b7_21_DistSync          equ %10000000
-b6_21_a70b0             equ %01000000
-b5_21_a70b2             equ %00100000
-b4_21_a70b3             equ %00010000
-b3_21_bt3               equ %00001000
-b2_21_bt2               equ %00000100
-b1_21_bt1               equ %00000010
-b0_21_bt0               equ %00000001
-BitFlags66_t3                                      equ $0022
-b7_22_Offidle           equ %10000000
-b6_22_bt6               equ %01000000
-b5_22_AtIdle            equ %00100000
-b4_22_bt4               equ %00010000
-b3_22_a69b2             equ %00001000
-b2_22_FallToIdle        equ %00000100
-b1_22_bt1               equ %00000010
-b0_22_bt0               equ %00000001
-BitFlags23                                         equ $0023
-b7_23_bt7               equ %10000000
-b6_23_bt6               equ %01000000
-b5_23_bt5               equ %00100000
-b4_23_bt4               equ %00010000
-b3_23_bt3               equ %00001000
-b2_23_Past12SecRunning  equ %00000100
-b1_23_a6bb7             equ %00000010
-b0_23_a6bb6             equ %00000001
-BitFlags24                                         equ $0024
-b7_24_a6f               equ %10000000
-b6_24_bt6               equ %01000000
-b5_24_bt5               equ %00100000
-b4_24_BadSpeedo1        equ %00010000
-b3_24_BadSpeedo2        equ %00001000
-b2_24_BadASD            equ %00000100
-b1_24_AlternatorField   equ %00000010
-b0_24_AltBit1           equ %00000001
-BitFlags68_t3                                      equ $0025
-b7_25_ATXChgGear        equ %10000000
-b6_25_AcClutch          equ %01000000
-b5_25_bt5               equ %00100000
-b4_25_ATXInGear         equ %00010000
-b3_25_bt3               equ %00001000
-b2_25_AIS               equ %00000100
-b1_25_bt1               equ %00000010
-b0_25_bt0               equ %00000001
-BitFlags6a_t3                                      equ $0026
-b7_26_bt7               equ %10000000
-b6_26_drbToggle1        equ %01000000
-b5_26_drbToggle2        equ %00100000
-b4_26_bt4               equ %00010000
-b3_26_bt3               equ %00001000
-b2_26_bt2               equ %00000100
-b1_26_bt1               equ %00000010
-b0_26_bt0               equ %00000001
-BitFlags27                                         equ $0027
-b7_27_FuelEngNotRunning equ %10000000
-b6_27_bt6               equ %01000000
-b5_27_bt5               equ %00100000
-b4_27_bt4               equ %00010000
-b3_27_bt3               equ %00001000
-b2_27_bt2               equ %00000100
-b1_27_ATXInGear         equ %00000010
-b0_27_cfg_ATX           equ %00000001
-BitFlags6d_t3                                      equ $0028
-b7_28_bt7               equ %10000000
-b6_28_bt6               equ %01000000
-b5_28_bt5               equ %00100000
-b4_28_bt4               equ %00010000
-b3_28_bt3               equ %00001000
-b2_28_NeedSetup         equ %00000100
-b1_28_bt1               equ %00000010
-b0_28_InMotion          equ %00000001
-BitFlags29                                         equ $0029
-BitFlags2a                                         equ $002A
-b7_2A_bt7               equ %10000000
-b6_2A_bt6               equ %01000000
-b5_2A_PTU_A             equ %00100000
-b4_2A_PTU_B             equ %00010000
-b3_2A_SpeedUnder40      equ %00001000
-b2_2A_bt2               equ %00000100
-b1_2A_bt1               equ %00000010
-b0_2A_bt0               equ %00000001
-BitFlags2b                                         equ $002B
-BitFlags2c                                         equ $002C
-BitFlags2d                                         equ $002D
-b7_2D_bt7               equ %10000000
-b6_2D_bt6               equ %01000000
-b5_2D_bt5               equ %00100000
-b4_2D_a71b5             equ %00010000
-b3_2D_EMR_1             equ %00001000
-b2_2D_a6cb1             equ %00000100
-b1_2D_a6cb3             equ %00000010
-b0_2D_a6cb2             equ %00000001
-BitFlags2e                                         equ $002E
-b7_2E_MapMaybe          equ %10000000
-b6_2E_bt6               equ %01000000
-b5_2E_bt5               equ %00100000
-b4_2E_bt4               equ %00010000
-b3_2E_bt3               equ %00001000
-b2_2E_EGRFault          equ %00000100
-b1_2E_bt1               equ %00000010
-b0_2E_a70b1             equ %00000001
-BitFlags2f                                         equ $002F
-Ram_30                                             equ $0030
-CruiseStatus_1                                     equ $0031
-CruiseStatus_2                                     equ $0032
-Counter_Cruise_1                                   equ $0033
-Counter_TimerPastHalfwayBetweenCamPulses           equ $0034
-TimerOverflowsBetweenCamPulses                     equ $0035
-DistributorFallingEdgePulsewidth_HB                equ $0036
-DistributorFallingEdgePulsewidth_LB                equ $0037
-LastCamFallingEdgeTime                             equ $0038
-Ram_39                                             equ $0039
-BitFlags_BF_t3                                     equ $003A
-CylinderPointer                                    equ $003B
-Counter_TimerRegHalfOverflowBetweenSpeedoPulses    equ $003C
-TimerOverflowsBetweenSpeedoPulses                  equ $003D
-SpeedoSensorPulsewidth_HB                          equ $003E
-SpeedoSensorPulsewidth_LB                          equ $003F
-PreviousVehicleSpeed_HB                            equ $0040
-PreviousVehicleSpeed_LB                            equ $0041
-CounterUp_42                                       equ $0042
-CounterUp_43                                       equ $0043
-KeyOnOrEngineRunningTime                           equ $0044
-Counter_MainLoop                                   equ $0045
-EngineRpm_HB                                       equ $0046
-EngineRpm_LB                                       equ $0047
-EngineRPM_3D                                       equ $0048
-RPMTableOffset                                     equ $0049
-AdvanceTemporary                                   equ $004A
-Ram_4B                                             equ $004B
-Ram_4C                                             equ $004C
-Ram_4D                                             equ $004D
-CalculatedSparkAdvance                             equ $004E
-MapVolts                                           equ $004F
-MapValue                                           equ $0050
-TpsVolts                                           equ $0051
-ChargeTempVolts                                    equ $0052
-O2SensorVolts                                      equ $0053
-CoolantTemp                                        equ $0054
-CoolantTemp_fromTable_Scaled                       equ $0055
-PreviousCoolantTemp_fromTable_Scaled               equ $0056
-IntakeTemp_fromTable_Scaled                        equ $0057
-LastChargeTempVolts                                equ $0058
-LastCoolantTempVolts                               equ $0059
-LastTpsVolts                                       equ $005A
-BatteryVolts                                       equ $005B
-TpsVolts_Minus_LowestSessionTpsVolts               equ $005C
-VehicleSpeed_HB                                    equ $005D
-VehicleSpeed_LB                                    equ $005E
-VehicleSpeedx8_Scaled                              equ $005F
-RPM_Scaled_maybe                                   equ $0060
-StartupSwitchMirror1                               equ $0061
-b7_61_bt7               equ %10000000
-b6_61_IdleSpeedMode     equ %01000000
-b5_61_Brake             equ %00100000
-b4_61_PNswitch          equ %00010000
-b3_61_bt3               equ %00001000
-b2_61_CruiseResume      equ %00000100
-b1_61_CruiseSet         equ %00000010
-b0_61_bt0               equ %00000001
-ACClutchToggleVar                                  equ $0062
-ScaledDistPWForCruiseControl                       equ $0063
-TargetBatteryVolts                                 equ $0064
-BodyComputerBatteryVoltsOutput                     equ $0065
-TPSVoltsSessionDelta                               equ $0066
-AmbientAirTempVolts2                               equ $0067
-Timer_AisChanges                                   equ $0068
-DesiredNewAisPosition                              equ $0069
-Timer_CountdownFromStartRunForAisFeedback          equ $006A
-MAPOffsetForCylTrim                                equ $006B
-Timer_AisOrO2Sensor                                equ $006C
-TargetIdleSpeedHB                                  equ $006D
-TargetIdleSpeedLB                                  equ $006E
-InjectorPulsewidth_HB                              equ $006F
-InjectorPulsewidth_LB                              equ $0070
-Ram_71                                             equ $0071
-Ram_72                                             equ $0072
-Ram_73                                             equ $0073
-AmbientAirTempVolts                                equ $0074
-PWMULT_Adaptive_fuel_pulsewidth_multiplier         equ $0075
-Ram_76                                             equ $0076
-Counter_A_HB                                       equ $0077
-Counter_A_LB                                       equ $0078
-Counter_B                                          equ $0079
-Counter_C                                          equ $007A
-Counter_D                                          equ $007B
-Counter_E                                          equ $007C
-Counter_F_HB                                       equ $007D
-Counter_F_LB                                       equ $007E
-Ram_7F                                             equ $007F
-Ram_80                                             equ $0080
-Ram_81                                             equ $0081
-Ram_82                                             equ $0082
-Counter_O2SensorFeedbackCount_Signed               equ $0083
-Ram_84                                             equ $0084
-Ram_85                                             equ $0085
-Ram_86                                             equ $0086
-RpmRelated0087                                     equ $0087
-EngineRpmTemp                                      equ $0088
-Ram_89                                             equ $0089
-MapValueTemp1                                      equ $008A
-Ram_8B                                             equ $008B
-MapValueTemp2                                      equ $008C
-Ram_8D                                             equ $008D
-MapValueTemp3                                      equ $008E
-Ram_8F                                             equ $008F
-MapValue2                                          equ $0090
-MapAverageFactorRAM_HB                             equ $0091
-MapAverageFactorRAM_LB                             equ $0092
-TPSAverageFactorRAM_HB                             equ $0093
-TPSAverageFactorRAM_LB                             equ $0094
-TPSVoltsTemp_A                                     equ $0095
-Ram_96                                             equ $0096
-TPSVoltsTemp_B                                     equ $0097
-Ram_98                                             equ $0098
-Ram_99                                             equ $0099
-Ram_9A                                             equ $009A
-Ram_9B                                             equ $009B
-Ram_9C                                             equ $009C
-Ram_9D                                             equ $009D
-Ram_9E                                             equ $009E
-Ram_9F                                             equ $009F
-Ram_A0                                             equ $00A0
-Ram_A1                                             equ $00A1
-Ram_A2                                             equ $00A2
-Ram_A3                                             equ $00A3
-Ram_A4                                             equ $00A4
-Ram_A5                                             equ $00A5
-Ram_A6                                             equ $00A6
-Ram_A7                                             equ $00A7
-Ram_A8                                             equ $00A8
-Ram_A9                                             equ $00A9
-Ram_AA                                             equ $00AA
-Ram_AB                                             equ $00AB
-Ram_AC                                             equ $00AC
-Ram_AD                                             equ $00AD
-Ram_AE                                             equ $00AE
-MAPLoadFactor                                      equ $00AF
-Ram_B0                                             equ $00B0
-Ram_B1                                             equ $00B1
-o2LowLimitForInMiddleDetermination                 equ $00B2
-o2HighLimitForInMiddleDetermination                equ $00B3
-Ram_B4                                             equ $00B4
-Ram_B5                                             equ $00B5
-CounterUp_b6_o2                                    equ $00B6
-CounterDn_b7_o2                                    equ $00B7
-Ram_B8                                             equ $00B8
-CounterDn_b9_o2                                    equ $00B9
-CounterDn_ba_o2                                    equ $00BA
-CounterDn_bb_o2                                    equ $00BB
-CounterDn_bc_o2                                    equ $00BC
-Ram_BD                                             equ $00BD
-Ram_BE                                             equ $00BE
-Counter_X                                          equ $00BF
-Ram_C0                                             equ $00C0
-Ram_C1                                             equ $00C1
-Ram_C2                                             equ $00C2
-Counter_Cruise_2                                   equ $00C3
-CruiseSpeedSetpoint                                equ $00C4
-Timer_CruiseDecelerate                             equ $00C5
-CruiseControlVar1                                  equ $00C6
-CruiseControlVar2                                  equ $00C7
-CruiseControlVar3                                  equ $00C8
-CruiseControlVar6                                  equ $00C9
-Counter_Cruise_4                                   equ $00CA
-CruiseControlVar0                                  equ $00CB
-Ram_CC                                             equ $00CC
-PIA1_Buffer_t3                                     equ $00CD
-b7_CD_FanRelay          equ %10000000
-b6_CD_CELight           equ %01000000
-b5_CD_PTU               equ %00100000
-b4_CD_bt4               equ %00010000
-b3_CD_bt3               equ %00001000
-b2_CD_bt2               equ %00000100
-b1_CD_bt1               equ %00000010
-b0_CD_bt0               equ %00000001
-PIA2_Buffer_t3                                     equ $00CE
-b7_CE_CruiseVacuum      equ %10000000
-b6_CE_CruiseVent        equ %01000000
-b5_CE_bt5               equ %00100000
-b4_CE_ASD               equ %00010000
-b3_CE_bt3               equ %00001000
-b2_CE_bt2               equ %00000100
-b1_CE_EGR               equ %00000010
-b0_CE_bt0               equ %00000001
-PIA3_Buffer_t3                                     equ $00CF
-b7_CF_bt7               equ %10000000
-b6_CF_bt6               equ %01000000
-b5_CF_ChargeTemp        equ %00100000
-b4_CF_CoolantTemp       equ %00010000
-b3_CF_FuelMon           equ %00001000
-b2_CF_bt2               equ %00000100
-b1_CF_bt1               equ %00000010
-b0_CF_bt0               equ %00000001
-Ram_D0                                             equ $00D0
-Ram_D1                                             equ $00D1
-PTU_MapTemp                                        equ $00D2
-Ram_D3                                             equ $00D3
-Counter_PartThrottleUnlock                         equ $00D4
-b5C_IPL1_t3                                        equ $00D5
-b7_D5_MapStuck          equ %10000000
-b6_D5_TpsBadSignal      equ %01000000
-b5_D5_BattNotCharging   equ %00100000
-b4_D5_bt4               equ %00010000
-b3_D5_MapBadSignal      equ %00001000
-b2_D5_bt2               equ %00000100
-b1_D5_BadCoolantTemp    equ %00000010
-b0_D5_bt0               equ %00000001
-b5D_IPL2_t3                                        equ $00D6
-b7_D6_bt7               equ %10000000
-b6_D6_EMRLight          equ %01000000
-b5_D6_bt5               equ %00100000
-b4_D6_MajorFault        equ %00010000
-b3_D6_bt4               equ %00001000
-b2_D6_bt3               equ %00000100
-b1_D6_bt2               equ %00000010
-b0_D6_bt1               equ %00000001
-b5d_IPL2                                           equ $00D7
-b7_D7_bt7               equ %10000000
-b6_D7_bt6               equ %01000000
-b5_D7_InjFault          equ %00100000
-b4_D7_BadBattVolts      equ %00010000
-b3_D7_bt3               equ %00001000
-b2_D7_BadO2             equ %00000100
-b1_D7_bt1               equ %00000010
-b0_D7_bt0               equ %00000001
-DRBPointer1                                        equ $00D8
-DRBPointer2                                        equ $00D9
-DRBPointer3                                        equ $00DA
-DRBSerialMode                                      equ $00DB
-b7_DB_FastSerial        equ %10000000
-b6_DB_ByteMode          equ %01000000
-b5_DB_TestType3         equ %00100000
-b4_DB_TestType2         equ %00010000
-b3_DB_bit3              equ %00001000
-b2_DB_bit2              equ %00000100
-b1_DB_bit1              equ %00000010
-b0_DB_bit0              equ %00000001
-ErrorBitsAssociatedWithPIA1AndReg1eTo25_HB         equ $00DC
-ErrorBitsAssociatedWithPIA1AndReg1eTo25_LB         equ $00DD
-ClearTheErrorTimer_0                               equ $00DE
-ClearTheErrorTimer_1                               equ $00DF
-ATMOffset                                          equ $00E0
-CCDFlags5                                          equ $00E1
-b7_E1_e1b7              equ %10000000
-b6_E1_e1b6              equ %01000000
-b5_E1_AlarmDisable      equ %00100000
-b4_E1_e1b4              equ %00010000
-b3_E1_bt3               equ %00001000
-b2_E1_bt2               equ %00000100
-b1_E1_bt1               equ %00000010
-b0_E1_bt0               equ %00000001
-Ram_E2                                             equ $00E2
-EGRVar5_EGR_Temp_1                                 equ $00E3
-EGRVar3_ErrorCodeBufferHB                          equ $00E4
-Ram_E5                                             equ $00E5
-EGRVar6                                            equ $00E6
-EGRVar1_ErrorCodeCounter                           equ $00E7
-EGRVar7                                            equ $00E8
-EGRVar8                                            equ $00E9
-MapVolts_X                                         equ $00EA
-MapValue3                                          equ $00EB
-Ram_EC                                             equ $00EC
-BitFlags608D                                       equ $00ED
-BatteryVoltsRaw                                    equ $00EE
-A2DResults2Temp                                    equ $00EF
-BatVoltsDiagCounter                                equ $00F0
-Counter_O2Diagnostics                              equ $00F1
-Timer_O2MiddleDiagnostics                          equ $00F2
-Ram_F3                                             equ $00F3
-Ram_F4                                             equ $00F4
-CCDFlags4_BodyCompFlags4_X                         equ $00F5
-CCDFlags6                                          equ $00F6
-b7_F6_ae2b7             equ %10000000
-b6_F6_ae2b6             equ %01000000
-b5_F6_ae2b5             equ %00100000
-b4_F6_ae2b4             equ %00010000
-b3_F6_ae2b3             equ %00001000
-b2_F6_ae2b2             equ %00000100
-b1_F6_ae2b1             equ %00000010
-b0_F6_ae2b0             equ %00000001
-CCDTemp_HB                                         equ $00F7
-CCDFuelOutput_HB                                   equ $00F8
-CCDFuelOutput_LB                                   equ $00F9
-Counter_SpeedSensorInterrupt_HB_X                  equ $00FA
-CCDFlags4_tsbec                                    equ $00FB
-b7_FB_bt7               equ %10000000
-b6_FB_bt6               equ %01000000
-b5_FB_adeb7             equ %00100000
-b4_FB_bt4               equ %00010000
-b3_FB_addb2             equ %00001000
-b2_FB_bt2               equ %00000100
-b1_FB_bt1               equ %00000010
-b0_FB_bt0               equ %00000001
-Counter_InjectorCalc                               equ $00FC
-CounterUp_UsedInCalcFuel                           equ $00FD
-Ram_FE                                             equ $00FE
-Timer_MinimumFanRun                                equ $00FF
-SwitchPortAccessReg1                               equ BaseAddr+$00
-b7_6400_bt7             equ %10000000
-b6_6400_sp1_B1Volt      equ %01000000
-b5_6400_bt5             equ %00100000
-b4_6400_bt4             equ %00010000
-b3_6400_bt3             equ %00001000
-b2_6400_AlternatorField equ %00000100
-b1_6400_bt1             equ %00000010
-b0_6400_bt0             equ %00000001
-SwitchPortAccessReg2                               equ BaseAddr+$01
-PIA_Ctrl_1                                         equ BaseAddr+$02
-PIA_Ctrl_2                                         equ BaseAddr+$03
-PIA_Ctrl_3                                         equ BaseAddr+$04
-PIA_Ctrl_4                                         equ BaseAddr+$05
-PIA_Ctrl_5                                         equ BaseAddr+$06
-InjectorPulsewidth_HB_Cyl1                         equ BaseAddr+$08
-InjectorPulsewidth_LB_Cyl1                         equ BaseAddr+$09
-InjectorPulsewidth_HB_Cyl2                         equ BaseAddr+$0A
-InjectorPulsewidth_LB_Cyl2                         equ BaseAddr+$0B
-InjectorPulsewidth_HB_Cyl3                         equ BaseAddr+$0C
-InjectorPulsewidth_LB_Cyl3                         equ BaseAddr+$0D
-InjectorPulsewidth_HB_Cyl4                         equ BaseAddr+$0E
-InjectorPulsewidth_LB_Cyl4                         equ BaseAddr+$0F
-PIA3_Buffer_2_t3                                   equ BaseAddr+$40
-CountdownTimerFromKeyOn                            equ BaseAddr+$80
-UNe_6481                                           equ BaseAddr+$81
-UNe_6482                                           equ BaseAddr+$82
-UNe_6483                                           equ BaseAddr+$83
-UNe_6484                                           equ BaseAddr+$84
-LDXi_6485                                          equ BaseAddr+$85
-FDRVar0                                            equ BaseAddr+$86
-FDRVar1                                            equ BaseAddr+$87
-FDRVar2                                            equ BaseAddr+$88
-FDRVar3                                            equ BaseAddr+$89
-STe_648A                                           equ BaseAddr+$8A
-Temp5_t3                                           equ BaseAddr+$8B
-DoubleTempB                                        equ BaseAddr+$8D
-DoubleTempC                                        equ BaseAddr+$8F
-LDXi_6490                                          equ BaseAddr+$90
-L00F5_t3                                           equ BaseAddr+$91
-Counter_IC1_Temp                                   equ BaseAddr+$93
-AntiDwellTime_HB                                   equ BaseAddr+$95
-AntiDwellTime_LB                                   equ BaseAddr+$96
-Counter_SomethingWithDistributor                   equ BaseAddr+$97
-CruiseControlVar4                                  equ BaseAddr+$98
-Temp0                                              equ BaseAddr+$99
-Temp1                                              equ BaseAddr+$9A
-Temp2                                              equ BaseAddr+$9B
-Temp3                                              equ BaseAddr+$9C
-Temp4                                              equ BaseAddr+$9D
-Temp5                                              equ BaseAddr+$9E
-Temp6                                              equ BaseAddr+$9F
-Temp7                                              equ BaseAddr+$A0
-MinimumTimerCountBeforeMainloopCanContinue2        equ BaseAddr+$A1
-UNe_64A3                                           equ BaseAddr+$A3
-CalculatedDwellTime                                equ BaseAddr+$A5
-Timer_AlternatorDutyCycle                          equ BaseAddr+$A6
-Timer_DelayBeforeUpdating_MINTHR                   equ BaseAddr+$A7
-CoolantVoltsTmp1                                   equ BaseAddr+$A8
-MapValue_t3                                        equ BaseAddr+$A9
-CoolantVoltsTmp2                                   equ BaseAddr+$AA
-SparkScatterIncrement                              equ BaseAddr+$AB
-SparkScatter                                       equ BaseAddr+$AC
-UNe_64AD                                           equ BaseAddr+$AD
-STe_64AE                                           equ BaseAddr+$AE
-Counter_ACControl1                                 equ BaseAddr+$AF
-DRBOffsetStored_HB                                 equ BaseAddr+$B0
-DRBOffsetStored_LB                                 equ BaseAddr+$B1
-LastCamFallingEdgeTime2                            equ BaseAddr+$B2
-BitFlags65_t3                                      equ BaseAddr+$B3
-Timer_ThermostatDiagnostics                        equ BaseAddr+$B4
-ERRORCODERESETTIMERIN_UN_ERRORCODEIN_LN_VAR        equ BaseAddr+$B5
-Temp1_t3                                           equ BaseAddr+$B6
-PIA2_Buffer_t3_Temp                                equ BaseAddr+$B7
-UNe_64B8                                           equ BaseAddr+$B8
-UNe_64B9                                           equ BaseAddr+$B9
-STe_64BA                                           equ BaseAddr+$BA
-STe_64BC                                           equ BaseAddr+$BC
-STe_64BD                                           equ BaseAddr+$BD
-STe_64BE                                           equ BaseAddr+$BE
-STe_64C0                                           equ BaseAddr+$C0
-UNe_64C1                                           equ BaseAddr+$C1
-Ram64c3                                            equ BaseAddr+$C3
-Ram64c4                                            equ BaseAddr+$C4
-STe_64C6                                           equ BaseAddr+$C6
-STe_64C7                                           equ BaseAddr+$C7
-STe_64C8                                           equ BaseAddr+$C8
-DRB_ProgramModeFlag                                equ BaseAddr+$C9
-DRB_SpecialProgramRoutine                          equ BaseAddr+$CB
-UNk_64D0                                           equ BaseAddr+$D0
-TopOfStack                                         equ BaseAddr+$FF
-M99_AAAA                                           equ $AAAA
-M99_D555                                           equ $D555
+byte_0:         fcb 0                   ; DATA XREF: SCISS+17↓w
+                                        ; CME+2B↓w ...
+byte_1:         fcb 0                   ; DATA XREF: SCISS+1A↓w
+byte_2:         fcb 0                   ; DATA XREF: __RESET+2B↓r
+                                        ; __RESET:loc_9208↓w ...
+byte_3:         fcb 0                   ; DATA XREF: __RESET+DE↓w
+                                        ; __RESET+48C↓r ...
+byte_4:         fcb 0                   ; DATA XREF: __RESET+EC↓w
+                                        ; __RESET+2B8↓r ...
+byte_5:         fcb 0                   ; DATA XREF: __RESET+EE↓w
+                                        ; RESERVED:9BA3↓w ...
+byte_6:         fcb 0                   ; DATA XREF: __RESET+E2↓w
+                                        ; sub_D9D7:loc_D9EF↓r ...
+byte_7:         fcb 0                   ; DATA XREF: __RESET+E7↓w
+                                        ; sub_DDDE:loc_DE1F↓r ...
+byte_8:         fcb 0                   ; DATA XREF: __RESET+D6↓w
+                                        ; __RESET+2DA↓r ...
+byte_9:         fcb 0                   ; DATA XREF: CME:loc_9126↓r
+                                        ; __RESET+16↓r ...
+                fcb 0
+byte_B:         fcb 0                   ; DATA XREF: __RESET+4F5↓r
+                                        ; sub_DB67+70↓r ...
+                fcb 0
+                fcb 0
+byte_E:         fcb 0
+                fcb 0
+byte_10:        fcb 0
+                fcb 0
+                fcb 0
+byte_13:        fcb 0
+byte_14:        fcb 0
+byte_15:        fcb 0
+byte_16:        fcb 0
+byte_17:        fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+byte_1C:        fcb 0                   ; DATA XREF: sub_AF7A:loc_AF9F↓r
+                                        ; sub_BBCE:loc_BC55↓r ...
+byte_1D:        fcb 0                   ; DATA XREF: __RESET+3B5↓r
+                                        ; sub_BCC3+17↓r
+byte_1E:        fcb 0                   ; DATA XREF: __RESET:loc_94B2↓r
+                                        ; __RESET+3BD↓r ...
+byte_1F:        fcb 0                   ; DATA XREF: __RESET+386↓r
+                                        ; __RESET+3C5↓r ...
+byte_20:        fcb 0                   ; DATA XREF: __RESET:loc_94BA↓r
+                                        ; __RESET+3CD↓r ...
+byte_21:        fcb 0                   ; DATA XREF: __RESET+34D↓r
+                                        ; __RESET+364↓r ...
+byte_22:        fcb 0                   ; DATA XREF: sub_BBCE+3↓r
+                                        ; sub_BBCE+1C↓r ...
+                fcb 0
+                fcb 0
+                fcb 0
+byte_26:        fcb 0
+                fcb 0
+byte_28:        fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+byte_2F:        fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+byte_33:        fcb 0                   ; DATA XREF: sub_AF7A+64↓r
+                                        ; sub_C2B7:loc_C33E↓r ...
+byte_34:        fcb 0                   ; DATA XREF: __RESET+409↓r
+                                        ; sub_C3AC+17↓r
+byte_35:        fcb 0                   ; DATA XREF: __RESET+3D8↓r
+                                        ; __RESET+411↓r ...
+byte_36:        fcb 0                   ; DATA XREF: __RESET+3DA↓r
+                                        ; __RESET+419↓r ...
+byte_37:        fcb 0                   ; DATA XREF: __RESET:loc_950E↓r
+                                        ; __RESET+421↓r ...
+byte_38:        fcb 0                   ; DATA XREF: __RESET+429↓r
+                                        ; sub_C3AC+C↓r ...
+                fcb 0
+                fcb 0
+                fcb 0
+byte_3C:        fcb 0
+byte_3D:        fcb 0                   ; DATA XREF: sub_9BB0+2↓w
+                                        ; sub_AE82:loc_AEDF↓r
+                fcb 0
+byte_3F:        fcb 0                   ; DATA XREF: sub_9BB0+4↓w
+                fcb 0
+byte_41:        fcb 0                   ; DATA XREF: sub_9BB0+6↓w
+byte_42:        fcb 0                   ; DATA XREF: sub_B07D:loc_B099↓r
+byte_43:        fcb 0                   ; DATA XREF: sub_9BB0+8↓w
+                                        ; sub_AE82+15↓r ...
+byte_44:        fcb 0                   ; DATA XREF: sub_AE82+11↓r
+                                        ; sub_AE82+4F↓w ...
+byte_45:        fcb 0                   ; DATA XREF: sub_9BB0+A↓w
+                                        ; sub_AF7A-19D↓r ...
+byte_46:        fcb 0                   ; DATA XREF: sub_AE82+55↓w
+                                        ; sub_B07D+2B↓r ...
+byte_47:        fcb 0                   ; DATA XREF: sub_9BB0+C↓w
+                                        ; sub_B07D+20↓r ...
+byte_48:        fcb 0                   ; DATA XREF: sub_96AC+83↓r
+                                        ; sub_A4F6↓r ...
+byte_49:        fcb 0                   ; DATA XREF: __RESET+2A4↓r
+                                        ; RESERVED:9AE3↓r ...
+byte_4A:        fcb 0                   ; DATA XREF: __RESET+2B2↓r
+                                        ; sub_96AC+130↓r ...
+byte_4B:        fcb 0                   ; DATA XREF: sub_96AC+EC↓r
+                                        ; sub_96AC:loc_979D↓r ...
+byte_4C:        fcb 0                   ; DATA XREF: __RESET+2AC↓r
+                                        ; sub_A6C6+20↓r ...
+byte_4D:        fcb 0                   ; DATA XREF: __RESET+2B5↓r
+                                        ; sub_9981+A4↓r ...
+byte_4E:        fcb 0                   ; DATA XREF: sub_96AC+1A↓r
+                                        ; __RESET+80C↓r ...
+byte_4F:        fcb 0                   ; DATA XREF: __RESET+108↓w
+                                        ; __RESET+27D↓r ...
+byte_50:        fcb 0                   ; DATA XREF: __RESET:loc_95DB↓r
+                                        ; sub_9981+51↓r ...
+byte_51:        fcb 0                   ; DATA XREF: __RESET+2F6↓r
+                                        ; sub_96AC+86↓r ...
+byte_52:        fcb 0                   ; DATA XREF: __RESET+4DE↓r
+                                        ; __RESET:loc_989B↓r ...
+byte_53:        fcb 0                   ; DATA XREF: sub_96AC+53↓r
+                                        ; IRQ+79↓r ...
+byte_54:        fcb 0                   ; DATA XREF: sub_B800+30B↓r
+                                        ; sub_B800+310↓r ...
+byte_55:        fcb 0                   ; DATA XREF: __RESET+317↓r
+                                        ; sub_9E01:loc_9ECA↓r ...
+byte_56:        fcb 0                   ; DATA XREF: __RESET+263↓r
+                                        ; sub_96AC+3A↓r ...
+byte_57:        fcb 0                   ; DATA XREF: sub_BBCE+97↓r
+                                        ; sub_BBCE:loc_BC75↓r ...
+byte_58:        fcb 0                   ; DATA XREF: sub_C2B7+97↓r
+                                        ; sub_C2B7:loc_C35E↓r ...
+byte_59:        fcb 0                   ; DATA XREF: sub_A35F:loc_A3A0↓r
+                                        ; sub_A35F:loc_A455↓r ...
+byte_5A:        fcb 0                   ; DATA XREF: sub_A35F+30↓r
+                                        ; sub_A35F+34↓r ...
+byte_5B:        fcb 0                   ; DATA XREF: RESERVED:9D17↓r
+                                        ; RESERVED:9D4A↓r ...
+byte_5C:        fcb 0                   ; DATA XREF: __RESET+2F9↓r
+                                        ; sub_CA13:loc_CA7D↓r ...
+byte_5D:        fcb 0                   ; DATA XREF: sub_96AC+89↓r
+                                        ; __RESET+711↓r ...
+byte_5E:        fcb 0                   ; DATA XREF: sub_A12C+21↓r
+                                        ; sub_A12C+2A↓r ...
+byte_5F:        fcb 0                   ; DATA XREF: __RESET+2BE↓r
+                                        ; RESERVED:B42A↓r ...
+byte_60:        fcb 0                   ; DATA XREF: sub_E0ED+9F↓r
+                                        ; sub_E0ED+13B↓r ...
+byte_61:        fcb 0                   ; DATA XREF: __RESET+2C3↓w
+                                        ; sub_E0ED↓r ...
+byte_62:        fcb 0                   ; DATA XREF: sub_A35F+A↓r
+                                        ; sub_A49B:loc_A4D9↓r ...
+byte_63:        fcb 0                   ; DATA XREF: sub_F644+45↓r
+                                        ; ROM_EPROM:F6C6↓r ...
+byte_64:        fcb 0                   ; DATA XREF: sub_96AC+1D↓r
+                                        ; sub_96AC+22↓w ...
+byte_65:        fcb 0                   ; DATA XREF: sub_96AC+12↓w
+                                        ; sub_96AC+60↓r ...
+byte_66:        fcb 0                   ; DATA XREF: sub_B800:loc_BB73↓w
+                                        ; IC1I:loc_FA10↓r ...
+byte_67:        fcb 0                   ; DATA XREF: sub_B10D:loc_B13D↓w
+                                        ; sub_B800+35C↓r
+byte_68:        fcb 0                   ; DATA XREF: __RESET+2D4↓w
+                                        ; sub_B800+31A↓r ...
+byte_69:        fcb 0                   ; DATA XREF: IC1I+1B3↓w
+                                        ; IC1I+1BD↓r ...
+byte_6A:        fcb 0                   ; DATA XREF: RESERVED:loc_A0D7↓r
+                                        ; IC1I+1B5↓w ...
+byte_6B:        fcb 0                   ; DATA XREF: __RESET+7C9↓r
+                                        ; RESERVED:loc_9B3A↓r ...
+byte_6C:        fcb 0
+byte_6D:        fcb 0                   ; DATA XREF: __RESET+22B↓w
+                                        ; __RESET:loc_942A↓r ...
+byte_6E:        fcb 0                   ; DATA XREF: __RESET+48A↓w
+                                        ; RESERVED:loc_A0BF↓r ...
+byte_6F:        fcb 0                   ; DATA XREF: __RESET+471↓w
+                                        ; __RESET+47F↓r ...
+byte_70:        fcb 0                   ; DATA XREF: sub_96AC+73↓w
+                                        ; sub_9E01:loc_A09A↓r ...
+byte_71:        fcb 0                   ; DATA XREF: sub_96AC+B2↓w
+                                        ; RESERVED:loc_A0DC↓r ...
+byte_72:        fcb 0                   ; DATA XREF: __RESET+329↓w
+                                        ; __RESET+337↓r ...
+byte_73:        fcb 0                   ; DATA XREF: __RESET+209↓w
+                                        ; __RESET:loc_9590↓r ...
+byte_74:        fcb 0                   ; DATA XREF: __RESET+1DA↓w
+                                        ; __RESET:loc_9448↓r ...
+byte_75:        fcb 0                   ; DATA XREF: __RESET+223↓w
+                                        ; __RESET+303↓r ...
+byte_76:        fcb 0                   ; DATA XREF: __RESET+21E↓w
+                                        ; sub_96AC+6E↓w ...
+byte_77:        fcb 0                   ; DATA XREF: sub_A730+93↓r
+                                        ; sub_CA82+35↓r ...
+byte_78:        fcb 0                   ; DATA XREF: RESERVED:B3D9↓r
+                                        ; sub_E0ED+F↓r ...
+byte_79:        fcb 0
+byte_7A:        fcb 0                   ; DATA XREF: sub_9E01:loc_A096↓r
+                                        ; sub_A4F6+38↓r ...
+byte_7B:        fcb 0                   ; DATA XREF: sub_9E01:loc_A060↓r
+                                        ; sub_A35F:loc_A38B↓r ...
+byte_7C:        fcb 0                   ; DATA XREF: __RESET+2AF↓r
+                                        ; sub_D4F8:loc_D515↓r ...
+byte_7D:        fcb 0                   ; DATA XREF: sub_A7FD+C↓r
+                                        ; sub_A867+A↓r ...
+byte_7E:        fcb 0                   ; DATA XREF: sub_B10D:loc_B123↓w
+                                        ; sub_F1F4↓r
+byte_7F:        fcb 0                   ; DATA XREF: __RESET:loc_92BA↓w
+                                        ; RESERVED:B3C0↓r ...
+byte_80:        fcb 0                   ; DATA XREF: RESERVED:loc_9B42↓r
+                                        ; sub_A730+35↓r ...
+byte_81:        fcb 0
+byte_82:        fcb 0                   ; DATA XREF: RESERVED:loc_9B3E↓r
+                                        ; sub_D14D+1C8↓w ...
+                fcb 0
+byte_84:        fcb 0                   ; DATA XREF: RESERVED:9B36↓r
+                                        ; sub_D14D+1CA↓w ...
+                fcb 0
+byte_86:        fcb 0                   ; DATA XREF: sub_C97D:loc_CA10↓w
+                                        ; sub_D14D:loc_D340↓r ...
+byte_87:        fcb 0
+byte_88:        fcb 0                   ; DATA XREF: sub_BE83↓r
+                                        ; sub_CB52+48↓r ...
+                fcb 0
+byte_8A:        fcb 0                   ; DATA XREF: sub_C574↓r
+                                        ; sub_CB52+56↓r ...
+                fcb 0
+byte_8C:        fcb 0                   ; DATA XREF: sub_D0F1+56↓w
+byte_8D:        fcb 0
+byte_8E:        fcb 0                   ; DATA XREF: sub_D0F1:loc_D14A↓w
+                fcb 0
+byte_90:        fcb 0                   ; DATA XREF: sub_BE83+2C↓r
+                                        ; sub_BE83+33↓w ...
+byte_91:        fcb 0                   ; DATA XREF: sub_C574+2C↓r
+                                        ; sub_C574+33↓w ...
+byte_92:        fcb 0                   ; DATA XREF: sub_BE83+59↓r
+                                        ; sub_BE83+64↓w ...
+byte_93:        fcb 0                   ; DATA XREF: sub_C574+59↓r
+                                        ; sub_C574+64↓w ...
+byte_94:        fcb 0                   ; DATA XREF: sub_BE83+90↓w
+                                        ; sub_BE83+13F↓r ...
+byte_95:        fcb 0                   ; DATA XREF: sub_C574+8D↓w
+                                        ; sub_C574+13C↓r ...
+byte_96:        fcb 0                   ; DATA XREF: sub_BE83+7E↓r
+byte_97:        fcb 0                   ; DATA XREF: sub_A0F1+33↓w
+byte_98:        fcb 0                   ; DATA XREF: sub_BD64+F↓r
+                                        ; sub_BD64:loc_BD78↓w ...
+byte_99:        fcb 0                   ; DATA XREF: sub_C455+F↓r
+                                        ; sub_C455:loc_C469↓w ...
+byte_9A:        fcb 0                   ; DATA XREF: sub_BBCE+BD↓r
+                                        ; sub_BBCE+C2↓w ...
+byte_9B:        fcb 0                   ; DATA XREF: sub_C2B7+BD↓r
+                                        ; sub_C2B7+C2↓w ...
+byte_9C:        fcb 0                   ; DATA XREF: RESERVED:9B8C↓w
+                                        ; sub_BBCE+B6↓w ...
+byte_9D:        fcb 0                   ; DATA XREF: RESERVED:9B8E↓w
+                                        ; sub_C2B7+B6↓w ...
+byte_9E:        fcb 0                   ; DATA XREF: sub_BBCE+80↓r
+                                        ; sub_BC93+C↓r ...
+byte_9F:        fcb 0                   ; DATA XREF: sub_C2B7+80↓r
+                                        ; sub_C37C+C↓r ...
+byte_A0:        fcb 0                   ; DATA XREF: sub_C0E4+9↓r
+                                        ; sub_C0E4+18↓w ...
+byte_A1:        fcb 0                   ; DATA XREF: sub_BE83+145↓w
+                                        ; sub_BE83+18A↓w ...
+byte_A2:        fcb 0                   ; DATA XREF: sub_C574+142↓w
+                                        ; sub_C574+187↓w ...
+byte_A3:        fcb 0                   ; DATA XREF: sub_BE83+154↓r
+                                        ; sub_BE83+15F↓w ...
+byte_A4:        fcb 0                   ; DATA XREF: sub_C574+151↓r
+                                        ; sub_C574+15C↓w ...
+byte_A5:        fcb 0                   ; DATA XREF: sub_CD20↓r
+                                        ; sub_CD20+5↓w
+byte_A6:        fcb 0                   ; DATA XREF: sub_CD20:loc_CD27↓r
+                                        ; sub_CD20+C↓w ...
+byte_A7:        fcb 0                   ; DATA XREF: sub_CD20:loc_CD2E↓r
+                                        ; sub_CD20+13↓w ...
+byte_A8:        fcb 0                   ; DATA XREF: sub_CD20:loc_CD56↓r
+                                        ; sub_CD20+3B↓w
+byte_A9:        fcb 0                   ; DATA XREF: sub_CB52+81↓w
+                                        ; sub_CB52:loc_CBD7↓r ...
+byte_AA:        fcb 0                   ; DATA XREF: sub_B554+86↓r
+                                        ; sub_D14D+1DC↓r ...
+byte_AB:        fcb 0                   ; DATA XREF: sub_CDF1+8↓w
+                                        ; sub_D0F1+5↓r
+byte_AC:        fcb 0                   ; DATA XREF: sub_CC8F+59↓w
+                                        ; sub_CC8F:loc_CCEF↓w ...
+byte_AD:        fcb 0                   ; DATA XREF: sub_BE83+110↓r
+                                        ; sub_C164↓r ...
+byte_AE:        fcb 0                   ; DATA XREF: sub_C574+10D↓r
+                                        ; sub_C852↓r ...
+byte_AF:        fcb 0                   ; DATA XREF: sub_BE83+112↓r
+                                        ; sub_C164+23↓r ...
+byte_B0:        fcb 0                   ; DATA XREF: sub_BE83+8E↓w
+                                        ; sub_BE83+143↓w ...
+byte_B1:        fcb 0                   ; DATA XREF: sub_C574+8B↓w
+                                        ; sub_C574+140↓w ...
+byte_B2:        fcb 0                   ; DATA XREF: sub_BD64+DD↓w
+                                        ; sub_BE83+DD↓r ...
+byte_B3:        fcb 0                   ; DATA XREF: sub_BD64:loc_BE6B↓r
+                                        ; sub_BD64+109↓w ...
+byte_B4:        fcb 0                   ; DATA XREF: __RESET+34A↓r
+                                        ; __RESET:loc_948F↓r ...
+byte_B5:        fcb 0                   ; DATA XREF: sub_BE83+10E↓r
+                                        ; sub_C164+B↓r ...
+byte_B6:        fcb 0                   ; DATA XREF: sub_C574+10B↓r
+                                        ; sub_C852+B↓r ...
+byte_B7:        fcb 0                   ; DATA XREF: ROM_EPROM:loc_D016↓w
+                                        ; sub_D0F1+3C↓r
+byte_B8:        fcb 0                   ; DATA XREF: sub_CFA0:loc_CFBB↓w
+                                        ; sub_D14D+AC↓r
+byte_B9:        fcb 0                   ; DATA XREF: sub_CFA0+25↓w
+                                        ; sub_D14D+CC↓r
+byte_BA:        fcb 0                   ; DATA XREF: sub_CC29+7↓r
+                                        ; sub_D381:loc_D3A2↓w
+byte_BB:        fcb 0                   ; DATA XREF: sub_B800+32A↓r
+                                        ; sub_CC8F+10↓r ...
+                fcb 0
+byte_BD:        fcb 0                   ; DATA XREF: __RESET+2FF↓w
+                                        ; sub_CF6B+3↓r ...
+                fcb 0
+byte_BF:        fcb 0                   ; DATA XREF: __RESET+301↓w
+                                        ; sub_CEF4+24↓w ...
+                fcb 0
+byte_C1:        fcb 0                   ; DATA XREF: __RESET+22E↓w
+                                        ; sub_B800+47↓r ...
+                fcb 0
+byte_C3:        fcb 0                   ; DATA XREF: sub_CE79+49↓w
+                                        ; sub_CE79+68↓w
+byte_C4:        fcb 0                   ; DATA XREF: sub_CD65+4B↓w
+byte_C5:        fcb 0                   ; DATA XREF: sub_CD65+55↓w
+byte_C6:        fcb 0                   ; DATA XREF: __RESET+305↓w
+                                        ; sub_CF6B+19↓r ...
+                fcb 0
+byte_C8:        fcb 0                   ; DATA XREF: __RESET+307↓w
+                                        ; sub_CEF4+2C↓w ...
+                fcb 0
+byte_CA:        fcb 0                   ; DATA XREF: sub_CE79:loc_CECC↓w
+                                        ; sub_CE79+5E↓w ...
+byte_CB:        fcb 0                   ; DATA XREF: sub_D019+6↓r
+                                        ; sub_D019:loc_D04C↓w ...
+byte_CC:        fcb 0
+byte_CD:        fcb 0                   ; DATA XREF: sub_CD65+37↓w
+                                        ; sub_D019:loc_D06E↓r
+byte_CE:        fcb 0                   ; DATA XREF: sub_D019+58↓w
+                                        ; sub_D14D+137↓r
+                fcb 0
+byte_D0:        fcb 0                   ; DATA XREF: sub_CD65+41↓w
+                                        ; sub_D074:loc_D09A↓r
+byte_D1:        fcb 0                   ; DATA XREF: sub_BE83+10A↓r
+                                        ; sub_C164+60↓r ...
+                fcb 0
+byte_D3:        fcb 0                   ; DATA XREF: sub_CD65+5F↓w
+                                        ; sub_D074:loc_D0CC↓r
+byte_D4:        fcb 0                   ; DATA XREF: sub_BE83+10C↓r
+                                        ; sub_C574+109↓r ...
+                fcb 0
+byte_D6:        fcb 0                   ; DATA XREF: sub_CDF1+27↓w
+                                        ; sub_D0F1+4D↓r
+                fcb 0
+byte_D8:        fcb 0                   ; DATA XREF: sub_C97D+87↓r
+                                        ; sub_CA82+A3↓r ...
+byte_D9:        fcb 0                   ; DATA XREF: sub_C97D+4E↓r
+                                        ; IC1I+172↓w ...
+byte_DA:        fcb 0                   ; DATA XREF: sub_CC29↓r
+                                        ; sub_D381+71↓w ...
+                fcb 0
+byte_DC:        fcb 0                   ; DATA XREF: sub_CD65+19↓w
+                                        ; RESERVED:CFD8↓r ...
+byte_DD:        fcb 0                   ; DATA XREF: sub_CE39:loc_CE76↓w
+                                        ; RESERVED:CFEB↓r
+byte_DE:        fcb 0                   ; DATA XREF: sub_CE39:loc_CE51↓r
+                                        ; sub_CE39+22↓r ...
+byte_DF:        fcb 0                   ; DATA XREF: sub_CD65+23↓w
+                                        ; RESERVED:loc_CFC8↓r
+byte_E0:        fcb 0                   ; DATA XREF: sub_CD14+4↓r
+                                        ; sub_CD14+9↓w ...
+byte_E1:        fcb 0                   ; DATA XREF: sub_CD20+1D↓r
+                                        ; sub_CD20+22↓w ...
+byte_E2:        fcb 0                   ; DATA XREF: sub_D14D:loc_D273↓w
+                                        ; sub_D14D+16A↓r ...
+                fcb 0
+byte_E4:        fcb 0                   ; DATA XREF: sub_D14D+132↓w
+                                        ; sub_D14D+158↓r
+byte_E5:        fcb 0                   ; DATA XREF: sub_CA82+A↓r
+                                        ; sub_CA82+C↓w
+byte_E6:        fcb 0                   ; DATA XREF: sub_CA82+6F↓r
+                                        ; sub_F126+3C↓w
+byte_E7:        fcb 0                   ; DATA XREF: sub_CD65+69↓w
+byte_E8:        fcb 0                   ; DATA XREF: sub_CD65+73↓w
+                                        ; sub_D019:loc_D068↓r ...
+byte_E9:        fcb 0                   ; DATA XREF: sub_CE79+39↓w
+                                        ; sub_CE79+78↓w ...
+byte_EA:        fcb 0                   ; DATA XREF: sub_BE83+E↓w
+                                        ; sub_BE83:loc_BE98↓r ...
+byte_EB:        fcb 0                   ; DATA XREF: sub_C574+E↓w
+                                        ; sub_C574:loc_C589↓r ...
+byte_EC:        fcb 0                   ; DATA XREF: sub_CD65+2D↓w
+                                        ; sub_D0D2+9↓r
+byte_ED:        fcb 0                   ; DATA XREF: sub_D0D2:loc_D0EE↓w
+                                        ; sub_D14D+13B↓r
+                fcb 0
+byte_EF:        fcb 0                   ; DATA XREF: __RESET:loc_95FC↓w
+                                        ; sub_9E01:loc_9E8D↓r ...
+byte_F0:        fcb 0                   ; DATA XREF: __RESET:loc_93CD↓w
+                                        ; __RESET+52F↓r ...
+byte_F1:        fcb 0                   ; DATA XREF: __RESET+65↓w
+                                        ; __RESET+119↓w ...
+byte_F2:        fcb 0                   ; DATA XREF: __RESET+260↓r
+                                        ; sub_9BB0+E↓w ...
+byte_F3:        fcb 0                   ; DATA XREF: sub_A2BC:loc_A32E↓r
+                                        ; sub_A2BC+7B↓r ...
+byte_F4:        fcb 0                   ; DATA XREF: sub_9BB0+10↓w
+                                        ; sub_AF7A+C3↓r ...
+byte_F5:        fcb 0                   ; DATA XREF: sub_A35F:loc_A441↓r
+                                        ; sub_A35F+EB↓r ...
+byte_F6:        fcb 0                   ; DATA XREF: sub_9BB0+12↓w
+                                        ; sub_A605+3D↓r ...
+byte_F7:        fcb 0                   ; DATA XREF: __RESET+274↓w
+                                        ; sub_9981+39↓w ...
+byte_F8:        fcb 0                   ; DATA XREF: sub_9981:loc_99D5↓w
+                                        ; sub_9981+86↓r ...
+byte_F9:        fcb 0                   ; DATA XREF: sub_9981+57↓w
+                                        ; sub_9981:loc_99FB↓w ...
+byte_FA:        fcb 0                   ; DATA XREF: sub_9981+6↓r
+                                        ; sub_9981+2A↓r ...
+byte_FB:        fcb 0                   ; DATA XREF: sub_B14E+D4↓r
+                                        ; sub_B22F+6C↓r ...
+byte_FC:        fcb 0                   ; DATA XREF: sub_B14E+D7↓r
+                                        ; sub_B22F+94↓r ...
+byte_FD:        fcb 0                   ; DATA XREF: sub_B22F+4F↓r
+                                        ; sub_B22F+56↓w
+byte_FE:        fcb 0                   ; DATA XREF: sub_B14E+DB↓r
+                                        ; sub_B22F+6↓r ...
+byte_FF:        fcb 0                   ; DATA XREF: sub_E0ED+8↓w
+                                        ; sub_E0ED+77↓w ...
+byte_100:       fcb 0                   ; DATA XREF: sub_96AC+B7↓w
+byte_101:       fcb 0                   ; DATA XREF: sub_B800+20B↓w
+                                        ; sub_B800:loc_BA10↓r
+byte_102:       fcb 0                   ; DATA XREF: sub_B800+86↓w
+                                        ; sub_B800+96↓w ...
+byte_103:       fcb 0                   ; DATA XREF: IC1I+2AF↓r
+                                        ; IC1I:loc_FAFE↓w
+byte_104:       fcb 0                   ; DATA XREF: sub_B800+2D5↓w
+                                        ; IC1I:loc_FB6B↓w ...
+byte_105:       fcb 0                   ; DATA XREF: sub_B800+284↓r
+                                        ; sub_B800+2D2↓w ...
+byte_106:       fcb 0                   ; DATA XREF: sub_B800+28D↓r
+                                        ; sub_B800:loc_BAE6↓w
+byte_107:       fcb 0                   ; DATA XREF: sub_B800+2B9↓w
+                                        ; sub_B800+2D8↓r
+byte_108:       fcb 0                   ; DATA XREF: __RESET+2CE↓w
+                                        ; sub_96AC+A0↓o ...
+byte_109:       fcb 0                   ; DATA XREF: sub_E0ED+3DB↓r
+                                        ; sub_E0ED+3E6↓r ...
+byte_10A:       fcb 0                   ; DATA XREF: __RESET+2D1↓w
+                                        ; sub_E0ED:loc_E4BE↓o ...
+                fcb 0
+byte_10C:       fcb 0                   ; DATA XREF: IC2I+458B↓r
+                                        ; IC2I+4593↓r ...
+                fcb 0
+byte_10E:       fcb 0                   ; DATA XREF: IC1I+2C7↓r
+                                        ; IC1I:loc_FB0C↓w ...
+byte_10F:       fcb 0                   ; DATA XREF: sub_B800+337↓r
+                                        ; sub_B800:loc_BB54↓w ...
+byte_110:       fcb 0                   ; DATA XREF: sub_D6A4+4↓r
+                                        ; sub_D6A4+A↓w ...
+byte_111:       fcb 0                   ; DATA XREF: sub_9E01:loc_9EB0↓w
+                                        ; sub_D6A4:loc_D756↓r ...
+byte_112:       fcb 0                   ; DATA XREF: sub_B800+184↓r
+                                        ; sub_D6A4+110↓r ...
+byte_113:       fcb 0                   ; DATA XREF: sub_D9D7:loc_DA8D↓w
+                                        ; sub_EBC9+140↓w ...
+byte_114:       fcb 0                   ; DATA XREF: sub_D92D+14↓r
+                                        ; sub_D92D+58↓w ...
+byte_115:       fcb 0                   ; DATA XREF: __RESET+2CB↓w
+                                        ; sub_96AC+2C↓o ...
+byte_116:       fcb 0                   ; DATA XREF: sub_96AC+7E↓r
+                                        ; RESERVED:9B56↓r ...
+word_117:       fdb 0                   ; DATA XREF: __RESET+2C8↓w
+                                        ; sub_A703+15↓r ...
+word_119:       fdb 0                   ; DATA XREF: __RESET+278↓w
+                                        ; sub_AF7A-200↓r ...
+byte_11B:       fcb 0                   ; DATA XREF: sub_E0ED+90↓w
+                                        ; sub_E0ED+1E2↓w ...
+byte_11C:       fcb 0                   ; DATA XREF: sub_E0ED+87↓w
+                                        ; sub_E0ED+A2↓r ...
+byte_11D:       fcb 0                   ; DATA XREF: sub_E0ED+96↓w
+                                        ; sub_E0ED+5BC↓r ...
+byte_11E:       fcb 0                   ; DATA XREF: sub_E0ED+261↓r
+                                        ; sub_E0ED+26E↓r ...
+byte_11F:       fcb 0                   ; DATA XREF: sub_E0ED+4AF↓w
+                                        ; sub_E0ED+4B6↓r ...
+byte_120:       fcb 0                   ; DATA XREF: sub_E0ED+93↓w
+                                        ; sub_E0ED+1BA↓w ...
+byte_121:       fcb 0                   ; DATA XREF: sub_E0ED+8A↓w
+                                        ; sub_E0ED+13F↓w ...
+byte_122:       fcb 0                   ; DATA XREF: sub_E0ED+8D↓w
+                                        ; sub_E0ED+142↓w ...
+byte_123:       fcb 0                   ; DATA XREF: sub_B800:loc_B819↓r
+                                        ; sub_CFA0+8↓r ...
+byte_124:       fcb 0                   ; DATA XREF: RESERVED:loc_9CD6↓r
+                                        ; sub_B054↓r ...
+byte_125:       fcb 0                   ; DATA XREF: RESERVED:9CDD↓r
+                                        ; sub_B054+16↓w
+byte_126:       fcb 0                   ; DATA XREF: sub_B054+6↓w
+                                        ; sub_F351+41↓w
+byte_127:       fcb 0                   ; DATA XREF: sub_B054+11↓w
+byte_128:       fcb 0                   ; DATA XREF: RESERVED:loc_9C95↓r
+                                        ; RESERVED:9C9A↓w ...
+byte_129:       fcb 0                   ; DATA XREF: sub_E8C6+18↓w
+                                        ; sub_E8C6+38↓r ...
+byte_12A:       fcb 0                   ; DATA XREF: sub_B22F+1C↓r
+                                        ; sub_B22F+20↓w ...
+byte_12B:       fcb 0                   ; DATA XREF: IC1I+36↓r
+                                        ; IC1I:loc_F884↓w ...
+byte_12C:       fcb 0                   ; DATA XREF: sub_E7DE+16↓r
+                                        ; sub_E7DE+4C↓w
+                fcb 0
+byte_12E:       fcb 0                   ; DATA XREF: sub_E7DE↓w
+                                        ; sub_E7DE+A↓w
+                fcb 0
+                fcb 0
+byte_131:       fcb 0                   ; DATA XREF: sub_E7DE+3C↓w
+                                        ; sub_E7DE+60↓w ...
+byte_132:       fcb 0                   ; DATA XREF: sub_E7DE+41↓w
+                                        ; sub_E7DE+6D↓r ...
+byte_133:       fcb 0                   ; DATA XREF: sub_E7DE+47↓w
+                                        ; sub_E7DE+53↓w
+byte_134:       fcb 0                   ; DATA XREF: sub_DDDE+33↓r
+                                        ; sub_DDDE+39↓w ...
+byte_135:       fcb 0                   ; DATA XREF: sub_DDDE+61↓w
+                                        ; sub_DDDE+6F↓r ...
+byte_136:       fcb 0                   ; DATA XREF: sub_DDDE+53↓r
+                                        ; sub_DDDE+8F↓w ...
+byte_137:       fcb 0                   ; DATA XREF: sub_DDDE:loc_DEB2↓r
+                                        ; sub_DDDE+DA↓w ...
+byte_138:       fcb 0                   ; DATA XREF: sub_DDDE:loc_DEC0↓r
+                                        ; sub_DDDE+E8↓w ...
+byte_139:       fcb 0                   ; DATA XREF: sub_DEE3+DD↓w
+                                        ; sub_DFC9+A↓r ...
+byte_13A:       fcb 0                   ; DATA XREF: __RESET+340↓w
+                                        ; sub_C97D+18↓r ...
+byte_13B:       fcb 0                   ; DATA XREF: sub_DDDE+22↓r
+                                        ; sub_DDDE+50↓r ...
+byte_13C:       fcb 0                   ; DATA XREF: __RESET+2D7↓w
+                                        ; sub_E9A1+29↓r ...
+byte_13D:       fcb 0                   ; DATA XREF: sub_96AC+8↓w
+                                        ; sub_96AC+C6↓r ...
+byte_13E:       fcb 0                   ; DATA XREF: sub_B800:loc_B844↓r
+                                        ; sub_B800+5A↓r ...
+byte_13F:       fcb 0                   ; DATA XREF: sub_CDF1+31↓w
+                                        ; sub_D019+22↓r
+byte_140:       fcb 0                   ; DATA XREF: sub_CD65+7D↓w
+                                        ; sub_D074:loc_D0C4↓r ...
+byte_141:       fcb 0                   ; DATA XREF: sub_CD65+88↓w
+                                        ; sub_D074+1E↓r ...
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+word_146:       fdb 0                   ; DATA XREF: IC1I+FE↓w
+                                        ; IC1I:loc_F966↓r ...
+byte_148:       fcb 0                   ; DATA XREF: IC2I+451D↓w
+                                        ; IC2I+4555↓r ...
+byte_149:       fcb 0                   ; DATA XREF: IC2I+451A↓w
+                                        ; IC2I+4540↓r ...
+word_14A:       fdb 0                   ; DATA XREF: sub_CA82+2D61↓r
+                                        ; sub_CA82+2D87↓w
+word_14C:       fdb 0                   ; DATA XREF: __RESET+568↓w
+                                        ; __RESET+82D↓r ...
+word_14E:       fdb 0                   ; DATA XREF: sub_EFEC+8↓r
+                                        ; sub_EFEC+13↓w
+byte_150:       fcb 0                   ; DATA XREF: sub_CDF1+1C↓w
+                                        ; IC1I:loc_F936↓r
+byte_151:       fcb 0                   ; DATA XREF: OC1I+38↓w
+                                        ; sub_DB67↓r ...
+byte_152:       fcb 0                   ; DATA XREF: sub_C574+88↓w
+                                        ; sub_C574+16F↓w ...
+byte_153:       fcb 0                   ; DATA XREF: __RESET+2A9↓w
+                                        ; sub_EBC9+101↓r ...
+byte_154:       fcb 0                   ; DATA XREF: __RESET+15A↓w
+                                        ; __RESET+15D↓r ...
+byte_155:       fcb 0                   ; DATA XREF: __RESET+230↓w
+                                        ; sub_D14D+3C↓r ...
+byte_156:       fcb 0                   ; DATA XREF: __RESET+136↓w
+                                        ; __RESET+160↓r ...
+byte_157:       fcb 0                   ; DATA XREF: sub_96AC:loc_973F↓w
+word_158:       fdb 0                   ; DATA XREF: RESERVED:B393↓r
+                                        ; RESERVED:B399↓w ...
+byte_15A:       fcb 0                   ; DATA XREF: RESERVED:B396↓r
+                                        ; RESERVED:B39C↓w ...
+byte_15B:       fcb 0                   ; DATA XREF: RESERVED:B3A7↓r
+                                        ; RESERVED:B3AB↓w ...
+byte_15C:       fcb 0                   ; DATA XREF: sub_B800+1DA↓w
+                                        ; sub_B800+1E2↓w ...
+byte_15D:       fcb 0                   ; DATA XREF: sub_B800+1C9↓w
+                                        ; sub_B800:loc_B9D7↓w ...
+byte_15E:       fcb 0                   ; DATA XREF: sub_D457+13↓r
+                                        ; sub_D457+24↓w ...
+byte_15F:       fcb 0                   ; DATA XREF: sub_D457+7F↓w
+                                        ; sub_D457:loc_D4D9↓r ...
+byte_160:       fcb 0                   ; DATA XREF: sub_D4F8+C↓r
+                                        ; sub_D4F8+12↓w ...
+byte_161:       fcb 0                   ; DATA XREF: RESERVED:9A53↓w
+                                        ; sub_A35F+116↓w ...
+byte_162:       fcb 0                   ; DATA XREF: RESERVED:9A4E↓w
+                                        ; sub_A35F+119↓w ...
+byte_163:       fcb 0                   ; DATA XREF: sub_A825+25↓r
+                                        ; sub_A825+32↓w ...
+byte_164:       fcb 0                   ; DATA XREF: sub_B054:loc_B06D↓r
+                                        ; sub_B054:loc_B079↓w ...
+byte_165:       fcb 0                   ; DATA XREF: sub_A2BC+2F↓w
+                                        ; sub_BD64+CE↓r ...
+byte_166:       fcb 0                   ; DATA XREF: sub_A2BC+37↓r
+                                        ; sub_A2BC+9C↓w ...
+                fcb 0
+byte_168:       fcb 0                   ; DATA XREF: sub_96AC+4B↓r
+                                        ; sub_96AC+50↓w ...
+byte_169:       fcb 0                   ; DATA XREF: sub_DC08+91↓r
+                                        ; sub_DC08:loc_DCAF↓r ...
+byte_16A:       fcb 0                   ; DATA XREF: sub_DC08+48↓r
+                                        ; sub_DC08+86↓w ...
+byte_16B:       fcb 0                   ; DATA XREF: sub_DC08+C9↓w
+                                        ; sub_DC08+103↓r ...
+byte_16C:       fcb 0                   ; DATA XREF: sub_DC08+10E↓w
+byte_16D:       fcb 0                   ; DATA XREF: sub_DC08:loc_DD1E↓r
+                                        ; sub_DC08+11B↓w ...
+byte_16E:       fcb 0                   ; DATA XREF: __RESET+236↓w
+                                        ; sub_A12C+77↓r ...
+byte_16F:       fcb 0                   ; DATA XREF: __RESET+239↓w
+                                        ; sub_A12C:loc_A1AB↓r ...
+byte_170:       fcb 0                   ; DATA XREF: sub_E8C6+49↓r
+                                        ; sub_E8C6+51↓w ...
+byte_171:       fcb 0                   ; DATA XREF: sub_A867+28↓r
+                                        ; sub_A867+2E↓w ...
+byte_172:       fcb 0                   ; DATA XREF: sub_A605+23↓r
+                                        ; sub_A605+2D↓w ...
+byte_173:       fcb 0                   ; DATA XREF: sub_A544+23↓r
+                                        ; sub_A544+2D↓w ...
+byte_174:       fcb 0                   ; DATA XREF: sub_CE79+16↓w
+                                        ; sub_CE79+1C↓r ...
+byte_175:       fcb 0                   ; DATA XREF: sub_CE79+3E↓w
+                                        ; sub_CE79+6D↓w ...
+byte_176:       fcb 0                   ; DATA XREF: sub_DB67+55↓r
+                                        ; sub_DB67+5D↓w ...
+byte_177:       fcb 0                   ; DATA XREF: __RESET+811↓r
+                                        ; sub_A2BC+49↓r ...
+byte_178:       fcb 0                   ; DATA XREF: sub_B800:loc_BB69↓r
+byte_179:       fcb 0                   ; DATA XREF: sub_B800+370↓r
+byte_17A:       fcb 0                   ; DATA XREF: sub_D381+9F↓r
+byte_17B:       fcb 0                   ; DATA XREF: sub_D381+A7↓r
+byte_17C:       fcb 0                   ; DATA XREF: sub_AA7C+46↓r
+                                        ; sub_AA7C+4B↓w ...
+byte_17D:       fcb 0                   ; DATA XREF: sub_AB71:loc_AB88↓o
+                                        ; sub_AB71:loc_AD1D↓r ...
+byte_17E:       fcb 0                   ; DATA XREF: sub_AB71:loc_ACCF↓w
+                                        ; sub_AB71+187↓r ...
+byte_17F:       fcb 0                   ; DATA XREF: sub_AB71+157↓w
+byte_180:       fcb 0                   ; DATA XREF: sub_AB71:loc_AC1D↓w
+                                        ; sub_AB71:loc_AC27↓r ...
+byte_181:       fcb 0                   ; DATA XREF: sub_AB71+A5↓w
+                                        ; sub_AB71:loc_ACD6↓w
+byte_182:       fcb 0                   ; DATA XREF: sub_F1F4:loc_F204↓w
+                                        ; sub_F1F4+14↓r
+byte_183:       fcb 0                   ; DATA XREF: sub_A0F1:loc_A101↓r
+                                        ; IRQ+14↓w
+                fcb 0
+byte_185:       fcb 0                   ; DATA XREF: sub_A0F1+13↓r
+                                        ; IC1I+50F↓w
+unk_186:        fcb   0                 ; DATA XREF: sub_CA82+50↓o
+byte_187:       fcb 0                   ; DATA XREF: sub_CA82+74↓o
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+byte_19D:       fcb 0                   ; DATA XREF: sub_CA82+56↓o
+                                        ; sub_CA82+71↓r ...
+byte_19E:       fcb 0                   ; DATA XREF: sub_BE83+8B↓w
+                                        ; sub_BE83+172↓w ...
+word_19F:       fdb 0                   ; DATA XREF: ROM_EPROM:F76E↓w
+                                        ; ROM_EPROM:F776↓w ...
+byte_1A1:       fcb 0                   ; DATA XREF: sub_A12C+74↓w
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+                fcb 0
+; end of 'RAM'
 
-PORTA_PortA                                        equ $1000
-;   PortA_bit7          equ %10000000
-;   PortA_bit6          equ %01000000
-;   PortA_InjectorB     equ %00100000
-;   PortA_InjectorA     equ %00010000
-;   PortA_IgnCoil       equ %00001000
-;   PortA_DistRef       equ %00000100
-;   PortA_Speedo        equ %00000010
-;   PortA_bit0          equ %00000001
-CPU_L1001_Reserved                                 equ $1001
-PIOC_Parallel_IO_Ctrl                              equ $1002
-PORTC_PortC                                        equ $1003
-PORTB_PortB                                        equ $1004
-PORTCL_PortCL                                      equ $1005
-CPU_L1006Reserved                                  equ $1006
-DDRC_PortC_DataDirection                           equ $1007
-PORTD_PortD                                        equ $1008
-DDRD_PortD_DataDirection                           equ $1009
-PORTE_PortE                                        equ $100A
-CFORC_TimerForceCompare                            equ $100B
-;   allows user to force the OCx pins to change states asap and not have to wait for
-;   the timer to actually expire.  does not affect the OCxF bits or trigger interrupts.
-;   Bit 7 - OC1:
-;   Bit 6 - OC2:
-;   Bit 5 - OC3:
-;   Bit 4 - OC4:
-;   Bit 3 - OC5:
-;   Bit 2 - 0
-;   Bit 1 - 0
-;   Bit 0 - 0
-OC1M_OutputCompare1Mask                            equ $100C
-;   Bit 7 - OC1M7:
-;   Bit 6 - OC1M6:
-;   Bit 5 - OC1M5:
-;   Bit 4 - OC1M4:
-;   Bit 3 - OC1M3:
-;   Bit 2 - 0
-;   Bit 1 - 0
-;   Bit 0 - 0
-OC1D_OutputCompare1D                               equ $100D
-;   Bit 7 - OC1D7: references PA7/PA1
-;   Bit 6 - OC1D6: references PA6/OC2
-;   Bit 5 - OC1D5: references PA5/OC3
-;   Bit 4 - OC1D4: references PA4/OC4
-;   Bit 3 - OC1D3: references PA3/PC5
-;   Bit 2 - 0
-;   Bit 1 - 0
-;   Bit 0 - 0
-TCNT_Counter_FreeRunning16bit                      equ $100E
-TIC1_Counter_IC1_CamSensor                         equ $1010
-TIC2_Counter_IC2_Speedometer                       equ $1012
-TIC3_Counter_IC3_CrankSensor                       equ $1014
-TOC1_Counter_OC1                                   equ $1016
-TOC2_Counter_OC2                                   equ $1018
-TOC3_Counter_OC3                                   equ $101A
-TOC4_Counter_OC4                                   equ $101C
-TOC5_Counter_OC5_Dwell                             equ $101E
-TCTL1_TimerControlReg1                             equ $1020
-;   Bit 7 - OM2:     M0 L0 = OCx does not affect pin (OC1 still may)
-;   Bit 6 - OL2:     M0 L1 = Toggle OCx pin on successful compare
-;   Bit 5 - OM3:     M1 L0 = Clear OCx pin on successful compare
-;   Bit 4 - OL3:     M1 L1 = Set OCx pin on successful compare
-;   Bit 3 - OM4:
-;   Bit 2 - OL4:
-;   Bit 1 - OM5:
-;   Bit 0 - OL5:
-TCTL2_TimerControlReg2                             equ $1021
-;   determines which edge to detect - 2 bits determine mode
-;   00=no capture 01=rising edge 10=falling edge 11=both edges
-;   bits 7/6 not used
-;   bits 5/4 IC1
-;   bits 3/2 IC2
-;   bits 1/0 IC3
-TMSK1_TimerInterruptMask1                          equ $1022
-;   when bit is set generates hardware interrupt when corresponding 0x1023 bit is by edge
-;   when bit is clr program must read 0x1023 bit to determine if edge has been detected
-;   OC1               equ %10000000
-;   OC2               equ %01000000
-;   OC3               equ %00100000
-;   OC4               equ %00010000
-;   OC5Dwell          equ %00001000
-;   IC1Distributor    equ %00000100
-;   IC2SDSSignal      equ %00000010
-;   InputCompare3     equ %00000001
-TFLG1_TimerInterruptFlag1                          equ $1023
-;   bit is set whenever edge is detected on an IC pin
-;   can also manually set these pins if you want to trigger interrupts
-;   OC1               equ %10000000
-;   OC2               equ %01000000
-;   OC3               equ %00100000
-;   OC4               equ %00010000
-;   OC5Dwell          equ %00001000
-;   IC1Distributor    equ %00000100
-;   IC2SDSSignal      equ %00000010
-;   IC3               equ %00000001
-;   ********************************************************************************
-;   * when an edge (as set 0x1021) is detected on an ICx pin the 16bit value of the*
-;   * free running counter is captured in latch locations 0x1010-(IC1) 0x1012-(IC2)*
-;   * or 0x1014-(IC3).  The corresponding status flag bit(s) are then set in reg   *
-;   * 0x1023.  if the interrupt mask 0x1022 is set for that IC pin then a hardware *
-;   * interrupt is generated and the related subroutine is run.  If the mask is not*
-;   * set then the program must read the status flag bit to determine if an edge   *
-;   * has been detected.                                                           *
-;   ********************************************************************************
-TMSK2_TimerInterruptMask2                          equ $1024
-;   Bit 7 - TOI:  Timer Overflow Interrupt Enable
-;   Bit 6 - RTII:  Real Time Interrupt Enable
-;   Bit 5 - PAOVI: Pulse accumulator overflow interrupt enable
-;   Bit 4 - PAII:  Pulse accumulator input edge interrupt enable
-;   Bit 3 - 0
-;   Bit 2 - 0
-;   Bit 1 - PR1:  Timer Prescaler 00=1 (500nS) 01=4 (2uS) 10=8 (4uS) 11=16 (8uS)
-;   Bit 0 - PR0:
-;   TCNT count value =  is 1/(2000000 / prescaler)
-TFLG2_TimerInterruptFlag2                          equ $1025
-PACTL_PulseAccumulatorControl                      equ $1026
-;   Bit 7 - TOI:  Timer Overflow Interrupt Enable
-;   Bit 6 - RTII:  Real Time Interrupt Enable
-;   Bit 5 - PAOVI: Pulse accumulator overflow interrupt enable
-;   Bit 4 - PAII:  Pulse accumulator input edge interrupt enable
-;   Bit 3 - 0
-;   Bit 2 - 0
-;   Bit 1 - PR1:  Timer Prescaler 00=1 (4.096mS) 01=2 (8.192mS) 10=4 (16.384mS) 11=8 (32.768mS)
-;   Bit 0 - PR0:
-;   rti timer value = 1 /(2Mhtz / 2^13 / prescaler)
-PACNT_PulseAccumulatorCounter                      equ $1027
-SPCR_SerialPeripheralControl                       equ $1028
-SPSR_SerialPeripheralStatus                        equ $1029
-;   Bit 7 - SPIF - SPI Transfer complete flag
-;   Bit 6 - WCOL - Write collision error flag
-;   Bit 5 - 0
-;   Bit 4 - MODF - Mode fault error flag
-;   Bit 3 - 0
-;   Bit 2 - 0
-;   Bit 1 - 0
-;   Bit 0 - 0
-SPDR_SerialPeripheralDataIO                        equ $102A
-BAUD_SerialBaudRate                                equ $102B
-;   Bit 7 - TCLR: (test bit)
-;   Bit 6 - 0
-;   Bit 5 - SCP1: SCI Baud rate prescale selects
-;   Bit 4 - SCP0: 00=/1 (max125k) 01=/3 (max42k) 10=/4 (max32k) 11=/13 (max9600baud)
-;   Bit 3 - RCKB: (test bit)
-;   Bit 2 - SCR2:
-;   Bit 1 - SCR1:
-;   Bit 0 - SCR0:
-;      To achieve 977   baud byte=$25
-;      To achieve 1200  baud byte $33
-;      To achieve 9600  baud byte = $30
-;      To achieve 62500 baud byte = $01
-SCCR1_SerialControlReg1                            equ $102C
-SCCR2_SerialControlReg2                            equ $102D
-SCSR_SerialStatus                                  equ $102E
-SCDR_SerialData                                    equ $102F
-ADCTL_A2DControlReg                                equ $1030
-;   determines what sensor group to read into a2dresults channels
-;   Bit 7 - CCF: Conversions Complete Flag
-;   Bit 6 - 0
-;   Bit 5 - SCAN: 0=perform 4 conversions. 1=continuous conversions
-;   Bit 4 - MULT: 0=single channel
-;   Bit 3 - CD: These bits select which channel(s) to convert
-;   Bit 2 - CC:
-;   Bit 1 - CB:
-;   Bit 0 - CA:
-ADR1_A2DResults1                                   equ $1031
-ADR2_A2DResults2                                   equ $1032
-ADR3_A2DResults3                                   equ $1033
-ADR4_A2DResults4                                   equ $1034
-BPROT_BlockProtReg                                 equ $1035
-OPTION_SysConfigOptionReg                          equ $1039
-;   Bit 7 - ADPU:
-;   Bit 6 - CSEL: 1=use alternate charge pump for EEPROM and A/D
-;   Bit 5 - IRQE: 1=configure IRQ for edge sensitive operation only
-;   Bit 4 - DLY: 1=enable oscillator startup delat (designed to allow crystal to stabilize)
-;   Bit 3 - CME:
-;   Bit 2 - 0
-;   Bit 1 - CR1: Watchdog Timer Rate Select
-;   Bit 0 - CR0: at 8MHz 00=1 (16.384ms) 01=4 (65.536ms) 10=16 (262.14ms) 11=64 (1.049s)
-;   COP count value = 1 / (2000000 / 2^15 / prescaler)
-COPRST_ArmOCToggleAndResetCopTimerReg              equ $103A
-PPROG_EEPROMControlReg                             equ $103B
-;   Bit 7 - ODD
-;   Bit 6 - EVEN
-;   Bit 5 - 0
-;   Bit 4 - BYTE
-;   Bit 3 - ROW
-;   Bit 2 - ERASE
-;   Bit 1 - EELAT
-;   Bit 0 - EEPGM
-HPRIO_HighPriorityInterruptMask                    equ $103C
-;   Bit 7 - RBOOT: Read Bootstrap ROM (can be written only while SMOD=1) 1=bootstrap ROM at $bf40-$bfff
-;   Bit 6 - SMOD:  Special Mode (can be written to zero but not back to one) 1=special mode in effect
-;   Bit 5 - MDA:  Mode A Select (can be written only while SMOD=1) 1=normal expanded
-;   Bit 4 - IRV:  Internal Read Visibility (can be written only while SMOD=1) 0=data from internal reads not visible on bus
-;   Bit 3 - PSEL3: for selecting which interrupt is highest priority
-;   Bit 2 - PSEL2:
-;   Bit 1 - PSEL1:
-;   Bit 0 - PSEL0:
-INIT_SysInit                                       equ $103D
-;   Bit 7 - RAM3: Ram3:0 specify the upper hex digit of the RAM address
-;   Bit 6 - RAM2:        the position of the RAM in the memory map. This allows RAM
-;   Bit 5 - RAM1:        to be moved for example to F000-F0FF (default is 0000)
-;   Bit 4 - RAM0:
-;   Bit 3 - REG3: Reg3:0 specify the upper hex digit of the Registers address just
-;   Bit 2 - REG2:        like the RAM. (default is 0001)
-;   Bit 1 - REG1:
-;   Bit 0 - REG0:
-TEST1_Test                                         equ $103E
-;   Bit 7 - TILOP:
-;   Bit 6 - 0
-;   Bit 5 - OCCR:
-;   Bit 4 - CBYP:
-;   Bit 3 - DISR:
-;   Bit 2 - FCM:
-;   Bit 1 - FCOP:
-;   Bit 0 - TCON:
-CONFIG_SystemConfigReg                             equ $103F
+; ===========================================================================
+
+ ORG $0400
+SwitchPortAccessReg1:fcb $C             ; DATA XREF: __RESET+6D↓w
+                                        ; __RESET+4D0↓r ...
+SwitchPortAccessReg2:fcb 6              ; DATA XREF: sub_F54C+2↓r
+                                        ; sub_F54C+10↓r ...
+PIA_Ctrl_1:     fcb 0                   ; DATA XREF: __RESET+70↓w
+                                        ; __RESET+73↓r ...
+PIA_Ctrl_2:     fcb 0                   ; DATA XREF: __RESET+A0↓w
+                                        ; sub_9E01+1EC↓r ...
+PIA_Ctrl_3:     fcb 0                   ; DATA XREF: __RESET+9A↓w
+                                        ; sub_F351+B8↓w ...
+PIA_Ctrl_4:     fcb $F0                 ; DATA XREF: sub_F54C+28↓w
+                                        ; sub_F644+3E↓r ...
+PIA_Ctrl_5:     fcb 0                   ; DATA XREF: __RESET+93↓w
+                                        ; sub_9E01+1FA↓r ...
+                fcb   0
+InjectorPulsewidth_HB_Cyl1:fcb $3E      ; DATA XREF: __RESET+A6↓w
+                                        ; sub_9E01:loc_9FD2↓o ...
+InjectorPulsewidth_LB_Cyl1:fcb $4C ; L
+InjectorPulsewidth_HB_Cyl2:fcb $2F      ; DATA XREF: __RESET+A9↓w
+                                        ; sub_9E01:loc_9FD7↓o ...
+InjectorPulsewidth_LB_Cyl2:fcb $4F ; O
+InjectorPulsewidth_HB_Cyl3:fcb $1E      ; DATA XREF: __RESET+AC↓w
+                                        ; sub_9E01:loc_9FDC↓o ...
+InjectorPulsewidth_LB_Cyl3:fcb $C7
+InjectorPulsewidth_HB_Cyl4:fcb $E       ; DATA XREF: __RESET+AF↓w
+                                        ; sub_9E01:loc_9FE1↓o ...
+InjectorPulsewidth_LB_Cyl4:fcb $90
+                fcb  $C
+                fcb   6
+                fcb   0
+                fcb   0
+                fcb   0
+                fcb $F0
+                fcb   0
+                fcb   0
+                fcb $BC
+                fcb $4B ; K
+                fcb $AD
+                fcb $4E ; N
+                fcb $9C
+                fcb $CF
+                fcb $8C
+                fcb $8F
+                fcb  $C
+                fcb   6
+                fcb   0
+                fcb   0
+                fcb   0
+                fcb $F0
+                fcb   0
+                fcb   0
+                fcb $3A ; :
+                fcb $4A ; J
+                fcb $2B ; +
+                fcb $4D ; M
+                fcb $1A
+                fcb $CE
+                fcb  $A
+                fcb $97
+                fcb  $C
+                fcb   6
+                fcb   0
+                fcb   0
+                fcb   0
+                fcb $F0
+                fcb   0
+                fcb   0
+                fcb $B8
+                fcb $49 ; I
+                fcb $A9
+                fcb $4C ; L
+                fcb $98
+                fcb $CD
+                fcb $88
+                fcb $96
+PIA3_Buffer_2_t3:fcb $C                 ; DATA XREF: __RESET+62↓w
+                                        ; __RESET+11B↓w ...
+                fcb   6
+                fcb   0
+                fcb   0
+                fcb   0
+                fcb $F0
+                fcb   0
+                fcb   0
+                fcb $36 ; 6
+                fcb $48 ; H
+                fcb $27 ; '
+                fcb $4B ; K
+                fcb $16
+                fcb $CC
+                fcb   6
+                fcb $95
+                fcb  $C
+                fcb   6
+                fcb   0
+                fcb   0
+                fcb   0
+                fcb $F0
+                fcb   0
+                fcb   0
+                fcb $B4
+                fcb $47 ; G
+                fcb $A5
+                fcb $4A ; J
+                fcb $94
+                fcb $CB
+                fcb $84
+                fcb $94
+                fcb  $C
+                fcb   6
+                fcb   0
+                fcb   0
+                fcb   0
+                fcb $F0
+                fcb   0
+                fcb   0
+                fcb $32 ; 2
+                fcb $46 ; F
+                fcb $23 ; #
+                fcb $49 ; I
+                fcb $12
+                fcb $CA
+                fcb   2
+                fcb $93
+                fcb  $C
+                fcb   6
+                fcb   0
+                fcb   0
+                fcb   0
+                fcb $F0
+unk_476:        fcb   0                 ; DATA XREF: __RESET+145↓o
+                fcb   0
+                fcb $B0
+                fcb $45 ; E
+                fcb $A1
+                fcb $48 ; H
+                fcb $90
+                fcb $C9
+                fcb $80
+                fcb $92
+CountdownTimerFromKeyOn:fcb 0           ; DATA XREF: __RESET+10A↓o
+                                        ; RESERVED:loc_9A62↓o ...
+UNe_6481:       fcb $FF                 ; DATA XREF: sub_F081+7↓w
+                                        ; sub_F081+10↓r ...
+UNe_6482:       fcb 0                   ; DATA XREF: sub_D14D+E3↓w
+                                        ; sub_D14D+134↓r ...
+UNe_6483:       fcb $FF
+UNe_6484:       fcb 0                   ; DATA XREF: sub_D0F1↓o
+                                        ; sub_D0F1+7↓w ...
+LDXi_6485:      fcb $FF                 ; DATA XREF: IC2I+4574↓o
+                                        ; IC1I+BD↓o
+FDRVar0:        fcb 0                   ; DATA XREF: SCISS+3↓w
+                                        ; CME+13↓w ...
+FDRVar1:        fcb $FF                 ; DATA XREF: __RESET+164↓w
+                                        ; __RESET+171↓r ...
+FDRVar2:        fcb 0                   ; DATA XREF: sub_A730+F↓w
+                                        ; sub_A730+19↓r ...
+FDRVar3:        fcb $FF                 ; DATA XREF: sub_A0F1+25↓w
+                                        ; sub_A0F1:loc_A121↓r ...
+STe_648A:       fcb 0                   ; DATA XREF: sub_A35F:loc_A3C6↓r
+                                        ; sub_A35F:loc_A3E7↓r ...
+Temp5_t3:       fcb $FF                 ; DATA XREF: sub_96AC+2F↓o
+                                        ; sub_96AC+A3↓o ...
+word_48C:       fdb $FF                 ; DATA XREF: sub_9E01+18A↓w
+                                        ; sub_CA13+1F↓w ...
+byte_48E:       fcb 0                   ; DATA XREF: RESERVED:loc_9A67↓o
+                                        ; RESERVED:9A78↓w ...
+                fcb $FF
+unk_490:        fcb   0                 ; CODE XREF: RESERVED:9AC3↓J
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   1
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FB
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+unk_4D0:        fcb   0                 ; DATA XREF: RESERVED:9A71↓o
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+                fcb $FF
+                fcb   0
+TopOfStack:     fcb $FF                 ; DATA XREF: SCISS+14↓o
+
+; ===========================================================================
+
+; Segment type: Pure data
+                ; segment FSR
+                org $1000
+PORTA:          fcb 0                   ; DATA XREF: sub_A8E3+B↓o
+                                        ; sub_B14E+16↓o ...
+                                        ; Port A data
+RESERV01:       fcb $2E ; .             ; RESERVED
+PIOC:           fcb $D8                 ; Parallel I_O Control Register
+PORTC:          fcb $80                 ; Port C Data
+PORTB:          fcb $BB                 ; Output Port B
+PORTCL:         fcb   4                 ; Alternate Latched Port C
+RESERV1006:     fcb $40 ; @             ; RESERVED06
+DDRC:           fcb $90                 ; Data Direction for Port C
+PORTD:          fcb 7                   ; DATA XREF: __RESET+67↓w
+                                        ; __RESET+503↓o ...
+                                        ; Port D Data
+DDRD:           fcb 0                   ; DATA XREF: __RESET+84↓w
+                                        ; Data Direction for Port D
+PORTE:          fcb $3B ; ;             ; Port E Data
+CFORC:          fcb 0                   ; DATA XREF: __RESET+5C↓w
+                                        ; sub_96AC+48↓w ...
+                                        ; Timer Compare Force Register
+OC1M:           fcb 0                   ; DATA XREF: __RESET+42↓w
+                                        ; sub_F351+D2↓w
+                                        ; Output Compare 1 Mask Register
+OC1D:           fcb 0                   ; DATA XREF: __RESET+45↓w
+                                        ; Output Compare 1 Data Register
+TCNTH:          fcb $F6                 ; DATA XREF: __RESET+51C↓r
+                                        ; __RESET+565↓r ...
+                                        ; Timer Counter Register
+TCNTL:          fcb $79 ; y             ; Timer Counter Register
+TIC1H:          fcb $FF                 ; DATA XREF: sub_A35F+17↓r
+                                        ; IC1I+B7↓r ...
+                                        ; Input Capture 1 Register
+TIC1L:          fcb $FF                 ; Input Capture 1 Register
+TIC2H:          fcb $FF                 ; DATA XREF: IC2I↓r
+                                        ; Input Capture 2 Register
+TIC2L:          fcb $FF                 ; Input Capture 2 Register
+TIC3H:          fcb $FF                 ; DATA XREF: sub_9981+96↓o
+                                        ; Input Capture 3 Register
+TIC3L:          fcb $FF                 ; Input Capture 3 Register
+TOC1H:          fcb  $D                 ; DATA XREF: __RESET+522↓w
+                                        ; OC1I+A↓r ...
+                                        ; Output Compare 1 Register
+TOC1L:          fcb $B0                 ; Output Compare 1 Register
+TOC2H:          fcb $FF                 ; DATA XREF: sub_9E01:loc_9F9E↓o
+                                        ; sub_CA13+48↓w ...
+                                        ; Output Compare 2 Register
+TOC2L:          fcb $FF                 ; Output Compare 2 Register
+TOC3H:          fcb $FF                 ; DATA XREF: sub_9E01:loc_9F72↓o
+                                        ; sub_CA13+4B↓w ...
+                                        ; Output Compare 3 Register
+TOC3L:          fcb $FF                 ; Output Compare 3 Register
+TOC4H:          fcb $FF                 ; DATA XREF: sub_9E01:loc_9F52↓o
+                                        ; sub_CA13+52↓w ...
+                                        ; Output Compare 4 Register
+TOC4L:          fcb $FF                 ; Output Compare 4 Register
+TCO5H:          fcb $FF                 ; DATA XREF: sub_9E01+132↓w
+                                        ; IC1I+242↓w ...
+                                        ; Output Compare 5 Register
+TCO5L:          fcb $FF                 ; Output Compare 5 Register
+TCTL1:          fcb 0                   ; DATA XREF: __RESET+59↓w
+                                        ; sub_96AC+43↓w ...
+                                        ; Timer Control Register 1
+TCTL2:          fcb 0                   ; DATA XREF: __RESET+53↓w
+                                        ; sub_EFE2↓r
+                                        ; Timer Control Register 2
+TMSK1:          fcb 0                   ; DATA XREF: __RESET+4B↓w
+                                        ; sub_A12C+89↓r ...
+                                        ; Timer Interrupt Mask Register 1
+TFLG1:          fcb $F8                 ; DATA XREF: __RESET+4E↓w
+                                        ; OC1I+2↓w ...
+                                        ; Timer Interrupt Flag Register 1
+TMSK2:          fcb 0                   ; DATA XREF: SCISS+9↓w CME+7↓w ...
+                                        ; Timer Interrupt Mask Register 2
+TFLG2:          fcb $C0                 ; DATA XREF: sub_F53B+B↓w
+                                        ; PAII+15↓w
+                                        ; Timer Interrupt Flag Register 2
+PACTL:          fcb 0                   ; DATA XREF: __RESET+96↓w
+                                        ; Pulse Accumulator Control Register
+PACNT:          fcb 0                   ; DATA XREF: sub_F53B+E↓w
+                                        ; Pulse Accumulator Count Register
+SPCR:           fcb $24                 ; DATA XREF: __RESET+8A↓w
+                                        ; __RESET+525↓r ...
+                                        ; SPI Control Register
+SPSR:           fcb 0                   ; DATA XREF: __RESET+87↓r
+                                        ; __RESET+509↓r ...
+                                        ; SPI Status Register
+SPDR:           fcb 0                   ; DATA XREF: __RESET+50C↓w
+                                        ; __RESET+53D↓w ...
+                                        ; SPI Data Register
+BAUD:           fcb $30                 ; DATA XREF: __RESET+B8↓w
+                                        ; sub_9981+C↓r ...
+                                        ; SCI Baud Rate Control 3
+SCCR1:          fcb $40                 ; DATA XREF: __RESET+C1↓w
+                                        ; SCI Control Register 1
+SCCR2:          fcb $C                  ; DATA XREF: __RESET+B5↓w
+                                        ; sub_F351+D5↓w
+                                        ; Serial Communications Control Register 2
+SCSR:           fcb $10                 ; DATA XREF: __RESET+BB↓r
+                                        ; sub_9981:loc_999C↓r ...
+                                        ; Serial Communications Status Register
+SCDR:           fcb 0                   ; DATA XREF: sub_9981+22↓r
+                                        ; sub_9981:loc_99BE↓r ...
+                                        ; SCI Data (Read RDR, Write TDR)
+ADCTL:          fcb $80                 ; DATA XREF: __RESET+12B↓w
+                                        ; __RESET:loc_925C↓r ...
+                                        ; A_D Control Register
+ADR1:           fcb 0                   ; DATA XREF: __RESET+133↓r
+                                        ; __RESET+157↓r ...
+                                        ; A_D Result Register 1
+ADR2:           fcb 0                   ; DATA XREF: __RESET+1E1↓r
+                                        ; __RESET+206↓r ...
+                                        ; A_D Result Register 2
+ADR3:           fcb 0                   ; DATA XREF: sub_96AC:loc_971C↓r
+                                        ; sub_96AC+B4↓r ...
+                                        ; A_D Result Register 3
+ADR4:           fcb 0                   ; DATA XREF: __RESET+220↓r
+                                        ; sub_96AC+AF↓r ...
+                                        ; A_D Result Register 4
+BPROT:          fcb $1F                 ; DATA XREF: SCISS+11↓w
+                                        ; CME+F↓w ...
+                                        ; Block Protect Register
+RESERV1036:     fcb $2E ; .             ; RESERVED
+RESERV1037:     fcb $2E ; .             ; RESERVED
+RESERV1038:     fcb $2E ; .             ; RESERVED
+OPTION:         fcb $10                 ; DATA XREF: SCISS+C↓w CME+A↓w ...
+                                        ; System Configuration Options
+COPRST:         fcb $2E                 ; DATA XREF: sub_F32B+3↓w
+                                        ; sub_F32B+6↓w ...
+                                        ; Arm_Reset COP Timer Circuitry
+PPROG:          fcb 0                   ; DATA XREF: __RESET+9D↓w
+                                        ; sub_A35F+105↓r ...
+                                        ; EEPROM Program Control Register
+HPRIO:          fcb $60                 ; DATA XREF: __RESET:loc_916D↓w
+                                        ; Highest Priority I-Bit Int and Misc
+INIT:           fcb   1                 ; RAM and I_O Mapping Register
+RESERV3E:       fcb   8                 ; RESERVED
+CONFIG:         fcb   9                 ; System Configuration Register
+; end of 'FSR'

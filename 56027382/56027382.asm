@@ -4,8 +4,8 @@ Data_start equ $8000
 Code_start equ $9400
 BaseAddr equ $6000
 
+ REPEAT Data_start-*
  fcb 0
- bsz Data_start-*
 
  include defines.inc
  ORG Data_start
@@ -4156,8 +4156,9 @@ locret_AD65:                            ; sub_A706:loc_AD5E↑j
 
 ; Segment type: Pure data
                 ; segment EEPROM
-                org $B600
- fill $FF, $200
+ ORG $B600
+ REPEAT $200
+ fcb $FF
 ; end of 'EEPROM'
 
 ; ===========================================================================

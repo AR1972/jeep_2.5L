@@ -25,8 +25,10 @@ MCU_eeprom equ $B600
 ;
 ; null bytes for 64k EEPROM
 ;
+ OPT NOL
  REPEAT Data_start-*
  fcb 0
+ OPT LIS
 ;
 ;
 ; base address for TI chip, correct values are $0400 for 94
@@ -4100,11 +4102,13 @@ loc_AF1D:
         rts
 
 ;>>>>>>>>>>>>>>>>MCU eeprom<<<<<<<<<<<<<<<<<<
+ OPT NOL
  IF Data_start == $8000
  ORG MCU_eeprom
  REPEAT $200
  fcb $FF
  ENDIF
+ OPT LIS
 ;>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
 
 sub_B800:
@@ -13986,11 +13990,13 @@ loc_F865:
 
 
 ;>>>>>>>>>>>>>>>>MCU eeprom<<<<<<<<<<<<<<<<<<
+ OPT NOL
  IF Data_start <= $2000
  ORG MCU_eeprom
  REPEAT $200
  fcb $FF
  ENDIF
+ OPT LIS
 ;>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
 
 

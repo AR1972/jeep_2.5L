@@ -3,10 +3,10 @@
 Data_start equ $8000
 Code_start equ $9400
 BaseAddr equ $6000
-
+ OPT NOL
  REPEAT Data_start-*
  fcb 0
-
+ OPT LIS
  include defines.inc
  ORG Data_start
  include data.inc
@@ -4156,9 +4156,11 @@ locret_AD65:                            ; sub_A706:loc_AD5E↑j
 
 ; Segment type: Pure data
                 ; segment EEPROM
+ OPT NOL
  ORG $B600
  REPEAT $200
  fcb $FF
+ OPT LIS
 ; end of 'EEPROM'
 
 ; ===========================================================================

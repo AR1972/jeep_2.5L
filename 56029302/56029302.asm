@@ -6288,8 +6288,10 @@ locret_B5ED:                            ; CODE XREF: sub_B554+8C↑j
 ; Segment type: Pure data
                 ; segment EEPROM
  ORG $B600
+  OPT NOL
  REPEAT $200
  fcb $FF
+ OPT LIS
 word_B610 equ $B610 ;fdb $5AA5
 byte_B612 equ $B612
 byte_B614 equ $B614

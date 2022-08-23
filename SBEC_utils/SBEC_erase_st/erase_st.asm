@@ -99,5 +99,8 @@ XXX:
     stop
     bra     XXX
 
-                        ; pad bootstrap to 256 total bytes
-    bsz    256-*
+; pad bootstrap to 256 total bytes
+ OPT NOL
+ REPEAT 256-*
+    fcb $00
+ OPT LIS

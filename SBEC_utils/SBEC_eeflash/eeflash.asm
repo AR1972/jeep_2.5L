@@ -124,6 +124,10 @@ ByteVerified:
 RetryCounter:
     fcb   $19
 Buffer:
-    bsz 64
-                             ; pad bootstrap to 256 total bytes
-    bsz 256-*
+ OPT NOL
+ REPEAT 64
+    fcb $00
+; pad bootstrap to 256 total bytes
+ REPEAT 256-*
+    fcb $00
+ OPT LIS

@@ -2,9 +2,8 @@
 ; placed into bootstrap mode by applying 12 volts to
 ; pin 45 until SBEC sends 0x00 on pin 25.
 
-    ORG $0000
+    ORG $00
 
-THE_BEGIN:
 Start:
     ldS     #$FF        ; stack pointer = 0xFF
     ldX     #$1000      ; config 68HC11 registers
@@ -22,7 +21,7 @@ Start:
 
 ; give receiver around 100ms
 
-    ldX     #$0D05 * 10
+    ldX     #$0D05*10
 Delay:
     deX
     bne     Delay
@@ -31,10 +30,9 @@ Delay:
 
 Done:
     stop
-
-THE_END:
-
-                        ; pad bootstrap to 256 total bytes
- REPEAT 256-(THE_END-THE_BEGIN)
-    fcb 0x00
- ENDR
+ 
+; pad bootstrap to 256 total bytes
+ OPT NOL
+ REPEAT 256-*
+    fcb $00
+ OPT LIS

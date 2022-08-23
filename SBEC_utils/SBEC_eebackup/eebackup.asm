@@ -6,7 +6,6 @@
 
     ORG $0000
 
-THE_BEGIN:
 Start:
     ldS    #$FF         ; stack pointer = 0xFF
     ldX    #$1000       ; config 68HC11 registers
@@ -50,8 +49,8 @@ WaitForSCI:
     bne    GetNextByte  ; loop until X = 0x0000
     rts
 
-THE_END:
-
 ; pad bootstrap to 256 total bytes
-    bsz    256-*
-
+ OPT NOL
+ REPEAT 256-*
+    fcb $00
+ OPT LIS

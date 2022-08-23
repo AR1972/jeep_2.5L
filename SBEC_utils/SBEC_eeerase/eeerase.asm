@@ -27,7 +27,7 @@ Start:
     ldX    #$FFFF
     bsr    Delay
     bsr    SendData
-    
+
 EraseEEPROM:
     ldX    #$B600
     ldaA   #%00000100 | %00000010  ; load a with erase commands
@@ -70,5 +70,7 @@ WaitForSCI:
     rts
 
 ; pad bootstrap to 256 total bytes
-    bsz    256-*
-
+ OPT NOL
+ REPEAT 256-*
+    fcb $00
+ OPT LIS

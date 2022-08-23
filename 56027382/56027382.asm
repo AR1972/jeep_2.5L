@@ -1,3 +1,5 @@
+FILCHR TEXT $3F
+ OPT NOW
  ORG 0
 
 Data_start equ $8000

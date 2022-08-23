@@ -333,7 +333,7 @@
 
 #define VERSION      "1.56"
 #define VERSNUM      "$0138"            /* can be queried as &VERSION        */
-#define RMBDEFCHR    "$3F"
+#define RMBDEFCHR    "$00"
 
 #define MAXFILES     128
 #define MAXLABELS    8192

@@ -31,7 +31,7 @@ BOOL ABORT = FALSE;
 void usage() {
     printf("\nSBEC_chipid /C:[1-9]\n");
     printf("\n/C:[1-9] COM port 1 to 9\n");
-    printf("\n/B get id 64k EPROMS\n");
+    printf("\n/B get id from 64k EPROMS\n");
     return;
 }
 

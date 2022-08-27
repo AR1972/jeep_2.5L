@@ -35,6 +35,7 @@ void usage() {
     printf("\nSBEC_flash_st /C:[1-9] /F:[filename]\n");
     printf("\n/C:[1-9] COM port 1 to 9\n");
     printf("/F:[filename] 32 kilobyte eeprom file\n");
+    printf("/B flash 56Kb eeprom file");
     return;
 }
 
@@ -87,7 +88,7 @@ int main(int argc, char *argv[])
     DWORD dwAttrib = 0;
     char com[] = "0\0\0\0";
     BOOL big_eeprom = FALSE;
-    int eeprom_size = 0x8000;
+    unsigned int eeprom_size = 0x8000;
 
     if (argc < 3){
         usage();
@@ -129,7 +130,7 @@ int main(int argc, char *argv[])
                         return ret;
                     }
                     if ((GetFileSize(hBuff, NULL) != 0x8000) &
-                        (GetFileSize(hBuff, NULL) != 0x10000)) {
+                        (GetFileSize(hBuff, NULL) != 0xE000)) {
                         printf("Wrong file size\n");
                         return ret;
                     }
@@ -139,9 +140,20 @@ int main(int argc, char *argv[])
                 argv[i][1] == 'B')
             {
                 big_eeprom = TRUE;
-                eeprom_size = 0x10000;
+                eeprom_size = 0xE000;
+                flash_st[0x16 + 1] -= 0x60;
+                flash_st[0x6E + 1] -= 0x60;
             }
         }
+    }
+    
+    if ((big_eeprom) & (GetFileSize(hBuff, NULL) != 0xE000)) {
+        printf("Wrong file size\n");
+        return ret;
+    }
+        if ((!big_eeprom) & (GetFileSize(hBuff, NULL) != 0x8000)) {
+        printf("Wrong file size\n");
+        return ret;
     }
 
     SetConsoleCtrlHandler(consoleHandler, TRUE);
@@ -464,7 +476,7 @@ Start:
 
     WriteFile(hComm, &file_buffer[0x10001], 1, &send_num, NULL);
 
-    for (int i = 0; i < (eeprom_size/0x40); i++){
+    for (unsigned int i = 0; i < (eeprom_size/0x40); i++){
         rel_onoff(dev, DATA, RELAY_DATA);
         Sleep(80);
         if (!WriteFile(hComm, &file_buffer[num], 0x40, &send_num, NULL)) {
@@ -476,9 +488,17 @@ Start:
         num += send_num;
         printf("\r");
         printf("Bytes TX: 0x%02X ", num);
-        if (num == 0x3600){
-            num += 0x200;
-            i += (0x200/0x40);
+        if (big_eeprom) {
+            if (num == 0x9600) {
+                num += 0x200;
+                i += (0x200 / 0x40);
+            }
+        }
+        else if (!big_eeprom) {
+            if (num == 0x3600){
+                num += 0x200;
+                i += (0x200 / 0x40);
+            }
         }
         Sleep(100);
     }
@@ -508,7 +528,7 @@ Start:
         }
         recv_num += num;
         if (num != 0x40) {
-            if (recv_num >= 0x8000) {
+            if (recv_num >= eeprom_size) {
                 goto Check;
             }
             else {
@@ -523,10 +543,17 @@ Start:
 Check:
 
     printf("\n");
-    for (int i = 0; i < 0x8000; i++){
+    for (int i = 0; i < eeprom_size; i++){
         // skip the MCU eeprom
-        if (i == 0x3600){
-            i = 0x3800;
+        if (!big_eeprom){
+            if (i == 0x3600){
+                i = 0x3800;
+            }
+        }
+        else if (big_eeprom) {
+            if (i == 0x9600){
+                i = 0x9800;
+            }
         }
         if (recv_buffer[i] != file_buffer[i]){
             printf("EPROM flash failed @ 0x%04X\nread 0x%02X sent 0x%02X\n", i, recv_buffer[i], file_buffer[i]);

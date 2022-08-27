@@ -27,10 +27,10 @@ MCU_eeprom equ $B600
 ;
 ; null bytes for 64k EEPROM
 ;
- OPT NOL
- REPEAT Data_start-*
- fcb 0
- OPT LIS
+; OPT NOL
+; REPEAT Data_start-*
+; fcb 0
+; OPT LIS
 ;
 ;
 ; base address for TI chip, correct values are $0400 for 94

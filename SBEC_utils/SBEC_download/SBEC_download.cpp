@@ -652,23 +652,23 @@ SAVE_EEPROM:
 
 SAVE_FILE:
 
-    // special handling for 64k EPROM's
+    // special handling for 56k EPROM's
 
     if (recv_num == 0xE000) {
 
-        // copy 64k EPROM to new buffer starting at offset 0x2000
+        // copy 56k EPROM to new buffer starting at offset 0x2000
 
-        for (unsigned int i = 0; i < recv_num; i++) {
-            save_buffer[0x2000 + i] = recv_buffer[i];
-        }
+        //for (unsigned int i = 0; i < recv_num; i++) {
+        //    save_buffer[0x2000 + i] = recv_buffer[i];
+        //}
 
         // clear 68HC11 EEPROM
 
-        for (int i = 0xB600; i < 0xB800; i++) {
-            save_buffer[i] = (unsigned char)0xFF;
+        for (int i = 0x9600; i < 0x9800; i++) {
+            recv_buffer[i] = (unsigned char)0xFF;
         }
-        recv_num = 0x10000;
-        memcpy(recv_buffer, save_buffer, recv_num);
+        //recv_num = 0x10000;
+        //memcpy(recv_buffer, save_buffer, recv_num);
     }
     else if (recv_num == 0x8000) {
 

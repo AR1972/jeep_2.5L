@@ -409,7 +409,7 @@ Start:
     rel_onoff(dev, VSEL, RELAY_DATA); // apply 20v to pin 45
 
     printf("Erasing EEPROM\n");
-    Sleep(1000);
+    Sleep(1500);
 
     rel_onoff(dev, DATA, RELAY_DATA); // disconnect 20v to pin 45
 

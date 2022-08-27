@@ -35,7 +35,7 @@ void usage() {
     printf("\nSBEC_flash_st /C:[1-9] /F:[filename]\n");
     printf("\n/C:[1-9] COM port 1 to 9\n");
     printf("/F:[filename] 32 kilobyte eeprom file\n");
-    printf("/B flash 56Kb eeprom file");
+    printf("/B flash 56kb EEPROM file\n");
     return;
 }
 
@@ -543,7 +543,7 @@ Start:
 Check:
 
     printf("\n");
-    for (int i = 0; i < eeprom_size; i++){
+    for (unsigned int i = 0; i < eeprom_size; i++){
         // skip the MCU eeprom
         if (!big_eeprom){
             if (i == 0x3600){

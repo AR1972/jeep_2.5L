@@ -76,6 +76,7 @@ int main(int argc, char *argv[])
     DWORD dwAttrib = 0;
     char com[] = "0\0\0\0";
     BOOL big_eeprom = FALSE;
+    unsigned int eeprom_size = 0x8000;
 
     if (argc < 2){
         usage();
@@ -108,12 +109,14 @@ int main(int argc, char *argv[])
                 argv[i][1] == 'B')
             {
                 big_eeprom = TRUE;
+                eeprom_size = 0xE000;
                 erase_tosh[0x1F + 1] -= 0x80;
                 erase_tosh[0x23 + 1] -= 0x80;
                 erase_tosh[0x26 + 1] -= 0x80;
                 erase_tosh[0x2A + 1] -= 0x80;
                 erase_tosh[0x38 + 1] -= 0x80;
                 erase_tosh[0x3B + 1] -= 0x80;
+                erase_tosh[0x3E + 1] -= 0x60;
             }
         }
     }
@@ -430,7 +433,7 @@ Start:
         }
         recv_num += num;
         if (num != 0x40) {
-            if (recv_num >= 0x8000) {
+            if (recv_num >= eeprom_size) {
                 goto Save;
             }
             else {
@@ -445,10 +448,17 @@ Start:
 Save:
 
     printf("\n");
-    for (int i = 0; i < 0x8000; i++){
+    for (unsigned int i = 0; i < eeprom_size; i++){
         // skip the MCU eeprom
-        if (i == 0x3600){
-            i = 0x3800;
+        if (!big_eeprom){
+            if (i == 0x3600){
+                i = 0x3800;
+            }
+        }
+        else if (big_eeprom) {
+            if (i == 0x9600){
+                i = 0x9800;
+            }
         }
         if (recv_buffer[i] != 0xFF){
             printf("EPROM erase failed @ 0x%04X\n", i);

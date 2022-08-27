@@ -32,6 +32,7 @@ BOOL ABORT = FALSE;
 void usage() {
     printf("\nSBEC_erase_st /C:[1-9]\n");
     printf("\n/C:[1-9] COM port 1 to 9\n");
+    printf("\n/B erase 64k eeproms\n");
     return;
 }
 
@@ -74,6 +75,8 @@ int main(int argc, char *argv[])
     unsigned long baud = 9600;
     DWORD dwAttrib = 0;
     char com[] = "0\0\0\0";
+    BOOL big_eeprom = FALSE;
+    unsigned int eeprom_size = 0x8000;
 
     if (argc < 2){
         usage();
@@ -101,6 +104,13 @@ int main(int argc, char *argv[])
                     }
                     com[0] = argv[i][3];
                 }
+            }
+            if (argv[i][1] == 'b' ||
+                argv[i][1] == 'B')
+            {
+                big_eeprom = TRUE;
+                eeprom_size = 0xE000;
+                erase_st[0x5C + 1] -= 0x60;
             }
         }
     }
@@ -417,7 +427,7 @@ Start:
         }
         recv_num += num;
         if (num != 0x40) {
-            if (recv_num >= 0x8000) {
+            if (recv_num >= eeprom_size) {
                 goto Save;
             }
             else {
@@ -432,10 +442,17 @@ Start:
 Save:
 
     printf("\n");
-    for (int i = 0; i < 0x8000; i++){
+    for (unsigned int i = 0; i < eeprom_size; i++){
         // skip the MCU eeprom
-        if (i == 0x3600){
-            i = 0x3800;
+        if (!big_eeprom){
+            if (i == 0x3600){
+                i = 0x3800;
+            }
+        }
+        else if (big_eeprom) {
+            if (i == 0x9600){
+                i = 0x9800;
+            }
         }
         if (recv_buffer[i] != 0xFF){
             printf("EPROM erase failed @ 0x%04X\n", i);

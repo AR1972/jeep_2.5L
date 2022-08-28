@@ -57,3 +57,10 @@ WaitForSCI:
     bne     SendByte    ; loop until X = 0x0000
 Done:
     stop
+
+; pad bootstrap to 256 total bytes
+ OPT NOL
+ REPEAT 256-*
+    fcb $00
+ OPT LIS
+ 

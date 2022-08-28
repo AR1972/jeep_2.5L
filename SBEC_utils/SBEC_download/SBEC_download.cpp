@@ -29,7 +29,6 @@ char *device = 0;
 HANDLE hComm = 0;
 HANDLE hBuff = 0;
 unsigned char *recv_buffer = 0;
-unsigned char *send_buffer = 0;
 unsigned char *save_buffer = 0;
 unsigned char *ee_buffer = 0;
 char *ee_name_buffer = 0;
@@ -57,10 +56,6 @@ BOOL WINAPI consoleHandler(DWORD signal) {
         if (recv_buffer){
             free(recv_buffer);
             recv_buffer = 0;
-        }
-        if (send_buffer){
-            free(send_buffer);
-            send_buffer = 0;
         }
         if (name_buffer){
             free(name_buffer);
@@ -115,7 +110,7 @@ int main(int argc, char *argv[])
     DWORD dwAttrib = 0;
     unsigned long part_no = 0x00;
     BOOL force_all = FALSE;
-    char com[] = {'0',0,0,0,0};
+    char com[] = { '0', 0, 0, 0, 0 };
     BOOL save_eeprom = FALSE;
 
 
@@ -166,10 +161,6 @@ int main(int argc, char *argv[])
 
     recv_buffer = (unsigned char *)malloc(RECV_BUFF);
     if (!recv_buffer){
-        goto EXIT;
-    }
-    send_buffer = (unsigned char *)malloc(SEND_BUFF);
-    if (!send_buffer){
         goto EXIT;
     }
     name_buffer = (char *)malloc(NAME_BUFF);
@@ -329,7 +320,7 @@ Start:
     }
 #endif
 
-     Sleep(100);
+    Sleep(100);
 
     // when bootstrap voltage is disconnected we will
     // receive a 0x00, wait up to 5 seconds for it.
@@ -348,17 +339,15 @@ Start:
         goto EXIT;
     }
 
-    memset(send_buffer, 0x00, SEND_BUFF);
-    memcpy(send_buffer, dump, sizeof(dump));
     memset(recv_buffer, 0x00, RECV_BUFF);
 
     // set the BAUD rate of the bootstrap
 
     if (baud == 1200) {
-        send_buffer[8] = 0x33;
+        dump[8] = 0x33;
     }
     else if (baud == 9600) {
-        send_buffer[8] = 0x30;
+        dump[8] = 0x30;
     }
 
     // purge garbage from serial port buffers
@@ -371,8 +360,8 @@ Start:
     // force download 0x0000 -> 0xFFFF
 
     if (force_all) {
-        send_buffer[40] = 0x00;
-        send_buffer[45] = 0x00;
+        dump[40] = 0x00;
+        dump[45] = 0x00;
     }
 
     // purge garbage from serial port buffers
@@ -395,7 +384,7 @@ Start:
     // of 257 bytes should work in all cases.
 
     printf("Sending EPROM download program\n");
-    if (!WriteFile(hComm, send_buffer, 0x101, &send_num, NULL)) {
+    if (!WriteFile(hComm, dump, sizeof(dump), &send_num, NULL)) {
         printf("ERROR: sending download program\n");
         goto EXIT;
     }
@@ -459,8 +448,8 @@ Start:
     // send a leading null and will cause the bootstrap corruption
     // check to fail, handle leading null and no leading null cases
 
-    if ((memcmp(send_buffer + 1, recv_buffer, sizeof(dump)) != 0) &
-        (memcmp(send_buffer + 1, recv_buffer + 1, sizeof(dump)) != 0)) {
+    if ((memcmp(dump + 1, recv_buffer, sizeof(dump)) != 0) &
+        (memcmp(dump + 1, recv_buffer + 1, sizeof(dump)) != 0)) {
         printf("ERROR: download program is corrupt\n");
         retry_num++;
 #ifdef USB_RELAY_BOARD
@@ -592,7 +581,7 @@ Start:
 Save:
     printf("\n");
 
-    // use ECU part number for filename
+    // use ECU part number for eprom filename
 
     if (recv_num == 0x10000 && part_no == 0) {
         sprintf(name_buffer, "dump_all.bin");
@@ -605,8 +594,20 @@ Save:
         sprintf(name_buffer, "%02X%02X%02X%02X.bin", recv_buffer[part_no + 2],
             recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5]);
     }
+
+    // use ECU part number for eeprom filename
+
+    if (recv_num == 0x10000 && part_no == 0) {
+        sprintf(ee_name_buffer, "dump_all_eeprom.bin");
+    }
+    else if (recv_num == 0x10000 && part_no >= 0x2000) {
+        sprintf(ee_name_buffer, "%02X%02X%02X%02X_all_eeprom.bin", recv_buffer[part_no + 2],
+            recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5]);
+    }
+    else {
     sprintf(ee_name_buffer, "%02X%02X%02X%02X_eeprom.bin", recv_buffer[part_no + 2],
         recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5]);
+    }
 
     // check if file already exists, allow up to 99 duplicate files
 
@@ -638,8 +639,17 @@ SAVE_EEPROM:
     dwAttrib = GetFileAttributes(ee_name_buffer);
     if (dwAttrib != 0xFFFFFFFF && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
         for (int i = 1; i < 100; i++) {
-            sprintf(ee_name_buffer, "%02X%02X%02X%02X_eeprom (%d).bin", recv_buffer[part_no + 2],
-                recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5], i);
+            if (recv_num == 0x10000 && part_no == 0) {
+                sprintf(ee_name_buffer, "dump_all_eeprom (%d).bin", i);
+            }
+            else if (recv_num == 0x10000 && part_no >= 0x2000) {
+                sprintf(ee_name_buffer, "%02X%02X%02X%02X_all_eeprom (%d).bin", recv_buffer[part_no + 2],
+                    recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5], i);
+            }
+            else {
+                sprintf(ee_name_buffer, "%02X%02X%02X%02X_eeprom (%d).bin", recv_buffer[part_no + 2],
+                    recv_buffer[part_no + 3], recv_buffer[part_no + 4], recv_buffer[part_no + 5], i);
+            }
             dwAttrib = GetFileAttributes(ee_name_buffer);
             if (dwAttrib == 0xFFFFFFFF && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
                 goto SAVE_FILE;
@@ -652,23 +662,12 @@ SAVE_EEPROM:
 
 SAVE_FILE:
 
-    // special handling for 56k EPROM's
-
     if (recv_num == 0xE000) {
 
-        // copy 56k EPROM to new buffer starting at offset 0x2000
-
-        //for (unsigned int i = 0; i < recv_num; i++) {
-        //    save_buffer[0x2000 + i] = recv_buffer[i];
-        //}
-
         // clear 68HC11 EEPROM
-
         for (int i = 0x9600; i < 0x9800; i++) {
             recv_buffer[i] = (unsigned char)0xFF;
         }
-        //recv_num = 0x10000;
-        //memcpy(recv_buffer, save_buffer, recv_num);
     }
     else if (recv_num == 0x8000) {
 
@@ -729,10 +728,6 @@ EXIT:
     if (recv_buffer){
         free(recv_buffer);
         recv_buffer = 0;
-    }
-    if (send_buffer){
-        free(send_buffer);
-        send_buffer = 0;
     }
     if (name_buffer){
         free(name_buffer);

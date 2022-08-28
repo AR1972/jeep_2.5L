@@ -162,7 +162,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//usual cheese to get file size
 	in.seekg(0, std::ios_base::end);
-	size_t filesize = in.tellg();
+	size_t filesize = (size_t)in.tellg();
 	in.seekg(0, std::ios_base::beg);
 
 	//same trick as for namespace to get the id out

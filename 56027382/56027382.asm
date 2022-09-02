@@ -6,6 +6,7 @@ FILCHR TEXT $3F
 Data_start equ $8000
 Code_start equ $9400
 BaseAddr equ $6000
+NOEMR equ 0
  include ..\common\defines.inc
  ORG Data_start
  include data.inc

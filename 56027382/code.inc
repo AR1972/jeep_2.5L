@@ -896,7 +896,12 @@ loc_9A42:                               ; __RESET+5C2↑j
 loc_9A4D:                               ; __RESET+5BF↑j
                 jsr     CycleACClutch_MM
                 jsr     L9b0c_MM
+ IF NOEMR == 0
                 jsr     sub_E679
+ ELSE
+                ; (E)mission (M)aintenance (R)eminder light off
+                bclr    <PIA1_Buffer_t3 8
+ ENDIF
                 jsr     sub_A130
                 jsr     sub_A25F
                 jsr     sub_D9B9
@@ -923,7 +928,13 @@ loc_9A5F:                               ; __RESET+5D0↑j __RESET+5DB↑j
                 jsr     sub_D8A7
 
 loc_9A95:                               ; __RESET+608↑j
+ IF NOEMR == 0
                 jsr     EmmissionMaintenanceReminder1_MM
+ ELSE
+                nop
+                nop
+                nop
+ ENDIF
                 jsr     sub_C8AF
                 jsr     sub_CAFE
                 jsr     sub_CCF6

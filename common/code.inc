@@ -880,9 +880,8 @@ loc_9A99:
  IF NOEMR == 0
         jsr     sub_E95C
  ELSE
-        nop
-        nop
-        nop
+        ; (E)mission (M)aintenance (R)eminder light off
+        bclr    <PIA1_Buffer_t3 $08
  ENDIF
         jsr     sub_A18C
         jsr     sub_A2BB

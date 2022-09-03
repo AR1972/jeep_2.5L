@@ -4153,6 +4153,7 @@ locret_AD65:                            ; sub_A706:loc_AD5E↑j
 
 ; Segment type: Pure data
                 ; segment EEPROM
+ IF Code_start == $9400
  OPT NOL
  ORG $B600
  REPEAT $200
@@ -4160,12 +4161,8 @@ locret_AD65:                            ; sub_A706:loc_AD5E↑j
  OPT LIS
 ; end of 'EEPROM'
 
-; ===========================================================================
-
-; Segment type: Uninitialized
-                ; segment RESERVED
-                org $B800
-
+ ORG $B800
+ ENDIF
 ; =============== S U B R O U T I N E =======================================
 
 
@@ -11173,17 +11170,6 @@ loc_DFF1:                               ; sub_DEC8+122↑j
                 cmpa    #$4C
                 bcs     loc_DFFD
                 anda    #$FE
-; End of function sub_DEC8
-
-; end of 'RESERVED'
-
-; ===========================================================================
-
-; Segment type: Regular
-                ; segment ROM
-                org $DFFD
-; START OF FUNCTION CHUNK FOR sub_DEC8
-
 loc_DFFD:                               ; sub_DEC8+131↑j
                 anda    #$FD
                 staa    DRBOffsetStored_LB
@@ -11202,8 +11188,6 @@ loc_E00D:                               ; sub_DEC8+111↑j
 locret_E010:                            ; sub_DEC8:loc_DFC0↑j
                                         ; sub_DEC8+FC↑j ...
                 rts
-; END OF FUNCTION CHUNK FOR sub_DEC8
-; ---------------------------------------------------------------------------
 
 loc_E011:                               ; ROM:E091↓J ROM:loc_E0FD↓J
                                         ; ...
@@ -14472,6 +14456,14 @@ loc_F421:                               ; ROM:F3D0↑j ROM:F419↑j
                 ldaa    #1
                 staa    PIA_Ctrl_4
                 rti
+
+ IF Code_start == $2A70
+ OPT NOL
+ ORG $B600
+ REPEAT $200
+ fcb $FF
+ OPT LIS
+ ENDIF
 ; ---------------------------------------------------------------------------
   ORG $FF9B
 Copyright:      fcc "1993 COPYRIGHT CHRYSLER CORP."

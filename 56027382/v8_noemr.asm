@@ -4,7 +4,7 @@ FILCHR TEXT $3F
  ORG 0
 
 Data_start equ $2000
-Code_start equ $4000
+Code_start equ $2A70
 BaseAddr equ $0400
 NOEMR equ 1
  include ..\common\defines.inc

@@ -1,60 +1,29 @@
 
-                ; public XIRQ
-XIRQ:                                   ; sub_DBE4+F5↓o
-                                        ; USER_VEC:FFF4↓o
+XIRQ:
                 ldab    #1
                 bra     loc_9416
-; End of function XIRQ
 
-
-; =============== S U B R O U T I N E =======================================
-
-
-                ; public NOCOP
-NOCOP:                                  ; USER_VEC:FFFA↓o
+NOCOP:
                 ldab    #2
                 bra     loc_9416
-; End of function NOCOP
 
-
-; =============== S U B R O U T I N E =======================================
-
-
-                ; public OPC
-OPC:                                    ; USER_VEC:FFF8↓o
+OPC:
                 ldab    #4
                 bra     loc_9416
-; End of function OPC
 
 
-; =============== S U B R O U T I N E =======================================
-
-
-                ; public SCISS
-SCISS:                                  ; USER_VEC:FFD6↓o
+SCISS:
                 ldab    #$10
                 bra     loc_9416
-; End of function SCISS
 
-
-; =============== S U B R O U T I N E =======================================
-
-
-                ; public SPIE
-SPIE:                                   ; USER_VEC:FFD8↓o
+SPIE:
                 ldab    #$20
                 bra     loc_9416
-; End of function SPIE
 
-
-; =============== S U B R O U T I N E =======================================
-
-
-                ; public SOFT
-SOFT:                                   ; USER_VEC:FFF6↓o
+SOFT:
                 ldab    #$40
 
-loc_9416:                               ; XIRQ+2↑j NOCOP+2↑j ...
+loc_9416:
                 sei
                 orab    #$80
                 stab    Temp0
@@ -71,14 +40,8 @@ loc_9416:                               ; XIRQ+2↑j NOCOP+2↑j ...
                 clr     MinimumTimerCountBeforeMainloopCanContinue
                 clr     Ram_04
                 bra     loc_94A2
-; End of function SOFT
 
-
-; =============== S U B R O U T I N E =======================================
-
-
-                ; public CME
-CME:                                    ; USER_VEC:FFFC↓o
+CME:
                 sei
                 lds     #TopOfStack
                 ldd     #$2A9
@@ -92,7 +55,7 @@ CME:                                    ; USER_VEC:FFFC↓o
                 std     Temp1
                 ldx     #Ram_00
 
-loc_945A:                               ; CME+27↓j
+loc_945A:
                 ldaa    0,x
                 cmpa    #0
                 bne     loc_9468
@@ -100,23 +63,15 @@ loc_945A:                               ; CME+27↓j
                 cpx     #$20
                 bcs     loc_945A
                 bra     loc_94A2
-; ---------------------------------------------------------------------------
 
-loc_9468:                               ; CME+21↑j
+loc_9468:
                 ldd     <Counter_SpeedSensorInterrupt_HB
                 tba
                 comb
                 std     <MinimumTimerCountBeforeMainloopCanContinue
                 bra     loc_94A2
-; End of function CME
 
-
-; =============== S U B R O U T I N E =======================================
-
-
-                ; public __RESET
-__RESET:                                ; sub_E542+103↓J
-                                        ; USER_VEC:FFFE↓o
+__RESET:
                 sei
                 lds     #TopOfStack
                 ldd     #$2A9
@@ -224,10 +179,10 @@ loc_9547:                               ; __RESET+D3↑j
                 ldd     #$40DF
                 staa    <BitFlags36_t3
                 stab    <CurrentAisPosition
-                ldx     #$E
+                ldx     #Counter_SpeedSensorInterrupt_HB
 
 loc_956D:                               ; __RESET+CC↑j
-                ldy     #$594
+                ldy     #$02CA*ECLOCK
 
 loc_9571:                               ; __RESET+103↓j
                 dey
@@ -255,7 +210,7 @@ loc_9589:                               ; __RESET+11F↓j
                 staa    <PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 jsr     OCToggleAndResetCopTimer
-                ldy     #$0594
+                ldy     #$02CA*ECLOCK
 
 loc_959F:                               ; __RESET+131↓j
                 dey
@@ -273,7 +228,7 @@ loc_95A8:                               ; __RESET+13B↓j
                 staa    <PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 jsr     OCToggleAndResetCopTimer
-                ldy     #$0476
+                ldy     #$023B*ECLOCK
 
 loc_95C3:                               ; __RESET+155↓j
                 dey
@@ -323,7 +278,7 @@ loc_9606:                               ; __RESET+192↑j
                 staa    <PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 jsr     OCToggleAndResetCopTimer
-                ldy     #$0594
+                ldy     #$02CA*ECLOCK
 
 loc_961E:                               ; __RESET+1B0↓j
                 dey
@@ -344,7 +299,7 @@ loc_9627:                               ; __RESET+1BA↓j
 
 loc_963C:                               ; __RESET+1C1↑j
                 jsr     OCToggleAndResetCopTimer
-                ldy     #$0594
+                ldy     #$02CA*ECLOCK
 
 loc_9643:                               ; __RESET+1D5↓j
                 dey
@@ -371,7 +326,7 @@ loc_9656:                               ; __RESET+1E9↓j
 
 loc_966B:                               ; __RESET+1F0↑j
                 jsr     OCToggleAndResetCopTimer
-                ldy     #$0594
+                ldy     #$02CA*ECLOCK
 
 loc_9672:                               ; __RESET+204↓j
                 dey
@@ -484,8 +439,11 @@ loc_9720:                               ; __RESET+292↑j __RESET+296↑j ...
                 andb    #$FC
                 stab    SPCR_SerialPeripheralControl
                 jsr     OCToggleAndResetCopTimer
-                ldx     #$0535
-
+ IF ECLOCK == 2
+                ldx     #$535
+ ELSE
+                ldx     #$29A*ECLOCK
+ ENDIF
 loc_974B:                               ; __RESET+2E3↓j
                 ldaa    SwitchPortAccessReg1
                 bita    #$10
@@ -658,7 +616,7 @@ loc_9893:                               ; __RESET+418↑j __RESET+41F↑j
                 ldaa    SwitchPortAccessReg1
                 oraa    #1
                 staa    SwitchPortAccessReg1
-                ldx     #$0238
+                ldx     #$011C*ECLOCK
 
 loc_98A0:                               ; __RESET+431↓j
                 dex
@@ -743,7 +701,7 @@ loc_9929:                               ; __RESET+4AF↑j __RESET+4B2↑j
                 staa    ADCTL_A2DControlReg
                 ldd     TCNT_Counter_FreeRunning16bit
                 lsld
-                ldx     #$3C
+                ldx     #Counter_TimerRegHalfOverflowBetweenSpeedoPulses
                 ldy     #Temp5
                 jsr     DetermineNumberOfOverflowsBetweenSensorPulses_MM
 
@@ -1208,7 +1166,7 @@ CONTROL_AUTOSHUTDOWN_RELAY_ROUTINE1:    ; ControlAsdRelay_MM+C↑j
                 ldaa    <CoolantTemp
                 cmpa    #$8F
                 bcc     ControlAsdRelay_Over27Ftemp
-                ldx     #$5B
+                ldx     #BatteryVolts
 
 ControlAsdRelay_Over27Ftemp:            ; ControlAsdRelay_MM+5E↑j
                 ldab    #4
@@ -1422,7 +1380,7 @@ loc_9D77:                               ; sub_9CF3+7D↑j
 
 loc_9D7E:                               ; sub_9CF3:loc_9D1C↑J
                                         ; sub_9CF3+2E↑j ...
-                ldx     #0
+                ldx     #Ram_00
                 stx     <EGRVar3_ErrorCodeBufferHB
                 bclr    <BitFlags6d_t3 $50
                 ldaa    <Counter_O2SensorFeedbackCount_Signed
@@ -1431,7 +1389,7 @@ loc_9D7E:                               ; sub_9CF3:loc_9D1C↑J
 ; ---------------------------------------------------------------------------
 
 loc_9D8D:                               ; sub_9CF3+40↑j
-                ldx     #0
+                ldx     #Ram_00
                 bset    <BitFlags6d_t3 $40
                 bclr    <BitFlags6d_t3 $10
                 ldaa    <EGRVar5_EGR_Temp_1
@@ -1478,7 +1436,7 @@ loc_9DD9:                               ; sub_9CF3+7↑J
 ; ---------------------------------------------------------------------------
 
 loc_9DE4:                               ; sub_9CF3+AC↑j
-                ldx     #0
+                ldx     #Ram_00
                 stx     <EGRVar3_ErrorCodeBufferHB
                 ldab    <BitFlags6d_t3
                 andb    #$AF
@@ -1636,7 +1594,7 @@ locret_9ED4:                            ; EmmissionMaintenanceReminder1_MM:loc_9
 ; ---------------------------------------------------------------------------
 
 loc_9ED5:                               ; EmmissionMaintenanceReminder1_MM+2A↑j
-                ldx     #$1C
+                ldx     #ErrorBitRegisterStored3
                 ldaa    #$30
 
 loc_9EDA:                               ; EmmissionMaintenanceReminder1_MM+63↓j
@@ -2733,7 +2691,7 @@ loc_A52E:                               ; sub_A517+14↑j
 
 
 sub_A531:                               ; sub_A2B6:loc_A3A1↑P
-                ldx     #0
+                ldx     #Ram_00
                 ldab    <BitFlags68_t3
                 andb    #4
                 stab    Temp4
@@ -3570,7 +3528,7 @@ loc_AA35:                               ; sub_AA29+8↑j
                 ldaa    #$7F
 
 loc_AA4B:                               ; sub_AA29+1E↑j
-                ldx     #$12
+                ldx     #L002F_t3
                 ldab    <CruiseSpeedSetpoint
                 cmpb    byte_88EB
                 bls     loc_AA56
@@ -3673,7 +3631,7 @@ loc_AAD2:                               ; sub_A706+3B8↑j
 loc_AADD:                               ; sub_A706+3D4↑j
                 cmpb    byte_88ED
                 bcs     loc_AB21
-                ldx     #$12
+                ldx     #L002F_t3
                 ldab    <CruiseSpeedSetpoint
                 cmpb    byte_88EB
                 bls     loc_AAED
@@ -6097,7 +6055,7 @@ loc_C301:                               ; sub_C2E6+F↑j sub_C2E6+16↑j
 ; ---------------------------------------------------------------------------
 
 loc_C314:                               ; sub_C2E6:loc_C301↑j
-                ldx     #$93
+                ldx     #TPSAverageFactorRAM_HB
                 ldaa    <MapValueTemp2
                 suba    <MapValue
                 bcc     loc_C320
@@ -6133,7 +6091,7 @@ sub_C34E:                               ; sub_C5F1:loc_C7F7↓P
                 ldaa    <MapValueTemp1
                 cmpa    <MapValue
                 bcc     loc_C35A
-                ldx     #$91
+                ldx     #MapAverageFactorRAM_HB
 
 loc_C35A:                               ; sub_C34E+7↑j
                 ldy     #$8A
@@ -6143,7 +6101,7 @@ loc_C35A:                               ; sub_C34E+7↑j
                 ldaa    <TPSVoltsTemp_A
                 cmpa    <TpsVolts
                 bcc     loc_C36F
-                ldx     #$93
+                ldx     #TPSAverageFactorRAM_HB
 
 loc_C36F:                               ; sub_C34E+1C↑j
                 ldy     #$95
@@ -7216,7 +7174,7 @@ loc_C988:                               ; RESERVED:C96F↑j
 ; ---------------------------------------------------------------------------
 
 loc_C98B:                               ; RESERVED:CAF0↓o
-                ldx     #0
+                ldx     #Ram_00
                 bra     loc_C9B3
 ; ---------------------------------------------------------------------------
 
@@ -7640,7 +7598,7 @@ SerialOutput1a:                         ; ControlAsdRelay_MM+3F↑P
 ; ---------------------------------------------------------------------------
 
 loc_CBB1:                               ; RESERVED:off_CAD6↑o
-                ldx     #$15
+                ldx     #ErrorBitRegister0
                 ldab    <DRBPointer2
                 cmpb    #7
                 bhi     loc_CBC7
@@ -7659,7 +7617,7 @@ loc_CBC7:                               ; RESERVED:CBB8↑j
                 ldaa    #$FE
                 bsr     SerialOutput1a
                 adda    #$10
-                ldx     #$14
+                ldx     #CruiseControlVarT1
 
 loc_CBD3:                               ; RESERVED:CBDB↓j
                 inx
@@ -10682,7 +10640,7 @@ loc_DD0F:                               ; sub_DBE4+10B↑o
                 ldaa    #$A0
                 staa    loc_D555
                 stab    0,y
-                ldx     #0
+                ldx     #Ram_00
 
 loc_DD23:                               ; RESERVED:DD29↓j
                 cmpb    0,y
@@ -12079,7 +12037,7 @@ loc_E507:                               ; OCToggleAndResetCopTimer+B↓j
 
 sub_E523:                               ; sub_E542:loc_E59D↓P
                                         ; sub_E542:loc_E5B1↓P
-                ldx     #1
+                ldx     #Ram_01
 
 loc_E526:                               ; ROM:E51C↑j ROM:E521↑j ...
                 ldy     #$242
@@ -12284,7 +12242,7 @@ sub_E65F:                               ; ROM:E65B↑p
                 stab    0,x
                 inca
                 staa    PPROG_EEPROMControlReg
-                ldy     #$1658
+                ldy     #$B2C*ECLOCK
 
 loc_E66C:                               ; sub_E65F+F↓j
                 dey
@@ -12432,7 +12390,7 @@ sub_E723:                               ; sub_E70E+10↑p
                 stab    0,x
                 inca
                 staa    PPROG_EEPROMControlReg
-                ldy     #$1652
+                ldy     #$B29*ECLOCK
 
 loc_E732:                               ; sub_E723+11↓j
                 dey

@@ -444,11 +444,8 @@ loc_9720:                               ; __RESET+292↑j __RESET+296↑j ...
                 andb    #$FC
                 stab    SPCR_SerialPeripheralControl
                 jsr     OCToggleAndResetCopTimer
- IF ECLOCK == 2
-                ldx     #$535
- ELSE
-                ldx     #$29A*ECLOCK
- ENDIF
+                ldx     #$29A*ECLOCK+1 ; not evenly divisable by 2
+
 loc_974B:                               ; __RESET+2E3↓j
                 ldaa    SwitchPortAccessReg1
                 bita    #$10

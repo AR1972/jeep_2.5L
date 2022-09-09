@@ -7033,18 +7033,15 @@ sub_C8AF:                               ; __RESET+628↑P
                 ldaa    BAUD_SerialBaudRate
                 anda    #$37
  IF ECLOCK == 3
-                cmpa    #$12
- ELSE
-                cmpa    #$22                 ; %00010011/$12 12mhz crystal 7812 BAUD  
- ENDIF
+                cmpa    #$12                 ; %00010011/$12 12mhz crystal 7812 BAUD
                 beq     loc_C8CA
- IF ECLOCK == 3
-                ldaa    #$12
+                ldaa    #$12                 ; %00010011/$12 12mhz crystal 7812 BAUD
  ELSE
-                ldaa    #$22
+                cmpa    #$22                 ; %00100010/$22 8mhz crystal 7812 BAUD
+                beq     loc_C8CA
+                ldaa    #$22                 ; %00100010/$22 8mhz crystal 7812 BAUD
  ENDIF
-                staa    BAUD_SerialBaudRate  ; %00100010/$22 8mhz crystal 7812 BAUD
-                                             ; %00010011/$12 12mhz crystal 7812 BAUD
+                staa    BAUD_SerialBaudRate
                 rts
 ; ---------------------------------------------------------------------------
 

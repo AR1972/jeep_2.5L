@@ -147,13 +147,13 @@ loc_94B3:                               ; __RESET+3F↑j
                 std     InjectorPulsewidth_HB_Cyl3
                 std     InjectorPulsewidth_HB_Cyl4
  IF ECLOCK == 3
-                ldd     #$0C12
+                ldd     #$0C13
  ELSE
                 ldd     #$0C22
  ENDIF
                 staa    SCCR2_SerialControlReg2
                 stab    BAUD_SerialBaudRate  ; %00100010/$22 8mhz crystal 7812 BAUD
-                                             ; %00010011/$12 12mhz crystal 7812 BAUD
+                                             ; %00010011/$13 12mhz crystal 7812 BAUD
                 ldd     SCSR_SerialStatus
                 jsr     OCToggleAndResetCopTimer
                 clr     SCCR1_SerialControlReg1
@@ -7033,9 +7033,9 @@ sub_C8AF:                               ; __RESET+628↑P
                 ldaa    BAUD_SerialBaudRate
                 anda    #$37
  IF ECLOCK == 3
-                cmpa    #$12                 ; %00010011/$12 12mhz crystal 7812 BAUD
+                cmpa    #$13                 ; %00010011/$13 12mhz crystal 7812 BAUD
                 beq     loc_C8CA
-                ldaa    #$12                 ; %00010011/$12 12mhz crystal 7812 BAUD
+                ldaa    #$13                 ; %00010011/$13 12mhz crystal 7812 BAUD
  ELSE
                 cmpa    #$22                 ; %00100010/$22 8mhz crystal 7812 BAUD
                 beq     loc_C8CA

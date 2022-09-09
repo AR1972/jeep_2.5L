@@ -146,9 +146,14 @@ loc_94B3:                               ; __RESET+3F↑j
                 std     InjectorPulsewidth_HB_Cyl2
                 std     InjectorPulsewidth_HB_Cyl3
                 std     InjectorPulsewidth_HB_Cyl4
+ IF ECLOCK == 3
+                ldd     #$0C12
+ ELSE
                 ldd     #$0C22
+ ENDIF
                 staa    SCCR2_SerialControlReg2
-                stab    BAUD_SerialBaudRate
+                stab    BAUD_SerialBaudRate  ; %00100010/$22 8mhz crystal 7812 BAUD
+                                             ; %00010011/$12 12mhz crystal 7812 BAUD
                 ldd     SCSR_SerialStatus
                 jsr     OCToggleAndResetCopTimer
                 clr     SCCR1_SerialControlReg1
@@ -7030,10 +7035,19 @@ sub_C8AF:                               ; __RESET+628↑P
                 bne     locret_C91A
                 ldaa    BAUD_SerialBaudRate
                 anda    #$37
-                cmpa    #$22
+ IF ECLOCK == 3
+                cmpa    #$12
+ ELSE
+                cmpa    #$22                 ; %00010011/$12 12mhz crystal 7812 BAUD  
+ ENDIF
                 beq     loc_C8CA
+ IF ECLOCK == 3
+                ldaa    #$12
+ ELSE
                 ldaa    #$22
-                staa    BAUD_SerialBaudRate
+ ENDIF
+                staa    BAUD_SerialBaudRate  ; %00100010/$22 8mhz crystal 7812 BAUD
+                                             ; %00010011/$12 12mhz crystal 7812 BAUD
                 rts
 ; ---------------------------------------------------------------------------
 
@@ -7646,8 +7660,13 @@ loc_CBF3:                               ; RESERVED:CBF8↓j
                 ldaa    SCSR_SerialStatus
                 bita    #$40
                 beq     loc_CBF3
-                ldaa    #1
-                staa    BAUD_SerialBaudRate
+ IF ECLOCK == 3
+                ldaa    #$10
+ ELSE
+                ldaa    #$01
+ ENDIF
+                staa    BAUD_SerialBaudRate  ; %00000001/$01 8mhz crystal 62.5 BAUD
+                                             ; %00010000/$10 12mhz crystal 62.5 BAUD
 
 locret_CBFF:                            ; RESERVED:CADE↑o
                                         ; RESERVED:CAE6↑o ...
@@ -10277,7 +10296,12 @@ sub_DAEF:                               ; sub_C8AF↑P
                 brset   <DRBSerialMode $80 loc_DB60
                 brclr   <DRBSerialMode $40 loc_DB60
                 ldaa    BAUD_SerialBaudRate
-                cmpa    #$25
+ IF ECLOCK == 3
+                cmpa    #$16
+ ELSE
+                cmpa    #$25                 ; %00100101/$25 976 BAUD 8mhz crystal
+                                             ; %00010110/$16 976 BAUD 12mhz crystal
+ ENDIF
                 bne     locret_DB5F
                 ldab    SCDR_SerialData
                 ldaa    SCSR_SerialStatus
@@ -10796,7 +10820,12 @@ sub_DDCA:                               ; sub_DBE4:loc_DC0B↑P
 
 loc_DDCF:                               ; sub_DDCA+2↑j
                 clr     FDRVar0
-                ldab    #$25
+ IF ECLOCK == 3
+                ldab    #$16
+ ELSE
+                ldab    #$25                 ; %00100101/$25 976 BAUD 8mhz crystal
+                                             ; %00010110/$16 976 BAUD 12mhz crystal
+ ENDIF
                 stab    BAUD_SerialBaudRate
                 ldab    LDXi_6485
                 addb    #$20

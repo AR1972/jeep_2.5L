@@ -550,6 +550,7 @@ TopOfStack                                         equ BaseAddr+$FF
 M99_AAAA                                           equ $AAAA
 M99_D555                                           equ $D555
 
+HC11Registers                                      equ $1000
 PORTA_PortA                                        equ $1000
 ;   PortA_bit7          equ %10000000
 ;   PortA_bit6          equ %01000000

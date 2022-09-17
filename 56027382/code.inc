@@ -27,7 +27,11 @@ loc_9416:
                 sei
                 orab    #$80
                 stab    Temp0
-                ldd     #$2A9
+ IF ECLOCK == 3
+                ldd     #$03A9
+ ELSE IF ECLOCK == 2
+                ldd     #$02A9
+ ENDIF
                 staa    TMSK2_TimerInterruptMask2
                 stab    OPTION_SysConfigOptionReg
                 ldaa    #$F8
@@ -44,7 +48,11 @@ loc_9416:
 CME:
                 sei
                 lds     #TopOfStack
-                ldd     #$2A9
+ IF ECLOCK == 3
+                ldd     #$03A9
+ ELSE IF ECLOCK == 2
+                ldd     #$02A9
+ ENDIF
                 staa    TMSK2_TimerInterruptMask2
                 stab    OPTION_SysConfigOptionReg
                 ldaa    #$F8
@@ -60,7 +68,7 @@ loc_945A:
                 cmpa    #0
                 bne     loc_9468
                 inx
-                cpx     #$20
+                cpx     #$0020
                 bcs     loc_945A
                 bra     loc_94A2
 
@@ -74,7 +82,11 @@ loc_9468:
 __RESET:
                 sei
                 lds     #TopOfStack
-                ldd     #$2A9
+ IF ECLOCK == 3
+                ldd     #$03A9
+ ELSE IF ECLOCK == 2
+                ldd     #$02A9
+ ENDIF
                 staa    TMSK2_TimerInterruptMask2
                 stab    OPTION_SysConfigOptionReg
                 ldaa    #$F8
@@ -110,7 +122,7 @@ loc_94B3:                               ; __RESET+3F↑j
                 stab    HPRIO_HighPriorityInterruptMask
                 clr     OC1M_OutputCompare1Mask
                 clr     OC1D_OutputCompare1D
-                ldd     #$FF
+                ldd     #$00FF
                 staa    TMSK1_TimerInterruptMask1
                 stab    TFLG1_TimerInterruptFlag1
                 ldaa    #$1A
@@ -135,7 +147,11 @@ loc_94B3:                               ; __RESET+3F↑j
                 ldaa    SPSR_SerialPeripheralStatus
                 stab    SPCR_SerialPeripheralControl
                 jsr     OCToggleAndResetCopTimer
+ IF ECLOCK == 3
+                ldd     #$F871
+ ELSE IF ECLOCK == 2
                 ldd     #$F870
+ ENDIF
                 staa    PIA_Ctrl_5
                 stab    PACTL_PulseAccumulatorControl
                 clra
@@ -146,14 +162,19 @@ loc_94B3:                               ; __RESET+3F↑j
                 std     InjectorPulsewidth_HB_Cyl2
                 std     InjectorPulsewidth_HB_Cyl3
                 std     InjectorPulsewidth_HB_Cyl4
+ IF ECLOCK == 4
+                ldd     #$0C23
+ ENDIF
  IF ECLOCK == 3
                 ldd     #$0C13
- ELSE
+ ENDIF
+ IF ECLOCK == 2
                 ldd     #$0C22
  ENDIF
                 staa    SCCR2_SerialControlReg2
-                stab    BAUD_SerialBaudRate  ; %00100010/$22 8mhz crystal 7812 BAUD
-                                             ; %00010011/$13 12mhz crystal 7812 BAUD
+                stab    BAUD_SerialBaudRate  ; %0010 0010/$22 8mhz crystal 7812 BAUD
+                                             ; %0001 0011/$13 12mhz crystal 7812 BAUD
+                                             ; %0010 0011/$23 16mhz crystal 7812 BAUD
                 ldd     SCSR_SerialStatus
                 jsr     OCToggleAndResetCopTimer
                 clr     SCCR1_SerialControlReg1
@@ -400,7 +421,7 @@ loc_96E7:                               ; __RESET+24D↑j __RESET+251↑j ...
                 anda    #$C0
                 cmpa    #$80
                 bne     loc_9708
-                ldd     #$AFF
+                ldd     #$0AFF
                 std     <DRBPointer1
                 ldaa    #$F1
                 staa    LastCamFallingEdgeTime2
@@ -1104,15 +1125,14 @@ locret_9BD0:                            ; CycleACClutch_MM+36↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-ControlAsdRelay_MM:                     ; __RESET+597↑P
+ControlAsdRelay_MM:
                 ldaa    <DRBPointer1
-                cmpa    #$A
+                cmpa    #$0A
                 bne     loc_9BDB
                 bset    <PIA2_Buffer_t3 $10
                 rts
-; ---------------------------------------------------------------------------
 
-loc_9BDB:                               ; ControlAsdRelay_MM+4↑j
+loc_9BDB:
                 cmpa    #$18
                 bne     CONTROL_AUTOSHUTDOWN_RELAY_ROUTINE1
                 ldaa    <DRBSerialMode
@@ -1123,14 +1143,14 @@ loc_9BDB:                               ; ControlAsdRelay_MM+4↑j
                 bls     loc_9C1A
                 ldaa    <DRBPointer2
                 tab
-                anda    #$F
+                anda    #$0F
                 pshb
                 lsrb
                 lsrb
                 lsrb
                 lsrb
                 comb
-                andb    #$F
+                andb    #$0F
                 cba
                 pulb
                 bne     loc_9C1A
@@ -1144,17 +1164,15 @@ loc_9BDB:                               ; ControlAsdRelay_MM+4↑j
                 aba
                 staa    <DRBPointer2
 
-loc_9C0E:                               ; ControlAsdRelay_MM+31↑j
+loc_9C0E:
                 ldaa    #$E1
                 jsr     SerialOutput1a
                 sei
                 ldaa    <PIA2_Buffer_t3
                 anda    #$EF
                 bra     ASD_StoreStateToBuffer
-; ---------------------------------------------------------------------------
 
-loc_9C1A:                               ; ControlAsdRelay_MM+18↑j
-                                        ; ControlAsdRelay_MM+29↑j ...
+loc_9C1A:
                 clra
                 staa    <DRBPointer1
                 staa    <ATMOffset
@@ -1162,32 +1180,29 @@ loc_9C1A:                               ; ControlAsdRelay_MM+18↑j
                 bclr    <DRBSerialMode $30
                 jsr     SerialOutput1a
 
-CONTROL_AUTOSHUTDOWN_RELAY_ROUTINE1:    ; ControlAsdRelay_MM+C↑j
-                                        ; ControlAsdRelay_MM+12↑j
+CONTROL_AUTOSHUTDOWN_RELAY_ROUTINE1:
                 ldx     #BitFlags2d
                 ldaa    <CoolantTemp
                 cmpa    #$8F
                 bcc     ControlAsdRelay_Over27Ftemp
                 ldx     #BatteryVolts
 
-ControlAsdRelay_Over27Ftemp:            ; ControlAsdRelay_MM+5E↑j
-                ldab    #4
+ControlAsdRelay_Over27Ftemp:
+                ldab    #04
                 ldaa    <BatteryVolts
                 cmpa    #$B2
                 brset   <BitFlags23 4 ASD_EngRunningCheckBatVolts
                 bcc     ASD_ToggleOnOff
                 cpx     #$5B
                 bne     ASD_ToggleOnOff
-                ldab    #$B
+                ldab    #$0B
                 bra     ASD_ToggleOnOff
-; ---------------------------------------------------------------------------
 
-ASD_EngRunningCheckBatVolts:            ; ControlAsdRelay_MM+69↑j
+ASD_EngRunningCheckBatVolts:
                 bcs     ASD_ToggleOnOff
-                ldab    #3
+                ldab    #03
 
-ASD_ToggleOnOff:                        ; ControlAsdRelay_MM+6D↑j
-                                        ; ControlAsdRelay_MM+72↑j ...
+ASD_ToggleOnOff:
                 sei
                 ldaa    <PIA2_Buffer_t3
                 anda    #$EF
@@ -1198,20 +1213,17 @@ ASD_ToggleOnOff:                        ; ControlAsdRelay_MM+6D↑j
                 oraa    #$10
                 bclr    <Ram_80 $FF
 
-ASD_StoreStateToBuffer:                 ; ControlAsdRelay_MM+47↑j
-                                        ; ControlAsdRelay_MM+83↑j ...
+ASD_StoreStateToBuffer:
                 staa    <PIA2_Buffer_t3
                 cli
                 brclr   <IPL1 $40 locret_9C6F
                 ldab    <KeyOnOrEngineRunningTime
-                cmpb    #4
+                cmpb    #04
                 bcs     locret_9C6F
                 bset    <BitFlags23 4
 
-locret_9C6F:                            ; ControlAsdRelay_MM+91↑j
-                                        ; ControlAsdRelay_MM+99↑j
+locret_9C6F:
                 rts
-; End of function ControlAsdRelay_MM
 
 ; ---------------------------------------------------------------------------
 
@@ -1229,7 +1241,7 @@ L9ca3_MM:                               ; __RESET+59A↑P
                 mul
                 subd    word_8821
                 bcc     loc_9C91
-                ldd     #0
+                ldd     #0000
 
 loc_9C91:                               ; RESERVED:9C8C↑j
                 brclr   <BitFlags27 8 loc_9C9B
@@ -1241,7 +1253,7 @@ loc_9C9B:                               ; RESERVED:loc_9C91↑j
                 brclr   <PIA2_Buffer_t3 8 loc_9CD9
                 subd    word_8823
                 bcc     loc_9CA7
-                ldd     #0
+                ldd     #0000
 
 loc_9CA7:                               ; RESERVED:9C99↑j
                                         ; RESERVED:9CA2↑j
@@ -1608,7 +1620,7 @@ loc_9EDA:                               ; EmmissionMaintenanceReminder1_MM+63↓
                 bcc     loc_9EDA
 
 loc_9EE8:                               ; EmmissionMaintenanceReminder1_MM:loc_9EDA↑j
-                ldd     #0
+                ldd     #0000
                 std     Temp4
                 staa    DRBOffsetStored_HB
                 ldx     #$B600
@@ -3096,17 +3108,17 @@ loc_A799:                               ; sub_A706+41↑j sub_A706+59↑j ...
                 lsrb
 
 loc_A7B0:                               ; sub_A706+A7↑j
-                ldaa    #0
+                ldaa    #00
                 bitb    #$40
                 bne     loc_A7EC
                 brset   <CruiseStatus_1 $80 loc_A7E1
                 ldaa    Temp0
                 psha
-                ldd     #$F89
+                ldd     #$0F89
                 jsr     ThrowNonCriticalError
                 pula
                 staa    Temp0
-                ldd     #$F08
+                ldd     #$0F08
                 ldx     #ErrorBitsAssociatedWithPIA1AndReg1eTo25_HB
                 cmpa    0,x
                 beq     loc_A7D7
@@ -3134,7 +3146,7 @@ loc_A7EC:                               ; sub_A706+AE↑j sub_A706+E2↑j
                 bne     loc_A7FE
                 ldaa    Temp0
                 psha
-                ldd     #$F10
+                ldd     #$0F10
                 jsr     ThrowNonCriticalError
                 pula
                 staa    Temp0
@@ -3585,14 +3597,14 @@ loc_AA89:                               ; sub_A706+37E↑j
 ; ---------------------------------------------------------------------------
 
 loc_AA91:                               ; sub_A706+384↑j
-                ldy     #$3E
+                ldy     #$003E
                 ldx     #$D000
-                ldd     #$6DD
+                ldd     #$06DD
                 brclr   <TimerOverflowsBetweenSpeedoPulses $FF loc_AAAC
                 clrb
                 clra
                 brset   <TimerOverflowsBetweenSpeedoPulses $40 loc_AAB1
-                ldab    #6
+                ldab    #$06
                 dey
 
 loc_AAA9:                               ; RESERVED:DD15↓w
@@ -6064,21 +6076,21 @@ loc_C314:                               ; sub_C2E6:loc_C301↑j
                 ldx     #byte_861B
 
 loc_C320:                               ; sub_C2E6+35↑j
-                ldy     #$8C
+                ldy     #$008C
                 ldaa    <MapValue
                 jsr     sub_E4D0
                 ldx     #byte_849B
-                ldy     #$88
+                ldy     #$0088
                 ldaa    <EngineRpm_HB
                 jsr     sub_E4D0
                 ldx     #byte_8620
-                ldy     #$97
+                ldy     #$0097
                 ldaa    <TpsVolts
                 jsr     sub_E4D0
 
 loc_C341:                               ; sub_C2E6+2C↑j
                 ldx     #byte_8496
-                ldy     #$8E
+                ldy     #$008E
                 ldaa    <MapValue
                 jsr     sub_E4D0
                 rts
@@ -6096,7 +6108,7 @@ sub_C34E:                               ; sub_C5F1:loc_C7F7↓P
                 ldx     #MapAverageFactorRAM_HB
 
 loc_C35A:                               ; sub_C34E+7↑j
-                ldy     #$8A
+                ldy     #$008A
                 ldaa    <MapValue
                 jsr     sub_E4D0
                 ldx     #byte_8619
@@ -6106,7 +6118,7 @@ loc_C35A:                               ; sub_C34E+7↑j
                 ldx     #TPSAverageFactorRAM_HB
 
 loc_C36F:                               ; sub_C34E+1C↑j
-                ldy     #$95
+                ldy     #$0095
                 ldaa    <TpsVolts
                 jsr     sub_E4D0
                 rts
@@ -6751,7 +6763,7 @@ loc_C70F:                               ; sub_C5F1+119↑j
                 bcc     loc_C71A
 
 loc_C717:                               ; sub_C5F1+120↑j
-                ldd     #0
+                ldd     #0000
 
 loc_C71A:                               ; sub_C5F1+124↑j
                 std     DoubleTempB
@@ -6764,7 +6776,7 @@ loc_C71A:                               ; sub_C5F1+124↑j
                 std     DoubleTempB
                 tst     Ram_C0
                 bpl     loc_C74F
-                ldd     #0
+                ldd     #0000
                 subd    <Ram_C0
                 cpd     DoubleTempB
                 bpl     loc_C74A
@@ -6774,7 +6786,7 @@ loc_C71A:                               ; sub_C5F1+124↑j
 ; ---------------------------------------------------------------------------
 
 loc_C74A:                               ; sub_C5F1+150↑j
-                ldd     #0
+                ldd     #0000
                 bra     loc_C756
 ; ---------------------------------------------------------------------------
 
@@ -6812,7 +6824,7 @@ loc_C774:                               ; sub_C5F1:loc_C766↑j
                 ldx     #byte_84A4
 
 loc_C784:                               ; sub_C5F1+18E↑j
-                ldy     #$90
+                ldy     #$0090
                 ldaa    <MapValue
                 jsr     sub_E4D0
                 brclr   <BitFlags66_t3 $40 loc_C79B
@@ -6838,7 +6850,7 @@ loc_C79B:                               ; sub_C5F1+19C↑j
                 staa    <Ram_80
                 cmpa    byte_845F
                 bhi     loc_C7BE
-                ldd     #0
+                ldd     #0000
                 std     <InjectorPulsewidth_HB
                 bra     loc_C7D8
 ; ---------------------------------------------------------------------------
@@ -6898,7 +6910,7 @@ loc_C7F7:                               ; sub_C5F1:loc_C7E9↑j
 sub_C7FB:                               ; sub_C5F1:loc_C7D5↑P
                 ldx     #CCDFlags5
                 brclr   0,x $20 loc_C808
-                ldd     #0
+                ldd     #0000
                 jmp     loc_C898
 ; ---------------------------------------------------------------------------
 
@@ -7032,11 +7044,17 @@ sub_C8AF:                               ; __RESET+628↑P
                 bne     locret_C91A
                 ldaa    BAUD_SerialBaudRate
                 anda    #$37
+ IF ECLOCK == 4
+                cmpa    #$23                 ; %0010 0011/$23 16mhz crystal 7812 BAUD
+                beq     loc_C8CA
+                ldaa    #$23                 ; %0010 0011/$23 16mhz crystal 7812 BAUD
+ ENDIF
  IF ECLOCK == 3
                 cmpa    #$13                 ; %00010011/$13 12mhz crystal 7812 BAUD
                 beq     loc_C8CA
                 ldaa    #$13                 ; %00010011/$13 12mhz crystal 7812 BAUD
- ELSE
+ ENDIF
+ IF ECLOCK == 2
                 cmpa    #$22                 ; %00100010/$22 8mhz crystal 7812 BAUD
                 beq     loc_C8CA
                 ldaa    #$22                 ; %00100010/$22 8mhz crystal 7812 BAUD
@@ -7654,13 +7672,18 @@ loc_CBF3:                               ; RESERVED:CBF8↓j
                 ldaa    SCSR_SerialStatus
                 bita    #$40
                 beq     loc_CBF3
+ IF ECLOCK == 4
+                lda     #$02
+ ENDIF
  IF ECLOCK == 3
                 ldaa    #$10
- ELSE
+ ENDIF
+ IF ECLOCK == 2
                 ldaa    #$01
  ENDIF
                 staa    BAUD_SerialBaudRate  ; %00000001/$01 8mhz crystal 62.5 BAUD
                                              ; %00010000/$10 12mhz crystal 62.5 BAUD
+                                             ; %00000010/$02 16mhz crystal 62.5 BAUD
 
 locret_CBFF:                            ; RESERVED:CADE↑o
                                         ; RESERVED:CAE6↑o ...
@@ -8204,7 +8227,7 @@ loc_CF05:                               ; sub_CCF6+208↑j
                 staa    PIA_Ctrl_5
 
 loc_CF0F:                               ; sub_CCF6+214↑j
-                ldd     #$1A9
+                ldd     #$01A9
                 std     0,x
                 cli
                 bra     ATM_SerialOut_0
@@ -8435,7 +8458,7 @@ loc_D02E:                               ; sub_D004+27↑j
                 pulx
                 suba    TL_PARTNO4
                 beq     locret_D02D
-                ldd     #$201
+                ldd     #$0201
                 jmp     ThrowNonCriticalError
 ; End of function sub_D004
 
@@ -8701,7 +8724,7 @@ loc_D156:                               ; ThrowNonCriticalError:loc_D14B↑j
 loc_D161:                               ; ThrowNonCriticalError+F↑j
                 andb    #$7F
                 stab    Temp0
-                ldy     #$DC
+                ldy     #$00DC
                 cmpa    0,y
                 beq     loc_D182
                 iny
@@ -8776,7 +8799,7 @@ loc_D1C7:                               ; ThrowNonCriticalError+78↑j
 
 loc_D1CF:                               ; ThrowNonCriticalError+7D↑j
                 ldx     #ErrorBitRegisterStored3
-                ldy     #$1D
+                ldy     #$001D
                 stab    Temp0
 
 loc_D1D9:                               ; ThrowNonCriticalError+B1↓j
@@ -8970,8 +8993,8 @@ loc_D324:                               ; UpdatePIA1AndCheckOutputs2_MM+4↑j
                 staa    Temp0
                 ldab    #$40
                 ldaa    #$61
-                ldy     #PORTA_PortA
-                ldx     #SwitchPortAccessReg1
+                ldy     #HC11Registers
+                ldx     #BaseAddr
                 sei
                 bset    0,x 8
                 bclr    8,y $20
@@ -8983,6 +9006,9 @@ loc_D324:                               ; UpdatePIA1AndCheckOutputs2_MM+4↑j
                 ldaa    SPDR_SerialPeripheralDataIO
                 cmpa    SPSR_SerialPeripheralStatus
                 ldaa    #$62
+ IF ECLOCK == 3
+                ldab    #$20*ECLOCK
+ ENDIF
 
 loc_D353:                               ; UpdatePIA1AndCheckOutputs2_MM+55↓j
                 brclr   0,x 8 loc_D35D
@@ -8992,7 +9018,7 @@ loc_D353:                               ; UpdatePIA1AndCheckOutputs2_MM+55↓j
 ; ---------------------------------------------------------------------------
 
 loc_D35D:                               ; UpdatePIA1AndCheckOutputs2_MM:loc_D353↑j
-                ldab    #$B
+                ldab    #$05*ECLOCK+1
                 staa    SPDR_SerialPeripheralDataIO
                 bset    2,x 8
                 bclr    2,x 8
@@ -9000,7 +9026,7 @@ loc_D35D:                               ; UpdatePIA1AndCheckOutputs2_MM:loc_D353
                 ldaa    SPDR_SerialPeripheralDataIO
                 staa    Temp1
                 cmpa    SPSR_SerialPeripheralStatus
-                ldaa    #0
+                ldaa    #$00
 
 loc_D374:                               ; UpdatePIA1AndCheckOutputs2_MM+76↓j
                 brclr   0,x 8 loc_D37E
@@ -9010,7 +9036,7 @@ loc_D374:                               ; UpdatePIA1AndCheckOutputs2_MM+76↓j
 ; ---------------------------------------------------------------------------
 
 loc_D37E:                               ; UpdatePIA1AndCheckOutputs2_MM:loc_D374↑j
-                ldab    #$B
+                ldab    #$05*ECLOCK+1
                 staa    SPDR_SerialPeripheralDataIO
                 bset    2,x 8
                 bclr    2,x 8
@@ -9028,7 +9054,7 @@ loc_D395:                               ; UpdatePIA1AndCheckOutputs2_MM+97↓j
 ; ---------------------------------------------------------------------------
 
 loc_D39F:                               ; UpdatePIA1AndCheckOutputs2_MM:loc_D395↑j
-                ldab    #$B
+                ldab    #$05*ECLOCK+1
                 staa    SPDR_SerialPeripheralDataIO
                 bset    2,x 8
                 bclr    2,x 8
@@ -9046,7 +9072,7 @@ loc_D3B6:                               ; UpdatePIA1AndCheckOutputs2_MM+B8↓j
 ; ---------------------------------------------------------------------------
 
 loc_D3C0:                               ; UpdatePIA1AndCheckOutputs2_MM:loc_D3B6↑j
-                ldab    #$B
+                ldab    #$05*ECLOCK+1
                 staa    SPDR_SerialPeripheralDataIO
                 bset    2,x 8
                 bclr    2,x 8
@@ -9064,7 +9090,7 @@ loc_D3D8:                               ; UpdatePIA1AndCheckOutputs2_MM+DA↓j
 ; ---------------------------------------------------------------------------
 
 loc_D3E2:                               ; UpdatePIA1AndCheckOutputs2_MM:loc_D3D8↑j
-                ldab    #$B
+                ldab    #$05*ECLOCK+1
                 staa    SPDR_SerialPeripheralDataIO
                 bset    2,x 8
                 bclr    2,x 8
@@ -9205,12 +9231,12 @@ loc_D4C4:                               ; UpdatePIA1AndCheckOutputs2_MM+1A5↑j
                 ldaa    SwitchPortAccessReg1
                 anda    #$FE
                 staa    SwitchPortAccessReg1
-                ldab    #3
+                ldab    #$01*ECLOCK+1
 
 loc_D4D7:                               ; UpdatePIA1AndCheckOutputs2_MM+1D5↓j
                 decb
                 bne     loc_D4D7
-                oraa    #1
+                oraa    #$01
                 staa    SwitchPortAccessReg1
 
 loc_D4DF:                               ; UpdatePIA1AndCheckOutputs2_MM+1C7↑j
@@ -9243,12 +9269,10 @@ locret_D4F8:                            ; sub_D4E1+2↑j sub_D4E1+B↑j ...
 
 sub_D4F9:                               ; __RESET+601↑P
 
-; FUNCTION CHUNK AT D03A SIZE 000000BC BYTES
-
                 ldab    #$40
                 brset   <IPL1 $40 loc_D519
                 ldaa    <DRBPointer1
-                cmpa    #$A
+                cmpa    #$0A
                 bne     loc_D508
                 jmp     loc_D03A
 ; ---------------------------------------------------------------------------
@@ -9269,7 +9293,7 @@ loc_D513:                               ; sub_D4F9+11↑j
 
 loc_D519:                               ; sub_D4F9+2↑j
                 ldx     <KeyOnOrEngineRunningTime
-                cpx     #3
+                cpx     #$03
                 bls     loc_D53D
                 bclr    <Ram_05 $C0
                 brclr   <PIA1_Buffer_t3 $40 loc_D53C
@@ -9556,7 +9580,7 @@ loc_D684:                               ; sub_D64A↑j sub_D64A+32↑j
                 cmpa    #$1F
                 bne     locret_D6A0
                 brset   <b5d_IPL2 $40 locret_D6A0
-                ldd     #$181
+                ldd     #$0181
                 jsr     ThrowNonCriticalError
                 bcc     locret_D6A0
                 bset    <b5d_IPL2 $40
@@ -9747,10 +9771,10 @@ sub_D79B:                               ; __RESET+610↑P
                 brclr   <BitFlags2e $20 loc_D7CC
                 lsra
                 eora    <BitFlags24
-                bita    #2
+                bita    #$02
                 cli
                 beq     loc_D7CC
-                ldd     #$BA0
+                ldd     #$0BA0
                 jsr     ThrowNonCriticalError
                 bcc     loc_D7CC
                 bset    <b5d_IPL2 $10
@@ -9779,7 +9803,7 @@ sub_D7D7:                               ; __RESET+5C7↑P
                 cmpa    #$82
                 bcs     locret_D7FC
                 ldaa    <Counter_MainLoop
-                bita    #4
+                bita    #$04
                 bne     locret_D7FC
                 ldaa    <TimerOverflowsBetweenCamPulses
                 bne     locret_D7FC
@@ -10030,7 +10054,7 @@ sub_D94F:                               ; __RESET+60D↑P
                 cmpa    #$10
                 bcs     loc_D973
                 brset   <b5C_IPL1_t3 $20 locret_D976
-                ldd     #$6A0
+                ldd     #$06A0
                 jsr     ThrowNonCriticalError
                 bcc     locret_D976
                 bset    <b5C_IPL1_t3 $20
@@ -10264,7 +10288,7 @@ loc_DAC8:                               ; sub_DA71:loc_DAB8↑j
                 clra
                 staa    <BatVoltsDiagCounter
                 bclr    <BitFlags21 $10
-                ldd     #$58A
+                ldd     #$058A
                 jsr     ThrowNonCriticalError
                 bcc     locret_DAB7
                 bset    <b5d_IPL2 8
@@ -10290,11 +10314,16 @@ sub_DAEF:                               ; sub_C8AF↑P
                 brset   <DRBSerialMode $80 loc_DB60
                 brclr   <DRBSerialMode $40 loc_DB60
                 ldaa    BAUD_SerialBaudRate
+ IF ECLOCK == 4
+                cmpa    #$26
+ ENDIF
  IF ECLOCK == 3
                 cmpa    #$16
- ELSE
+ ENDIF
+ IF ECLOCK == 2
                 cmpa    #$25                 ; %00100101/$25 976 BAUD 8mhz crystal
                                              ; %00010110/$16 976 BAUD 12mhz crystal
+                                             ; %00100110/$26 976 BAUD 16mhz crystal
  ENDIF
                 bne     locret_DB5F
                 ldab    SCDR_SerialData
@@ -10521,18 +10550,18 @@ loc_DC4E:                               ; sub_DBE4+63↑j
                 ldy     <EngineRpm_HB
                 cpy     #$100
                 bhi     loc_DC60
-                ldaa    #5
+                ldaa    #$05
                 jmp     loc_DD9A
 ; ---------------------------------------------------------------------------
 
 loc_DC60:                               ; sub_DBE4+75↑j
-                ldd     #$17
+                ldd     #$0017
                 jsr     sub_DDA1
                 jmp     loc_DD9A
 ; ---------------------------------------------------------------------------
 
 loc_DC69:                               ; sub_DBE4+20↑J
-                bita    #1
+                bita    #$01
                 beq     loc_DC70
                 jmp     loc_DC7D
 ; ---------------------------------------------------------------------------
@@ -10814,11 +10843,16 @@ sub_DDCA:                               ; sub_DBE4:loc_DC0B↑P
 
 loc_DDCF:                               ; sub_DDCA+2↑j
                 clr     FDRVar0
+ IF ECLOCK == 4
+                ldab    #$26
+ ENDIF
  IF ECLOCK == 3
                 ldab    #$16
- ELSE
+ ENDIF
+ IF ECLOCK == 2
                 ldab    #$25                 ; %00100101/$25 976 BAUD 8mhz crystal
                                              ; %00010110/$16 976 BAUD 12mhz crystal
+                                             ; %00100110/$26 976 BAUD 16mhz crystal
  ENDIF
                 stab    BAUD_SerialBaudRate
                 ldab    LDXi_6485
@@ -10847,8 +10881,8 @@ loc_DDF0:                               ; sub_DDE7+5↑j
                 staa    Temp3
                 tba
                 ldab    #$40
-                ldy     #$1000
-                ldx     #SwitchPortAccessReg1
+                ldy     #HC11Registers
+                ldx     #BaseAddr
                 sei
                 bset    0,x 8
                 bclr    8,y $20
@@ -10860,7 +10894,9 @@ loc_DDF0:                               ; sub_DDE7+5↑j
                 ldaa    SPDR_SerialPeripheralDataIO
                 cmpa    SPSR_SerialPeripheralStatus
                 ldaa    Temp0
-
+ IF ECLOCK == 3
+                ldab    #$20*ECLOCK
+ ENDIF
 loc_DE22:                               ; sub_DDE7+40↓j
                 brclr   0,x 8 loc_DE2C
                 decb
@@ -11678,11 +11714,11 @@ loc_E36A:                               ; ScaleXbyB_somethingelse+22↑j
 
 Lookup4ByteTable:                       ; __RESET+18F↑P
                                         ; __RESET:FilterAndStoreCoolantTemp↑P ...
-                ldy     #0
+                ldy     #0000
                 ldab    0,x
                 aby
                 inx
-                ldab    #4
+                ldab    #$04
                 cmpa    0,x
                 bhi     loc_E386
 
@@ -11758,16 +11794,13 @@ loc_E3BF:                               ; sub_E3AA+11↑j
                 pulb
                 pula
                 rts
-; End of function sub_E3AA
-
-; ---------------------------------------------------------------------------
                 rts
 
 ; =============== S U B R O U T I N E =======================================
 
 
 sub_E3C7:                               ; sub_BB9B+1↑P ROM:loc_F0D8↓P
-                ldy     #$36
+                ldy     #$0036
                 ldd     byte_8072
                 ldx     byte_8074
                 brclr   <TimerOverflowsBetweenCamPulses $FF loc_E3DD
@@ -12035,7 +12068,7 @@ OCToggleAndResetCopTimer:               ; __RESET+7F↑P __RESET+82↑P ...
                 ldaa    SwitchPortAccessReg1
                 anda    #$FD
                 staa    SwitchPortAccessReg1
-                ldab    #$10
+                ldab    #$08*ECLOCK
 
 loc_E507:                               ; OCToggleAndResetCopTimer+B↓j
                 decb
@@ -12063,7 +12096,7 @@ sub_E523:                               ; sub_E542:loc_E59D↓P
                 ldx     #Ram_01
 
 loc_E526:                               ; ROM:E51C↑j ROM:E521↑j ...
-                ldy     #$242
+                ldy     #$0242
                 jsr     OCToggleAndResetCopTimer
 
 loc_E52D:                               ; sub_E523+19↓j
@@ -12160,7 +12193,7 @@ loc_E5B1:                               ; sub_E542+7E↓j
                 bne     loc_E5E9
                 dec     Temp3
                 bne     loc_E5B1
-                ldab    #3
+                ldab    #$03
 
 loc_E5C4:                               ; sub_E542+95↓j
                 ldaa    #$10
@@ -12188,15 +12221,15 @@ loc_E5E9:                               ; sub_E542+5E↑j sub_E542+72↑j ...
                 jsr     CountRamValuesFrom05to20
                 std     <MinimumTimerCountBeforeMainloopCanContinue
                 jsr     OCToggleAndResetCopTimer
-                ldd     #0
+                ldd     #0000
                 staa    PPROG_EEPROMControlReg
                 stab    PIA_Ctrl_1
                 staa    SwitchPortAccessReg1
-                ldab    #7
+                ldab    #$07
                 stab    PIA3_Buffer_2_t3
                 staa    PIA_Ctrl_5
                 staa    PIA_Ctrl_2
-                ldd     #0
+                ldd     #0000
                 std     OC1M_OutputCompare1Mask
                 clr     SCCR2_SerialControlReg2
                 ldd     #$FFFE
@@ -12589,14 +12622,13 @@ sub_E825:                               ; ROM:E74A↑P ROM:E750↑P ...
 
 ; ---------------------------------------------------------------------------
 
-OC1I:                                   ; USER_VEC:FFE8↓o
+OC1I:
                 bsr     sub_E832
                 rti
 
 ; =============== S U B R O U T I N E =======================================
 
-
-sub_E832:                               ; ROM:OC1I↑p
+sub_E832:
                 ldaa    #$80
                 staa    TFLG1_TimerInterruptFlag1
                 ldaa    #$10
@@ -12610,29 +12642,29 @@ sub_E832:                               ; ROM:OC1I↑p
                 bpl     loc_E854
                 addd    #$89
 
-loc_E854:                               ; sub_E832+1D↑j
+loc_E854:
                 addd    #$89
                 bra     loc_E85F
-; ---------------------------------------------------------------------------
 
-loc_E859:                               ; sub_E832+14↑j
+loc_E859:
                 ldd     TCNT_Counter_FreeRunning16bit
-                addd    #$1E0
+                addd    #$01E0
 
-loc_E85F:                               ; sub_E832+25↑j
+loc_E85F:
                 std     TOC1_Counter_OC1
                 ldaa    TMSK1_TimerInterruptMask1
                 anda    #$7F
                 staa    TMSK1_TimerInterruptMask1
                 inc     Timer_AlternatorDutyCycle
                 ldx     #SwitchPortAccessReg1
+
+ControlAlternator:
                 ldaa    <ATMOffset
-                cmpa    #$D
+                cmpa    #$0D
                 bne     loc_E879
                 jmp     loc_E907
-; ---------------------------------------------------------------------------
 
-loc_E879:                               ; sub_E832+42↑j sub_E832+4A↓j
+loc_E879:
                 ldaa    ADCTL_A2DControlReg
                 bpl     loc_E879
                 ldaa    ADR2_A2DResults2
@@ -12642,94 +12674,90 @@ loc_E879:                               ; sub_E832+42↑j sub_E832+4A↓j
                 bcc     loc_E88A
                 staa    <BatteryVolts
 
-loc_E88A:                               ; sub_E832+54↑j
+loc_E88A:
                 ldaa    <EngineRpm_HB
-                cmpa    #$C
+                cmpa    #$0C
                 bcs     loc_E898
                 cmpa    #$10
                 bcc     loc_E89D
                 brset   <BitFlags24 1 loc_E89D
 
-loc_E898:                               ; sub_E832+5C↑j
+loc_E898:
                 bclr    <BitFlags24 1
-                bra     loc_E900
-; ---------------------------------------------------------------------------
+                bra     AlternatorOff
 
-loc_E89D:                               ; sub_E832+60↑j sub_E832+62↑j
+loc_E89D:
                 bset    <BitFlags24 1
                 ldaa    <BatteryVoltsRaw
                 cmpa    #$41
                 bcc     loc_E8AC
                 ldab    <Counter_MainLoop
-                bitb    #6
-                bne     loc_E900
+                bitb    #$06
+                bne     AlternatorOff
 
-loc_E8AC:                               ; sub_E832+72↑j
+loc_E8AC:
                 brclr   <BitFlags21 $10 loc_E8C7
                 ldaa    <A2DResults2Temp
                 bne     loc_E8B8
                 ldaa    <BatteryVoltsRaw
                 staa    <A2DResults2Temp
 
-loc_E8B8:                               ; sub_E832+80↑j
+loc_E8B8:
                 suba    <BatteryVoltsRaw
-                bls     loc_E900
+                bls     AlternatorOff
                 cmpa    byte_89F2
-                bls     loc_E900
+                bls     AlternatorOff
                 bset    <BitFlags21 $20
                 bclr    <BitFlags21 $10
 
-loc_E8C7:                               ; sub_E832:loc_E8AC↑j
+loc_E8C7:
                 clr     A2DResults2Temp
                 ldaa    <BatteryVoltsRaw
                 suba    <TargetBatteryVolts
                 bne     loc_E8D6
-                brclr   0,x 4 loc_E8F7
-                bra     loc_E900
-; ---------------------------------------------------------------------------
+                brclr   0,x 4 AlternatorOn
+                bra     AlternatorOff
 
-loc_E8D6:                               ; sub_E832+9C↑j
-                ldab    #7
+loc_E8D6:
+                ldab    #$07
                 bcc     loc_E8EA
                 nega
-                cmpa    #2
+                cmpa    #$02
                 beq     loc_E8E3
-                bcc     loc_E8F7
-                ldab    #3
+                bcc     AlternatorOn
+                ldab    #$03
 
-loc_E8E3:                               ; sub_E832+AB↑j
+loc_E8E3:
                 andb    Timer_AlternatorDutyCycle
-                beq     loc_E900
-                bra     loc_E8F7
-; ---------------------------------------------------------------------------
+                beq     AlternatorOff
+                bra     AlternatorOn
 
-loc_E8EA:                               ; sub_E832+A6↑j
-                cmpa    #2
+loc_E8EA:
+                cmpa    #$02
                 beq     loc_E8F2
-                bcc     loc_E900
-                ldab    #3
+                bcc     AlternatorOff
+                ldab    #$03
 
-loc_E8F2:                               ; sub_E832+BA↑j
+loc_E8F2:
                 andb    Timer_AlternatorDutyCycle
-                bne     loc_E900
+                bne     AlternatorOff
 
-loc_E8F7:                               ; sub_E832+9E↑j sub_E832+AD↑j ...
+AlternatorOn:
                 sei
                 bset    0,x 4
                 bset    <BitFlags24 2
                 bra     loc_E907
-; ---------------------------------------------------------------------------
 
-loc_E900:                               ; sub_E832+69↑j sub_E832+78↑j ...
+AlternatorOff:
                 sei
                 bclr    0,x 4
                 bclr    <BitFlags24 2
 
-loc_E907:                               ; sub_E832+44↑J sub_E832+CC↑j
+loc_E907:
                 bset    2,x 4
-                ldaa    #$14
+                ldaa    #$0A*ECLOCK
 
-loc_E90C:                               ; sub_E832+DB↓j
+loc_E90C:
                 deca
                 bne     loc_E90C
                 bclr    2,x 4
@@ -12749,47 +12777,44 @@ loc_E90C:                               ; sub_E832+DB↓j
                 cmpa    <DesiredNewAisPosition
                 beq     loc_E995
 
-loc_E92E:                               ; sub_E832+EB↑j sub_E832+F4↑j
+loc_E92E:
                 ldaa    <BatteryVolts
                 cmpa    TL_MinVoltageForAis
                 bcs     loc_E995
                 sei
                 ldaa    <PIA3_Buffer_t3
-                oraa    #1
+                oraa    #$01
                 staa    PIA3_Buffer_2_t3
                 anda    #$FE
                 staa    <PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 ldab    <CurrentAisPosition
                 brclr   <BitFlags36_t3 $40 loc_E954
-                ldaa    #1
+                ldaa    #$01
                 tstb
                 bne     loc_E95C
                 bclr    <BitFlags36_t3 $40
                 bra     loc_E964
-; ---------------------------------------------------------------------------
 
-loc_E954:                               ; sub_E832+114↑j
-                ldaa    #1
+loc_E954:
+                ldaa    #$01
                 cmpb    <DesiredNewAisPosition
                 beq     loc_E964
                 bcs     loc_E95D
 
-loc_E95C:                               ; sub_E832+11B↑j
+loc_E95C:
                 nega
 
-loc_E95D:                               ; sub_E832+128↑j
+loc_E95D:
                 tab
                 adda    <CurrentAisPosition
                 staa    <CurrentAisPosition
                 bra     loc_E965
-; ---------------------------------------------------------------------------
 
-loc_E964:                               ; sub_E832+120↑j
-                                        ; sub_E832+126↑j
+loc_E964:
                 clrb
 
-loc_E965:                               ; sub_E832+130↑j
+loc_E965:
                 ldx     #gb_AISTEP_BitPatternForAisControl
                 addb    <BitFlags_36_t3
                 andb    #3
@@ -12817,18 +12842,17 @@ loc_E965:                               ; sub_E832+130↑j
                 bset    0,x $20
                 cli
 
-loc_E995:                               ; sub_E832+E5↑j sub_E832+EE↑j ...
+loc_E995:
                 brclr   <DRBSerialMode $80 loc_E9EC
                 ldaa    SCSR_SerialStatus
-                bita    #$E
+                bita    #$0E
                 psha
                 pula
                 beq     loc_E9A7
                 ldab    SCDR_SerialData
                 bra     loc_E9EC
-; ---------------------------------------------------------------------------
 
-loc_E9A7:                               ; sub_E832+16E↑j
+loc_E9A7:
                 bita    #$20
                 beq     loc_E9EC
                 ldab    SCDR_SerialData
@@ -12836,58 +12860,50 @@ loc_E9A7:                               ; sub_E832+16E↑j
                 bne     loc_E9B7
                 bclr    <BitFlags21 $40
                 bra     loc_E9E9
-; ---------------------------------------------------------------------------
 
-loc_E9B7:                               ; sub_E832+17E↑j
+loc_E9B7:
                 cmpb    #$F6
                 bne     loc_E9C0
                 bset    <BitFlags21 $40
                 bra     loc_E9E9
-; ---------------------------------------------------------------------------
 
-loc_E9C0:                               ; sub_E832+187↑j
+loc_E9C0:
                 cmpb    #$FE
                 bne     loc_E9CA
                 bclr    <DRBSerialMode $B0
                 bclr    <BitFlags21 $40
 
-loc_E9CA:                               ; sub_E832+190↑j
+loc_E9CA:
                 brset   <BitFlags21 $40 loc_E9D6
                 ldx     #Ram_00
                 abx
                 ldab    0,x
                 bra     loc_E9E9
-; ---------------------------------------------------------------------------
 
-loc_E9D6:                               ; sub_E832:loc_E9CA↑j
+loc_E9D6:
                 ldaa    byte_8A56
                 cba
                 bhi     loc_E9E0
                 ldab    #$FF
                 bra     loc_E9E9
-; ---------------------------------------------------------------------------
 
-loc_E9E0:                               ; sub_E832+1A8↑j
+loc_E9E0:
                 ldx     #byte_8A57
                 aslb
                 abx
                 ldx     0,x
                 ldab    0,x
 
-loc_E9E9:                               ; sub_E832+183↑j
-                                        ; sub_E832+18C↑j ...
+loc_E9E9:
                 stab    SCDR_SerialData
 
-loc_E9EC:                               ; sub_E832:loc_E995↑j
-                                        ; sub_E832+173↑j ...
+loc_E9EC:
                 jsr     sub_D801
                 sei
                 ldaa    #$80
                 oraa    TMSK1_TimerInterruptMask1
                 staa    TMSK1_TimerInterruptMask1
                 rts
-; End of function sub_E832
-
 
 ; =============== S U B R O U T I N E =======================================
 
@@ -12915,19 +12931,19 @@ loc_EA13:                               ; sub_EA08+7↑j
                 stab    PIA_Ctrl_2
                 anda    #1
                 eora    SwitchPortAccessReg2
-                bita    #1
+                bita    #$01
                 beq     loc_EA2D
                 ldaa    SwitchPortAccessReg2
-                ldab    #1
-                bita    #1
+                ldab    #$01
+                bita    #$01
                 beq     loc_EA2A
-                ldab    #0
+                ldab    #$00
 
 loc_EA2A:                               ; sub_EA08+1E↑j
                 stab    PIA_Ctrl_2
 
 loc_EA2D:                               ; sub_EA08+15↑j
-                ldd     #$1FB
+                ldd     #$01FB
                 stab    PIA_Ctrl_4
                 staa    PIA_Ctrl_3
                 rts
@@ -13090,7 +13106,7 @@ sub_EB09:                               ; __RESET+61F↑P
 
 loc_EB3B:                               ; sub_EB09+27↑j
                 brclr   <BitFlags21 $80 loc_EB80
-                ldab    #7
+                ldab    #$03*ECLOCK+1
 
 loc_EB41:                               ; sub_EB09+39↓j
                 decb
@@ -13161,9 +13177,9 @@ loc_EBA5:                               ; ROM:EB9B↑j
                 cpx     #$5DC0
                 bcc     loc_EBBC
                 ldx     TIC1_Counter_IC1_CamSensor
-                ldab    #$C
+                ldab    #$0C
                 abx
-                ldaa    #4
+                ldaa    #$04
 
 loc_EBB2:                               ; ROM:EBBA↓j
                 bita    PORTA_PortA
@@ -13172,7 +13188,7 @@ loc_EBB2:                               ; ROM:EBBA↓j
                 bpl     loc_EBB2
 
 loc_EBBC:                               ; ROM:EB8F↑j ROM:EBA8↑j
-                ldd     #$510
+                ldd     #$0510
                 staa    TFLG1_TimerInterruptFlag1
                 stab    ADCTL_A2DControlReg
                 ldab    CountdownTimerFromKeyOn
@@ -13182,24 +13198,24 @@ loc_EBBC:                               ; ROM:EB8F↑j ROM:EBA8↑j
 loc_EBCD:                               ; ROM:EBC8↑j
                 ldab    <BitFlags_BF_t3
                 bpl     loc_EC16
-                bitb    #4
+                bitb    #$04
                 beq     loc_EBD7
                 andb    #$F8
 
 loc_EBD7:                               ; ROM:EBD3↑j
                 incb
                 stab    <BitFlags_BF_t3
-                andb    #7
+                andb    #$07
                 decb
                 aslb
                 ldx     #off_EB82
                 abx
                 ldx     0,x
-                ldaa    #1
+                ldaa    #$01
                 ldab    <CylinderPointer
-                cmpb    #5
+                cmpb    #$05
                 beq     loc_EBF1
-                cmpb    #2
+                cmpb    #$02
                 bcs     loc_EBF1
                 deca
 
@@ -13208,7 +13224,7 @@ loc_EBF1:                               ; ROM:EBEA↑j ROM:EBEE↑j
                 lsra
                 bcs     loc_EC16
                 ldaa    <EngineRpm_HB
-                ldab    #1
+                ldab    #$01
                 cmpa    #$5E
                 bcc     loc_EC0A
                 stab    PIA_Ctrl_4
@@ -13326,7 +13342,7 @@ loc_ECD1:                               ; ROM:ECC5↑j ROM:ECC9↑j
 
 loc_ECD9:                               ; ROM:ECCF↑j
                 bset    <IPL1 $40
-                ldd     #0
+                ldd     #0000
                 std     <KeyOnOrEngineRunningTime
                 staa    <ATMOffset
                 bset    <Ram_80 $FF
@@ -13652,17 +13668,17 @@ loc_EEFC:                               ; ROM:EB84↑o
                 mul
                 lsld
                 aslb
-                adca    #0
+                adca    #$00
                 jsr     ScaleYbyA
                 xgdy
                 addd    TIC1_Counter_IC1_CamSensor
-                subd    #$A
+                subd    #$0A
                 std     Temp5_t3
                 bra     loc_EF45
 ; ---------------------------------------------------------------------------
 
 loc_EF36:                               ; ROM:EF02↑j
-                ldd     #$308
+                ldd     #$0308
                 oraa    TCTL1_TimerControlReg1
                 staa    TCTL1_TimerControlReg1
                 stab    TFLG1_TimerInterruptFlag1
@@ -13671,10 +13687,10 @@ loc_EF36:                               ; ROM:EF02↑j
 
 loc_EF45:                               ; ROM:EF34↑j
                 ldaa    PORTA_PortA
-                bita    #8
+                bita    #$08
                 bne     loc_EF80
                 ldaa    TCTL1_TimerControlReg1
-                bita    #1
+                bita    #$01
                 bne     loc_EF56
                 jmp     loc_EFDF
 ; ---------------------------------------------------------------------------
@@ -14283,7 +14299,7 @@ PAII:                                   ; USER_VEC:FFDA↓o
                 anda    TMSK1_TimerInterruptMask1
                 staa    TMSK1_TimerInterruptMask1
                 stab    TFLG1_TimerInterruptFlag1
-                ldd     #$FF0
+                ldd     #$0FF0
                 anda    TMSK2_TimerInterruptMask2
                 staa    TMSK2_TimerInterruptMask2
                 stab    TFLG2_TimerInterruptFlag2

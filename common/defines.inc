@@ -617,7 +617,7 @@ TCTL1_TimerControlReg1                             equ HC11Registers+$20
 ;   Bit 2 - OL4:
 ;   Bit 1 - OM5:
 ;   Bit 0 - OL5:
-TCTL2_TimerControlReg2                             equ $HC11Registers+21
+TCTL2_TimerControlReg2                             equ HC11Registers+$21
 ;   determines which edge to detect - 2 bits determine mode
 ;   00=no capture 01=rising edge 10=falling edge 11=both edges
 ;   bits 7/6 not used
@@ -677,7 +677,7 @@ PACTL_PulseAccumulatorControl                      equ HC11Registers+$26
 ;   Bit 0 - PR0:
 ;   rti timer value = 1 /(2Mhtz / 2^13 / prescaler)
 PACNT_PulseAccumulatorCounter                      equ HC11Registers+$27
-SPCR_SerialPeripheralControl                       equ $HC11Registers+28
+SPCR_SerialPeripheralControl                       equ HC11Registers+$28
 SPSR_SerialPeripheralStatus                        equ HC11Registers+$29
 ;   Bit 7 - SPIF - SPI Transfer complete flag
 ;   Bit 6 - WCOL - Write collision error flag

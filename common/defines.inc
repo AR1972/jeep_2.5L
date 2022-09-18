@@ -551,8 +551,8 @@ TopOfStack                                         equ PiaAddr+$FF
 M99_AAAA                                           equ $AAAA
 M99_D555                                           equ $D555
 
-HC11Registers                                      equ $1000
-PORTA_PortA                                        equ HC11Registers+$00
+HC11Reg                                      equ $1000
+PORTA_PortA                                        equ HC11Reg+$00
 ;   PortA_bit7          equ %10000000
 ;   PortA_bit6          equ %01000000
 ;   PortA_InjectorB     equ %00100000
@@ -561,17 +561,17 @@ PORTA_PortA                                        equ HC11Registers+$00
 ;   PortA_DistRef       equ %00000100
 ;   PortA_Speedo        equ %00000010
 ;   PortA_bit0          equ %00000001
-CPU_L1001_Reserved                                 equ HC11Registers+$01
-PIOC_Parallel_IO_Ctrl                              equ HC11Registers+$02
-PORTC_PortC                                        equ HC11Registers+$03
-PORTB_PortB                                        equ HC11Registers+$04
-PORTCL_PortCL                                      equ HC11Registers+$05
-CPU_L1006Reserved                                  equ HC11Registers+$06
-DDRC_PortC_DataDirection                           equ HC11Registers+$07
-PORTD_PortD                                        equ HC11Registers+$08
-DDRD_PortD_DataDirection                           equ HC11Registers+$09
-PORTE_PortE                                        equ HC11Registers+$0A
-CFORC_TimerForceCompare                            equ HC11Registers+$0B
+CPU_L1001_Reserved                                 equ HC11Reg+$01
+PIOC_Parallel_IO_Ctrl                              equ HC11Reg+$02
+PORTC_PortC                                        equ HC11Reg+$03
+PORTB_PortB                                        equ HC11Reg+$04
+PORTCL_PortCL                                      equ HC11Reg+$05
+CPU_L1006Reserved                                  equ HC11Reg+$06
+DDRC_PortC_DataDirection                           equ HC11Reg+$07
+PORTD_PortD                                        equ HC11Reg+$08
+DDRD_PortD_DataDirection                           equ HC11Reg+$09
+PORTE_PortE                                        equ HC11Reg+$0A
+CFORC_TimerForceCompare                            equ HC11Reg+$0B
 ;   allows user to force the OCx pins to change states asap and not have to wait for
 ;   the timer to actually expire.  does not affect the OCxF bits or trigger interrupts.
 ;   Bit 7 - OC1:
@@ -582,7 +582,7 @@ CFORC_TimerForceCompare                            equ HC11Registers+$0B
 ;   Bit 2 - 0
 ;   Bit 1 - 0
 ;   Bit 0 - 0
-OC1M_OutputCompare1Mask                            equ HC11Registers+$0C
+OC1M_OutputCompare1Mask                            equ HC11Reg+$0C
 ;   Bit 7 - OC1M7:
 ;   Bit 6 - OC1M6:
 ;   Bit 5 - OC1M5:
@@ -591,7 +591,7 @@ OC1M_OutputCompare1Mask                            equ HC11Registers+$0C
 ;   Bit 2 - 0
 ;   Bit 1 - 0
 ;   Bit 0 - 0
-OC1D_OutputCompare1D                               equ HC11Registers+$0D
+OC1D_OutputCompare1D                               equ HC11Reg+$0D
 ;   Bit 7 - OC1D7: references PA7/PA1
 ;   Bit 6 - OC1D6: references PA6/OC2
 ;   Bit 5 - OC1D5: references PA5/OC3
@@ -600,16 +600,16 @@ OC1D_OutputCompare1D                               equ HC11Registers+$0D
 ;   Bit 2 - 0
 ;   Bit 1 - 0
 ;   Bit 0 - 0
-TCNT_Counter_FreeRunning16bit                      equ HC11Registers+$0E
-TIC1_Counter_IC1_CamSensor                         equ HC11Registers+$10
-TIC2_Counter_IC2_Speedometer                       equ HC11Registers+$12
-TIC3_Counter_IC3_CrankSensor                       equ HC11Registers+$14
-TOC1_Counter_OC1                                   equ HC11Registers+$16
-TOC2_Counter_OC2                                   equ HC11Registers+$18
-TOC3_Counter_OC3                                   equ HC11Registers+$1A
-TOC4_Counter_OC4                                   equ HC11Registers+$1C
-TOC5_Counter_OC5_Dwell                             equ HC11Registers+$1E
-TCTL1_TimerControlReg1                             equ HC11Registers+$20
+TCNT_Counter_FreeRunning16bit                      equ HC11Reg+$0E
+TIC1_Counter_IC1_CamSensor                         equ HC11Reg+$10
+TIC2_Counter_IC2_Speedometer                       equ HC11Reg+$12
+TIC3_Counter_IC3_CrankSensor                       equ HC11Reg+$14
+TOC1_Counter_OC1                                   equ HC11Reg+$16
+TOC2_Counter_OC2                                   equ HC11Reg+$18
+TOC3_Counter_OC3                                   equ HC11Reg+$1A
+TOC4_Counter_OC4                                   equ HC11Reg+$1C
+TOC5_Counter_OC5_Dwell                             equ HC11Reg+$1E
+TCTL1_TimerControlReg1                             equ HC11Reg+$20
 ;   Bit 7 - OM2:     M0 L0 = OCx does not affect pin (OC1 still may)
 ;   Bit 6 - OL2:     M0 L1 = Toggle OCx pin on successful compare
 ;   Bit 5 - OM3:     M1 L0 = Clear OCx pin on successful compare
@@ -618,14 +618,14 @@ TCTL1_TimerControlReg1                             equ HC11Registers+$20
 ;   Bit 2 - OL4:
 ;   Bit 1 - OM5:
 ;   Bit 0 - OL5:
-TCTL2_TimerControlReg2                             equ HC11Registers+$21
+TCTL2_TimerControlReg2                             equ HC11Reg+$21
 ;   determines which edge to detect - 2 bits determine mode
 ;   00=no capture 01=rising edge 10=falling edge 11=both edges
 ;   bits 7/6 not used
 ;   bits 5/4 IC1
 ;   bits 3/2 IC2
 ;   bits 1/0 IC3
-TMSK1_TimerInterruptMask1                          equ HC11Registers+$22
+TMSK1_TimerInterruptMask1                          equ HC11Reg+$22
 ;   when bit is set generates hardware interrupt when corresponding 0x1023 bit is by edge
 ;   when bit is clr program must read 0x1023 bit to determine if edge has been detected
 ;   OC1               equ %10000000
@@ -636,7 +636,7 @@ TMSK1_TimerInterruptMask1                          equ HC11Registers+$22
 ;   IC1Distributor    equ %00000100
 ;   IC2SDSSignal      equ %00000010
 ;   InputCompare3     equ %00000001
-TFLG1_TimerInterruptFlag1                          equ HC11Registers+$23
+TFLG1_TimerInterruptFlag1                          equ HC11Reg+$23
 ;   bit is set whenever edge is detected on an IC pin
 ;   can also manually set these pins if you want to trigger interrupts
 ;   OC1               equ %10000000
@@ -656,7 +656,7 @@ TFLG1_TimerInterruptFlag1                          equ HC11Registers+$23
 ;   * set then the program must read the status flag bit to determine if an edge   *
 ;   * has been detected.                                                           *
 ;   ********************************************************************************
-TMSK2_TimerInterruptMask2                          equ HC11Registers+$24
+TMSK2_TimerInterruptMask2                          equ HC11Reg+$24
 ;   Bit 7 - TOI:  Timer Overflow Interrupt Enable
 ;   Bit 6 - RTII:  Real Time Interrupt Enable
 ;   Bit 5 - PAOVI: Pulse accumulator overflow interrupt enable
@@ -666,8 +666,8 @@ TMSK2_TimerInterruptMask2                          equ HC11Registers+$24
 ;   Bit 1 - PR1:  Timer Prescaler 00=1 (500nS) 01=4 (2uS) 10=8 (4uS) 11=16 (8uS)
 ;   Bit 0 - PR0:
 ;   TCNT count value =  is 1/(2000000 / prescaler)
-TFLG2_TimerInterruptFlag2                          equ HC11Registers+$25
-PACTL_PulseAccumulatorControl                      equ HC11Registers+$26
+TFLG2_TimerInterruptFlag2                          equ HC11Reg+$25
+PACTL_PulseAccumulatorControl                      equ HC11Reg+$26
 ;   Bit 7 - TOI:  Timer Overflow Interrupt Enable
 ;   Bit 6 - RTII:  Real Time Interrupt Enable
 ;   Bit 5 - PAOVI: Pulse accumulator overflow interrupt enable
@@ -677,9 +677,9 @@ PACTL_PulseAccumulatorControl                      equ HC11Registers+$26
 ;   Bit 1 - PR1:  Timer Prescaler 00=1 (4.096mS) 01=2 (8.192mS) 10=4 (16.384mS) 11=8 (32.768mS)
 ;   Bit 0 - PR0:
 ;   rti timer value = 1 /(2Mhtz / 2^13 / prescaler)
-PACNT_PulseAccumulatorCounter                      equ HC11Registers+$27
-SPCR_SerialPeripheralControl                       equ HC11Registers+$28
-SPSR_SerialPeripheralStatus                        equ HC11Registers+$29
+PACNT_PulseAccumulatorCounter                      equ HC11Reg+$27
+SPCR_SerialPeripheralControl                       equ HC11Reg+$28
+SPSR_SerialPeripheralStatus                        equ HC11Reg+$29
 ;   Bit 7 - SPIF - SPI Transfer complete flag
 ;   Bit 6 - WCOL - Write collision error flag
 ;   Bit 5 - 0
@@ -688,8 +688,8 @@ SPSR_SerialPeripheralStatus                        equ HC11Registers+$29
 ;   Bit 2 - 0
 ;   Bit 1 - 0
 ;   Bit 0 - 0
-SPDR_SerialPeripheralDataIO                        equ HC11Registers+$2A
-BAUD_SerialBaudRate                                equ HC11Registers+$2B
+SPDR_SerialPeripheralDataIO                        equ HC11Reg+$2A
+BAUD_SerialBaudRate                                equ HC11Reg+$2B
 ;   Bit 7 - TCLR: (test bit)
 ;   Bit 6 - 0
 ;   Bit 5 - SCP1: SCI Baud rate prescale selects
@@ -702,11 +702,11 @@ BAUD_SerialBaudRate                                equ HC11Registers+$2B
 ;      To achieve 1200  baud byte $33
 ;      To achieve 9600  baud byte = $30
 ;      To achieve 62500 baud byte = $01
-SCCR1_SerialControlReg1                            equ HC11Registers+$2C
-SCCR2_SerialControlReg2                            equ HC11Registers+$2D
-SCSR_SerialStatus                                  equ HC11Registers+$2E
-SCDR_SerialData                                    equ HC11Registers+$2F
-ADCTL_A2DControlReg                                equ HC11Registers+$30
+SCCR1_SerialControlReg1                            equ HC11Reg+$2C
+SCCR2_SerialControlReg2                            equ HC11Reg+$2D
+SCSR_SerialStatus                                  equ HC11Reg+$2E
+SCDR_SerialData                                    equ HC11Reg+$2F
+ADCTL_A2DControlReg                                equ HC11Reg+$30
 ;   determines what sensor group to read into a2dresults channels
 ;   Bit 7 - CCF: Conversions Complete Flag
 ;   Bit 6 - 0
@@ -716,12 +716,12 @@ ADCTL_A2DControlReg                                equ HC11Registers+$30
 ;   Bit 2 - CC:
 ;   Bit 1 - CB:
 ;   Bit 0 - CA:
-ADR1_A2DResults1                                   equ HC11Registers+$31
-ADR2_A2DResults2                                   equ HC11Registers+$32
-ADR3_A2DResults3                                   equ HC11Registers+$33
-ADR4_A2DResults4                                   equ HC11Registers+$34
-BPROT_BlockProtReg                                 equ HC11Registers+$35
-OPTION_SysConfigOptionReg                          equ HC11Registers+$39
+ADR1_A2DResults1                                   equ HC11Reg+$31
+ADR2_A2DResults2                                   equ HC11Reg+$32
+ADR3_A2DResults3                                   equ HC11Reg+$33
+ADR4_A2DResults4                                   equ HC11Reg+$34
+BPROT_BlockProtReg                                 equ HC11Reg+$35
+OPTION_SysConfigOptionReg                          equ HC11Reg+$39
 ;   Bit 7 - ADPU:
 ;   Bit 6 - CSEL: 1=use alternate charge pump for EEPROM and A/D
 ;   Bit 5 - IRQE: 1=configure IRQ for edge sensitive operation only
@@ -731,8 +731,8 @@ OPTION_SysConfigOptionReg                          equ HC11Registers+$39
 ;   Bit 1 - CR1: Watchdog Timer Rate Select
 ;   Bit 0 - CR0: at 8MHz 00=1 (16.384ms) 01=4 (65.536ms) 10=16 (262.14ms) 11=64 (1.049s)
 ;   COP count value = 1 / (2000000 / 2^15 / prescaler)
-COPRST_ArmOCToggleAndResetCopTimerReg              equ HC11Registers+$3A
-PPROG_EEPROMControlReg                             equ HC11Registers+$3B
+COPRST_ArmOCToggleAndResetCopTimerReg              equ HC11Reg+$3A
+PPROG_EEPROMControlReg                             equ HC11Reg+$3B
 ;   Bit 7 - ODD
 ;   Bit 6 - EVEN
 ;   Bit 5 - 0
@@ -741,7 +741,7 @@ PPROG_EEPROMControlReg                             equ HC11Registers+$3B
 ;   Bit 2 - ERASE
 ;   Bit 1 - EELAT
 ;   Bit 0 - EEPGM
-HPRIO_HighPriorityInterruptMask                    equ HC11Registers+$3C
+HPRIO_HighPriorityInterruptMask                    equ HC11Reg+$3C
 ;   Bit 7 - RBOOT: Read Bootstrap ROM (can be written only while SMOD=1) 1=bootstrap ROM at $bf40-$bfff
 ;   Bit 6 - SMOD:  Special Mode (can be written to zero but not back to one) 1=special mode in effect
 ;   Bit 5 - MDA:  Mode A Select (can be written only while SMOD=1) 1=normal expanded
@@ -750,7 +750,7 @@ HPRIO_HighPriorityInterruptMask                    equ HC11Registers+$3C
 ;   Bit 2 - PSEL2:
 ;   Bit 1 - PSEL1:
 ;   Bit 0 - PSEL0:
-INIT_SysInit                                       equ HC11Registers+$3D
+INIT_SysInit                                       equ HC11Reg+$3D
 ;   Bit 7 - RAM3: Ram3:0 specify the upper hex digit of the RAM address
 ;   Bit 6 - RAM2:        the position of the RAM in the memory map. This allows RAM
 ;   Bit 5 - RAM1:        to be moved for example to F000-F0FF (default is 0000)
@@ -759,7 +759,7 @@ INIT_SysInit                                       equ HC11Registers+$3D
 ;   Bit 2 - REG2:        like the RAM. (default is 0001)
 ;   Bit 1 - REG1:
 ;   Bit 0 - REG0:
-TEST1_Test                                         equ HC11Registers+$3E
+TEST1_Test                                         equ HC11Reg+$3E
 ;   Bit 7 - TILOP:
 ;   Bit 6 - 0
 ;   Bit 5 - OCCR:
@@ -768,4 +768,4 @@ TEST1_Test                                         equ HC11Registers+$3E
 ;   Bit 2 - FCM:
 ;   Bit 1 - FCOP:
 ;   Bit 0 - TCON:
-CONFIG_SystemConfigReg                             equ HC11Registers+$3F
+CONFIG_SystemConfigReg                             equ HC11Reg+$3F

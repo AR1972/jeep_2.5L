@@ -8992,8 +8992,8 @@ loc_D324:                               ; UpdatePIA1AndCheckOutputs2_MM+4↑j
                 staa    Temp0
                 ldab    #$40
                 ldaa    #$61
-                ldy     #HC11Registers
-                ldx     #BaseAddr
+                ldy     #HC11Reg
+                ldx     #PiaAddr
                 sei
                 bset    0,x 8
                 bclr    8,y $20
@@ -10880,8 +10880,8 @@ loc_DDF0:                               ; sub_DDE7+5↑j
                 staa    Temp3
                 tba
                 ldab    #$40
-                ldy     #HC11Registers
-                ldx     #BaseAddr
+                ldy     #HC11Reg
+                ldx     #PiaAddr
                 sei
                 bset    0,x 8
                 bclr    8,y $20

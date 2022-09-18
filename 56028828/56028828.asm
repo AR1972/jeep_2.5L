@@ -38,10 +38,10 @@ MCU_eeprom equ $B600
 ; cylinder ECU's and $6000 for 93 and earlier ECU's.
 ;
  IF Data_start <= $2000
-BaseAddr equ $0400
+PiaAddr equ $0400
  ENDIF
  IF Data_start == $8000
-BaseAddr equ $6400
+PiaAddr equ $6400
  ENDIF
 ;
 ; 1 to remove emissions maintenance reminder code

@@ -1568,7 +1568,6 @@ loc_9E8D:                               ; EmmissionMaintenanceReminder1_MM↑j
                 ldd     $B610
                 cpd     #$5AA5
                 beq     loc_9E9F
-
 loc_9E9A:                               ; EmmissionMaintenanceReminder1_MM+4↑j
                 bclr    <PIA1_Buffer_t3 8
                 bra     loc_9EA2
@@ -1719,14 +1718,14 @@ sub_9F79:                               ; EmmissionMaintenanceReminder1_MM+2E↑
                                         ; EmmissionMaintenanceReminder1_MM+C9↑P
                 ldx     #$B600
                 ldab    DRBOffsetStored_HB
-                subb    #2
+                subb    #02
                 bpl     loc_9F85
-                ldab    #$E
+                ldab    #$0E
 
 loc_9F85:                               ; sub_9F79+8↑j
                 abx
                 ldd     0,x
-                addd    #1
+                addd    #$01
                 bcc     locret_9F90
                 ldd     #$FFFF
 
@@ -12440,15 +12439,15 @@ locret_E722:                            ; sub_E70E+9↑j sub_E70E+E↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-sub_E723:                               ; sub_E70E+10↑p
-                ldaa    #$E
+sub_E723:
+                ldaa    #$0E
                 staa    PPROG_EEPROMControlReg
                 stab    0,x
                 inca
                 staa    PPROG_EEPROMControlReg
                 ldy     #$B29*ECLOCK
 
-loc_E732:                               ; sub_E723+11↓j
+loc_E732:
                 dey
                 bne     loc_E732
                 deca
@@ -12458,7 +12457,6 @@ loc_E732:                               ; sub_E723+11↓j
                 jsr     OCToggleAndResetCopTimer
                 cli
                 rts
-; End of function sub_E723
 
 ; ---------------------------------------------------------------------------
 
@@ -12479,7 +12477,7 @@ IC2I:                                   ; USER_VEC:FFEC↓o
 
 loc_E75E:                               ; ROM:E74D↑j ROM:E753↑j ...
                 ldd     <Counter_SpeedSensorInterrupt_HB
-                addd    #1
+                addd    #$01
                 std     <Counter_SpeedSensorInterrupt_HB
                 bne     loc_E76A
                 bset    <IPL1 $80
@@ -12497,7 +12495,7 @@ loc_E76A:                               ; ROM:E765↑j
 
 loc_E77B:                               ; ROM:E775↑j
                 anda    #$1F
-                oraa    #8
+                oraa    #$08
                 staa    <BitFlags24
                 clra
                 staa    CruiseControlVar4
@@ -12634,21 +12632,21 @@ sub_E832:
                 ldaa    #$10
                 staa    ADCTL_A2DControlReg
                 ldd     TOC1_Counter_OC1
-                addd    #$1E0
+                addd    #$F0*ECLOCK
                 cpd     TCNT_Counter_FreeRunning16bit
                 bmi     loc_E859
-                subd    #$89
+                subd    #$44*ECLOCK+1
                 cpd     TCNT_Counter_FreeRunning16bit
                 bpl     loc_E854
-                addd    #$89
+                addd    #$44*ECLOCK+1
 
 loc_E854:
-                addd    #$89
+                addd    #$44*ECLOCK+1
                 bra     loc_E85F
 
 loc_E859:
                 ldd     TCNT_Counter_FreeRunning16bit
-                addd    #$01E0
+                addd     #$F0*ECLOCK
 
 loc_E85F:
                 std     TOC1_Counter_OC1

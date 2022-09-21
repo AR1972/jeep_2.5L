@@ -8,7 +8,12 @@ Code_start equ $9400
 PiaAddr equ $6000
 NOEMR equ 0
 ECLOCK equ 2
-ASDTIMEOUT equ 0
+; ASD on time above freezing stock
+; value is 1, about 1/2 second
+ASD1 equ 1
+; ASD on time below freezing, stock
+; value is 1, about 1 second
+ASD2 equ 1
  include ..\common\defines.inc
  ORG Data_start
  include data.inc

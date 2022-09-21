@@ -1118,7 +1118,7 @@ ControlAsdRelay_MM:
                 ldaa    <DRBPointer1
                 cmpa    #$0A
                 bne     loc_9BDB
-                bset    <PIA2_Buffer_t3 $10
+                bset    <PIA2_Buffer_t3 $10  ; ASD relay off
                 rts
 
 loc_9BDB:
@@ -1170,11 +1170,11 @@ loc_9C1A:
                 jsr     SerialOutput1a
 
 CONTROL_AUTOSHUTDOWN_RELAY_ROUTINE1:
-                ldx     #BitFlags2d
+                ldx     #$2D*ASD1
                 ldaa    <CoolantTemp
                 cmpa    #$8F
                 bcc     ControlAsdRelay_Over27Ftemp
-                ldx     #BatteryVolts
+                ldx     #$5B*ASD2
 
 ControlAsdRelay_Over27Ftemp:
                 ldab    #04
@@ -1182,7 +1182,7 @@ ControlAsdRelay_Over27Ftemp:
                 cmpa    #$B2
                 brset   <BitFlags23 4 ASD_EngRunningCheckBatVolts
                 bcc     ASD_ToggleOnOff
-                cpx     #$5B
+                cpx     #$5B*ASD2
                 bne     ASD_ToggleOnOff
                 ldab    #$0B
                 bra     ASD_ToggleOnOff
@@ -1194,15 +1194,12 @@ ASD_EngRunningCheckBatVolts:
 ASD_ToggleOnOff:
                 sei
                 ldaa    <PIA2_Buffer_t3
-                anda    #$EF
+                anda    #$EF                 ; ASD relay ON
                 cmpb    <Counter_TimerPastHalfwayBetweenCamPulses
                 bhi     ASD_StoreStateToBuffer
- IF ASDTIMEOUT > 0
-                ldx    #$5B*ASDTIMEOUT
- ENDIF
                 cpx     <KeyOnOrEngineRunningTime
                 bhi     ASD_StoreStateToBuffer
-                oraa    #$10
+                oraa    #$10                 ; ASD relay OFF
                 bclr    <Ram_80 $FF
 
 ASD_StoreStateToBuffer:

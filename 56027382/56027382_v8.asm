@@ -8,6 +8,7 @@ Code_start equ $2A70
 PiaAddr equ $0400
 NOEMR equ 1
 ECLOCK equ 2
+ASDTIMEOUT equ 5
  include ..\common\defines.inc
  ORG Data_start
  include data.inc

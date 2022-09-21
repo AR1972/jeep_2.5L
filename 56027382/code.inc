@@ -1,14 +1,14 @@
 
 XIRQ:
-                ldab    #1
+                ldab    #$01
                 bra     loc_9416
 
 NOCOP:
-                ldab    #2
+                ldab    #$02
                 bra     loc_9416
 
 OPC:
-                ldab    #4
+                ldab    #$04
                 bra     loc_9416
 
 
@@ -65,7 +65,7 @@ CME:
 
 loc_945A:
                 ldaa    0,x
-                cmpa    #0
+                cmpa    #$00
                 bne     loc_9468
                 inx
                 cpx     #$0020
@@ -106,17 +106,17 @@ __RESET:
 
 loc_949C:                               ; __RESET+26↑j
                 sty     <MinimumTimerCountBeforeMainloopCanContinue
-                bset    <Ram_05 $A
+                bset    <Ram_05 $0A
 
 loc_94A2:                               ; SOFT+27↑j CME+29↑j ...
                 jsr     sub_E4F3
                 ldaa    #$90
                 tap
-                ldab    #$F
+                ldab    #$0F
                 ldaa    TL_CONF01
-                bita    #8
+                bita    #$08
                 beq     loc_94B3
-                ldab    #6
+                ldab    #$06
 
 loc_94B3:                               ; __RESET+3F↑j
                 stab    HPRIO_HighPriorityInterruptMask
@@ -183,7 +183,7 @@ loc_94B3:                               ; __RESET+3F↑j
                 coma
                 cba
                 beq     loc_956D
-                ldab    #8
+                ldab    #$08
                 ldaa    Temp0
                 bpl     loc_9547
                 ldab    #$80
@@ -278,7 +278,7 @@ loc_95CC:                               ; __RESET+15F↓j
                 xgdx
                 ldd     Temp1
                 aslb
-                adca    #0
+                adca    #$00
                 tab
                 abx
                 ldd     Temp1
@@ -398,7 +398,7 @@ loc_96B6:                               ; __RESET+237↑j
                 brclr   <Ram_05 4 loc_96E7
                 cmpa    byte_8A09
                 bcc     loc_96E7
-                ldab    #2
+                ldab    #$02
 
 loc_96CC:                               ; __RESET+26F↓j
                 ldaa    #$10
@@ -438,7 +438,7 @@ loc_9708:                               ; __RESET+280↑j
                 adda    #$40
                 staa    <Ram_05
                 ldaa    PIA_Ctrl_1
-                oraa    #4
+                oraa    #$04
                 staa    PIA_Ctrl_1
                 ldab    #$EF
                 ldaa    <BitFlags27
@@ -458,7 +458,7 @@ loc_9720:                               ; __RESET+292↑j __RESET+296↑j ...
                 mul
                 nop
                 ldaa    <PIA3_Buffer_t3
-                oraa    #4
+                oraa    #$04
                 staa    <PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 ldab    SPCR_SerialPeripheralControl
@@ -480,7 +480,7 @@ loc_9755:                               ; __RESET+2E0↑j
                 anda    #$FB
                 staa    PIA_Ctrl_1
                 ldaa    Timer_DelayBeforeUpdating_MINTHR
-                oraa    #3
+                oraa    #$03
                 staa    Timer_DelayBeforeUpdating_MINTHR
                 bset    <Ram_05 1
                 bset    <BitFlags24 $10
@@ -573,7 +573,7 @@ StoreChargeTempValue2:                  ; __RESET+390↑j
                 addb    TL_Amount_MINTHR_IsIncreasedAtKeyOnOnly
                 cmpb    TL_ValueOf_MINTHR_WhenBatteryDisconnected
                 bcs     loc_9826
-                adda    #6
+                adda    #$06
                 ldab    TL_ValueOf_MINTHR_WhenBatteryDisconnected
                 cba
                 bcc     loc_9826
@@ -594,11 +594,11 @@ CalculateVariousFactors3:               ; __RESET+3C2↑j
                 jsr     CalculateVariousFactors2
                 jsr     calc_fuel_MM
                 ldd     TCNT_Counter_FreeRunning16bit
-                addd    #$03E8
+                addd    #$01F4*ECLOCK
                 std     TOC1_Counter_OC1
                 jsr     sub_E9F9
                 ldaa    <PIA3_Buffer_t3
-                oraa    #1
+                oraa    #$01
                 staa    PIA3_Buffer_2_t3
                 anda    #$FE
                 staa    <PIA3_Buffer_t3
@@ -613,14 +613,14 @@ CalculateVariousFactors3:               ; __RESET+3C2↑j
                 aslb
                 aslb
                 aslb
-                anda    #$F
+                anda    #$0F
                 aba
                 ldx     #PORTD_PortD
                 bclr    0,x $20
                 cmpa    SPSR_SerialPeripheralStatus
                 staa    SPDR_SerialPeripheralDataIO
                 ldaa    <PIA3_Buffer_t3
-                oraa    #1
+                oraa    #$01
                 staa    <PIA3_Buffer_t3
                 staa    PIA3_Buffer_2_t3
                 mul
@@ -630,14 +630,14 @@ CalculateVariousFactors3:               ; __RESET+3C2↑j
                 bitb    #$20
                 beq     loc_9893
                 ldab    TL_CONF01
-                bitb    #1
+                bitb    #$01
                 beq     loc_9893
                 anda    #$DF
 
 loc_9893:                               ; __RESET+418↑j __RESET+41F↑j
                 staa    <PIA1_Buffer_t3
                 ldaa    SwitchPortAccessReg1
-                oraa    #1
+                oraa    #$01
                 staa    SwitchPortAccessReg1
                 ldx     #$011C*ECLOCK
 
@@ -733,7 +733,7 @@ loc_994B:                               ; __RESET+4DE↓j
                 bpl     loc_994B
                 ldx     #off_98AF
                 ldab    <Counter_MainLoop
-                andb    #7
+                andb    #$07
                 beq     ReadA2DCoolantChargeTempSensors
                 ldab    <Counter_MainLoop
                 orab    #$80
@@ -742,7 +742,7 @@ loc_994B:                               ; __RESET+4DE↓j
                 ldab    <Ram_E2
                 bne     MainSubLoop
                 ldab    <Counter_MainLoop
-                andb    #7
+                andb    #$07
                 aslb
                 abx
                 ldx     0,x
@@ -802,7 +802,7 @@ ReadA2DNotSureWhat_Y:                   ; __RESET+449↑o
                 staa    CoolantVoltsTmp2
                 brclr   <BitFlags23 $20 MainSubLoop
                 ldab    <BitFlags66_t3
-                bitb    #3
+                bitb    #$03
                 bne     MainSubLoop
                 jsr     sub_BC48
                 jsr     DetermineTargetBatteryVoltage
@@ -877,12 +877,7 @@ loc_9A42:                               ; __RESET+5C2↑j
 loc_9A4D:                               ; __RESET+5BF↑j
                 jsr     CycleACClutch_MM
                 jsr     L9b0c_MM
- IF NOEMR == 0
                 jsr     sub_E679
- ELSE
-                ; (E)mission (M)aintenance (R)eminder light off
-                bclr    <PIA1_Buffer_t3 8
- ENDIF
                 jsr     sub_A130
                 jsr     sub_A25F
                 jsr     sub_D9B9
@@ -896,7 +891,7 @@ loc_9A5F:                               ; __RESET+5D0↑j __RESET+5DB↑j
                 jsr     sub_C1FF
                 jsr     sub_D4F9
                 ldaa    <EngineRpm_HB
-                cmpa    #$7D
+                cmpa    #$7D         ; RPM calculation $7D*$20=$FA0 (4000 RPM)
                 bcc     loc_9A95
                 jsr     sub_D4E1
                 jsr     sub_D94F
@@ -909,13 +904,7 @@ loc_9A5F:                               ; __RESET+5D0↑j __RESET+5DB↑j
                 jsr     sub_D8A7
 
 loc_9A95:                               ; __RESET+608↑j
- IF NOEMR == 0
                 jsr     EmmissionMaintenanceReminder1_MM
- ELSE
-                nop
-                nop
-                nop
- ENDIF
                 jsr     sub_C8AF
                 jsr     sub_CAFE
                 jsr     sub_CCF6
@@ -944,7 +933,7 @@ loc_9AC4:                               ; __RESET+63A↑j __RESET+642↑j ...
 loc_9AC8:                               ; __RESET+662↓j
                 ldd     TCNT_Counter_FreeRunning16bit
                 subd    MinimumTimerCountBeforeMainloopCanContinue2
-                cpd     #$ABE
+                cpd     #$055F*ECLOCK
                 bcs     loc_9AC8
                 ldd     TCNT_Counter_FreeRunning16bit
                 std     MinimumTimerCountBeforeMainloopCanContinue2
@@ -1208,6 +1197,9 @@ ASD_ToggleOnOff:
                 anda    #$EF
                 cmpb    <Counter_TimerPastHalfwayBetweenCamPulses
                 bhi     ASD_StoreStateToBuffer
+ IF ASDTIMEOUT > 0
+                ldx    #$5B*ASDTIMEOUT
+ ENDIF
                 cpx     <KeyOnOrEngineRunningTime
                 bhi     ASD_StoreStateToBuffer
                 oraa    #$10
@@ -1568,15 +1560,18 @@ loc_9E8D:                               ; EmmissionMaintenanceReminder1_MM↑j
                 ldd     $B610
                 cpd     #$5AA5
                 beq     loc_9E9F
+
 loc_9E9A:                               ; EmmissionMaintenanceReminder1_MM+4↑j
                 bclr    <PIA1_Buffer_t3 8
                 bra     loc_9EA2
 ; ---------------------------------------------------------------------------
 
 loc_9E9F:                               ; EmmissionMaintenanceReminder1_MM+8↑j
-                                        ; EmmissionMaintenanceReminder1_MM+15↑j
+ IF NOEMR == 0                          ; EmmissionMaintenanceReminder1_MM+15↑j
                 bset    <PIA1_Buffer_t3 8
-
+ ELSE
+                bclr    <PIA1_Buffer_t3 8
+ ENDIF
 loc_9EA2:                               ; EmmissionMaintenanceReminder1_MM+1A↑j
                 brset   <IPL1 $80 loc_9EA9
                 jmp     loc_9F56
@@ -1673,10 +1668,10 @@ locret_9F3D:                            ; EmmissionMaintenanceReminder1_MM+B3↑
 
 loc_9F3E:                               ; EmmissionMaintenanceReminder1_MM+AB↑j
                 ldaa    DRBOffsetStored_HB
-                adda    #2
+                adda    #$02
                 cmpa    #$10
                 bne     loc_9F49
-                ldaa    #0
+                ldaa    #$00
 
 loc_9F49:                               ; EmmissionMaintenanceReminder1_MM+C2↑j
                 staa    DRBOffsetStored_HB
@@ -8107,7 +8102,7 @@ loc_CE4E:                               ; sub_CCF6+153↑j
                 ldab    #8
                 stab    CFORC_TimerForceCompare
                 ldd     TCNT_Counter_FreeRunning16bit
-                addd    #$6D6
+                addd    #$036B*ECLOCK
                 std     TOC5_Counter_OC5_Dwell
                 ldaa    TCTL1_TimerControlReg1
                 anda    #$FE
@@ -8179,7 +8174,7 @@ loc_CEBC:                               ; sub_CCF6+1C1↑j
                 staa    TCTL1_TimerControlReg1
                 stab    CFORC_TimerForceCompare
                 ldd     TCNT_Counter_FreeRunning16bit
-                addd    #$1A9
+                addd    #$00D4*ECLOCK+1
                 std     0,x
                 ldaa    2,y
                 anda    TCTL1_TimerControlReg1
@@ -8980,7 +8975,7 @@ UpdatePIA1AndCheckOutputs2_MM:          ; __RESET+433↑P __RESET+631↑P
                 beq     loc_D324
                 ldd     TCNT_Counter_FreeRunning16bit
                 subd    TIC1_Counter_IC1_CamSensor
-                cpd     #$FA
+                cpd     #$007D*ECLOCK
                 bcs     loc_D324
                 rts
 ; ---------------------------------------------------------------------------
@@ -13629,7 +13624,7 @@ loc_EED3:                               ; ROM:EEBA↑j ROM:EEC3↑j
                 ldd     TCNT_Counter_FreeRunning16bit
                 addd    <InjectorPulsewidth_HB
                 std     0,x
-                cpd     #$7F
+                cpd     #$3F*ECLOCK+1
                 bcs     loc_EEEF
                 bset    <BitFlags21 $80
 
@@ -13701,7 +13696,7 @@ loc_EF56:                               ; ROM:EF51↑j
                 orab    #3
                 stab    TCTL1_TimerControlReg1
                 ldd     TOC5_Counter_OC5_Dwell
-                subd    #$40
+                subd    #$20*ECLOCK
                 subd    TCNT_Counter_FreeRunning16bit
                 bpl     loc_EFDF
                 ldaa    #8
@@ -13843,7 +13838,7 @@ loc_F037:                               ; ROM:F034↑j
                 ldab    #8
                 stab    TFLG1_TimerInterruptFlag1
                 ldd     TOC5_Counter_OC5_Dwell
-                subd    #$40
+                subd    #$20*ECLOCK
                 subd    TCNT_Counter_FreeRunning16bit
                 bpl     loc_F0CB
                 ldaa    #8
@@ -14151,7 +14146,7 @@ loc_F22C:                               ; ROM:F1FD↑j
                 clra
                 addd    Temp5_t3
                 addd    TIC1_Counter_IC1_CamSensor
-                subd    #$A
+                subd    #$0A
                 std     Temp5_t3
                 bset    <IPL1 2
                 ldx     #TCTL1_TimerControlReg1
@@ -14159,7 +14154,7 @@ loc_F22C:                               ; ROM:F1FD↑j
                 std     DoubleTempB
                 subd    TCNT_Counter_FreeRunning16bit
                 bmi     loc_F265
-                cpd     #$20
+                cpd     #$10*ECLOCK
                 bmi     loc_F265
                 ldaa    PORTA_PortA
                 bita    #8
@@ -14393,7 +14388,7 @@ loc_F3BA:                               ; sub_F36D+37↑j
 
 IRQ:                                    ; USER_VEC:FFF2↓o
                 ldx     TCNT_Counter_FreeRunning16bit
-                ldab    #$C
+                ldab    #$06*ECLOCK
                 abx
 
 loc_F3C9:                               ; ROM:F3D5↓j
@@ -14403,7 +14398,7 @@ loc_F3C9:                               ; ROM:F3D5↓j
                 bcs     loc_F421
                 cpx     TCNT_Counter_FreeRunning16bit
                 bpl     loc_F3C9
-                ldaa    #2
+                ldaa    #$02
                 ldab    SwitchPortAccessReg2
                 lsrb
                 bcc     loc_F3E6

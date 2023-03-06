@@ -2,6 +2,7 @@
 ; placed into bootstrap mode by applying 12 volts to
 ; pin 45 until SBEC sends 0x00 on pin 25.
 
+ OPT H11
     ORG $0000
 
 Start:

@@ -1,5 +1,6 @@
 FILCHR TEXT $3F
  OPT NOW
+ OPT H11
  ORG 0
 ;
 ; Data_start: address defines where the EPROM begins, in the

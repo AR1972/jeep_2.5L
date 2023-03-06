@@ -6,6 +6,7 @@
 ; download to 0x8000 then sends EPROM image of two
 ; possible sizes 0x2000 -> 0xFFFF or 0x8000 -> 0xFFFF
 
+ OPT H11
     ORG $0000
 
 Start:

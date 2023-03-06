@@ -27,6 +27,7 @@
    -lfilename    list file name (default no listing)
    -dsym[=value] define a symbol
    -oopt         defines an option
+   -u            Set all undefined symbols as external (for RELASMB output)
    
    recognized pseudoops:
     ext        defines an external symbol (relocating mode only)
@@ -108,6 +109,7 @@
     DLM | NDL*        Define label on macro expansion
     RED | NRD*        
     FBG*| NFB         Fill gaps in binary output files
+    UEX | NUE*        Undefined labels are treated as external
     * denotes default value
 
     
@@ -302,6 +304,16 @@
    v1.54 2022-04-25 6800 alternative mnemonics are not TSC-specific any more 
    v1.55 2022-05-16 RMB,RZB et al. now get printed with offset in listing
    v1.56 2022-07-18 FCW can now produce relocation table entries
+   v1.57 2022-08-18 RMB,RZB,FILL now produce relocatable output
+                    -u command line switch added for RELASMB compatibility
+                    UEX|NUE* option added
+                    Thanks to Dieter Deyke for RELASMB compatibility checks!
+   v1.58 2022-10-17 improved 68HC11 BSET/BCLR/BRSET/BRCLR parameter handling
+                    (no more need to use blanks as parameter separators)
+   v1.59 2022-10-18 improved handling of hex, octal, and binary constants;
+                    TEXT prepends the label with '&' now to keep text labels
+                    separate from normal ones. This reduces the maximum length
+                    of TEXT names to 31. Still enough, I think ...
 */
 
 /* @see https://stackoverflow.com/questions/2989810/which-cross-platform-preprocessor-defines-win32-or-win32-or-win32
@@ -322,6 +334,7 @@
 #include <stdlib.h>
 #include <time.h>
 #if UNIX
+#define stricmp strcasecmp
 #include <unistd.h>
 #else
 #include <malloc.h>
@@ -331,8 +344,8 @@
 /* Definitions                                                               */
 /*****************************************************************************/
 
-#define VERSION      "1.56"
-#define VERSNUM      "$0138"            /* can be queried as &VERSION        */
+#define VERSION      "1.59"
+#define VERSNUM      "$013B"            /* can be queried as &VERSION        */
 #define RMBDEFCHR    "$00"
 
 #define MAXFILES     128
@@ -1641,6 +1654,7 @@ struct oprecord optable11[]=
    bit 2 indicates external address.
    bit 4 indicates this can't be relocated if it's an address.
    bit 5 indicates address (if any) is negative.
+   bit 6 indicates a single-byte external (if set with bit 2)
 */ 
 
 #define EXPRCAT_INTADDR       0x02
@@ -1648,6 +1662,7 @@ struct oprecord optable11[]=
 #define EXPRCAT_PUBLIC        0x08
 #define EXPRCAT_FIXED         0x10
 #define EXPRCAT_NEGATIVE      0x20
+#define EXPRCAT_ONEBYTE       0x40
 
 /*****************************************************************************/
 /* Symbol definitions                                                        */
@@ -1664,7 +1679,12 @@ struct symrecord
     long flags;                         /* forward reference flag (otherwise)*/
     } u;
   };
-                
+
+struct symtable
+  {
+  long counter;                         /* # entries in table                */
+  struct symrecord rec[MAXLABELS];      /* symbol records (fixed size)       */
+  };
                                         /* symbol categories :               */
 #define SYMCAT_CONSTANT       0x00      /* constant value (from equ)         */
 #define SYMCAT_VARIABLE       0x01      /* variable value (from set)         */
@@ -1685,15 +1705,13 @@ struct symrecord
 #define SYMCAT_COMMON         0x14      /* COMMON block                      */
 #define SYMCAT_LOCALLABEL     0x22      /* local label                       */
 #define SYMCAT_EMPTYLOCAL     0x26      /* empty local label                 */
-
                                         /* symbol flags:                     */
 #define SYMFLAG_FORWARD       0x01      /* forward reference                 */
 #define SYMFLAG_PASSED        0x02      /* passed forward reference          */
+#define SYMFLAG_ABSOLUTE      0x04      /* absolute public label             */
 
-long symcounter = 0;                    /* # currently loaded symbols        */
-struct symrecord symtable[MAXLABELS];   /* symbol table (fixed size)         */
-long lclcounter = 0;                    /* # currently loaded local symbols  */
-struct symrecord lcltable[MAXLABELS];   /* local symbol table (fixed size)   */
+struct symtable symtable = {0};         /* symbol table                      */
+struct symtable lcltable = {0};         /* local symbol table (fixed size)   */
   
 /*****************************************************************************/
 /* regrecord structure definition                                            */
@@ -1805,6 +1823,9 @@ struct relocrecord
 long relcounter = 0;                    /* # currently defined relocations   */
 struct relocrecord reltable[MAXRELOCS]; /* relocation table (fixed size)     */
 long relhdrfoff;                        /* FLEX Relocatable Global Hdr Offset*/
+long reldataorg = -2;                   /* org for rel data block in abs mode*/
+long reldatasize = 0;                   /* size of rel data block            */
+long relabsfoff = -1;                   /* current abs block offset          */
 
 /*****************************************************************************/
 /* operandrecord structure definition                                        */
@@ -1848,6 +1869,7 @@ struct operandrecord
 #define OPTION_H11    0x04000000L       /* 68HC11 mode                       */
 #define OPTION_RED    0x08000000L       /* redefine label if code label, too */
 #define OPTION_FBG    0x10000000L       /* fill binary gaps                  */
+#define OPTION_UEX    0x20000000L       /* undefined is treated as external  */
 
 struct
   {
@@ -1915,10 +1937,12 @@ struct
   { "NRD",           0, OPTION_RED },
   { "FBG",  OPTION_FBG,          0 },
   { "NFB",           0, OPTION_FBG },
+  { "UEX",  OPTION_UEX,          0 },
+  { "NUE",           0, OPTION_UEX },
   };
 
 unsigned long dwOptions =               /* options flags, init to default:   */
-    OPTION_H11 |                        /* MC6809 mode                       */
+    OPTION_M09 |                        /* MC6809 mode                       */
     OPTION_MAC |                        /* print macro calling line          */
     OPTION_SYM |                        /* print symbol table                */
     OPTION_MUL |                        /* print multiple oc lines           */
@@ -2021,15 +2045,14 @@ char objname[FNLEN + 1];                /* object file name                  */
 char srcname[FNLEN + 1];                /* source file name                  */
 
                                         /* assembler mode specifics:         */
-struct oprecord *optable = optable11;   /* used op table                     */
+struct oprecord *optable = optable09;   /* used op table                     */
                                         /* size of this table                */
-int optablesize = sizeof(optable11) / sizeof(optable11[0]);
-struct regrecord *regtable = regtable11;/* used register table               */
+int optablesize = sizeof(optable09) / sizeof(optable09[0]);
+struct regrecord *regtable = regtable09;/* used register table               */
                                         /* used bit register table           */
-struct regrecord *bitregtable = bitregtable00;
-int bitregtablesize = sizeof(bitregtable00) / sizeof(bitregtable00[0]);
-void scanoperands11(struct relocrecord *pp);
-void (*scanoperands)(struct relocrecord *) = scanoperands11;
+struct regrecord *bitregtable = bitregtable09;
+int bitregtablesize = sizeof(bitregtable09) / sizeof(bitregtable09[0]);
+void (*scanoperands)(struct relocrecord *, int);
 
 char pass;                              /* Assembler pass = 1 or 2           */
 char relocatable = 0;                   /* relocatable object flag           */
@@ -2038,7 +2061,7 @@ long global = 0;                        /* all labels global flag            */
 long common = 0;                        /* common definition flag            */
 char rmbfillchr = 0;                    /* RMB fill character for binaries   */
 struct symrecord * commonsym = NULL;    /* current common main symbol        */
-char terminate;                         /* termination flag                  */
+char g_termflg;                         /* termination flag                  */
 char generating;                        /* code generation flag              */
 unsigned short loccounter,oldlc;        /* Location counter                  */
 int phase;                              /* phase (offfset to ORG)            */
@@ -2107,6 +2130,10 @@ int printovr = 0;                       /* print override flags:             */
 #define OUT_REL   5                     /* Flex9 RELASMB output              */
 int outmode = OUT_BIN;                  /* default to binary output          */
 
+int hexmaxcount = 16;                   /* max. # bytes per S09 line         */
+int ihexmaxcount = 32;                  /* max. # bytes per Intel hex line   */
+int iflexmaxcount = 255;                /* max. # bytes per Flex09 record    */
+
 unsigned short hexaddr;
 int hexcount;
 unsigned char hexbuffer[256];
@@ -2160,7 +2187,8 @@ struct linebuf * allocline
     char *text
     )
 {
-struct linebuf *pNew = malloc(sizeof(struct linebuf) + strlen(text));
+struct linebuf *pNew = (struct linebuf *)
+    malloc(sizeof(struct linebuf) + strlen(text));
 if (!pNew)
   return NULL;
 pNew->next = (prev) ? prev->next : NULL;
@@ -2325,25 +2353,25 @@ if ((!sym) ||                           /* if no main symbol for that        */
   return sym;                           /* pass back main symbol             */
 
 lo = 0;                                 /* do binary search for the thing    */
-hi = lclcounter - 1;
+hi = lcltable.counter - 1;
 s = 1;
 i = 0;
 while (hi >= lo)
   {
-  i = (lo + hi) / 2;
-  s = lcltable[i].value - loccounter;   /* binary search for current address */
+  i = (lo + hi) / 2;                    /* binary search for current address */
+  s = lcltable.rec[i].value - loccounter;
   if (s < 0)
     lo = i + 1;
   else if (s > 0)
     hi = i - 1;
   else                                  /* if found,                         */
     {                                   /* go to 1st of this value           */
-    while ((i) && (lcltable[i - 1].value == loccounter))
+    while ((i) && (lcltable.rec[i - 1].value == loccounter))
       i--;
-    while ((i < lclcounter) &&          /* search for the NAME now           */
-           (lcltable[i].value == loccounter))
+    while ((i < lcltable.counter) &&    /* search for the NAME now           */
+           (lcltable.rec[i].value == loccounter))
       {
-      s = strcmp(sym->name, lcltable[i].name);
+      s = strcmp(sym->name, lcltable.rec[i].name);
       if (s <= 0)
         {
         if (s)
@@ -2354,10 +2382,10 @@ while (hi >= lo)
       }
     if (s)                              /* if not found, re-set              */
       {
-      if (i >= lclcounter)
+      if (i >= lcltable.counter)
         s = 1;
       else
-        s = lcltable[i].value - loccounter;
+        s = lcltable.rec[i].value - loccounter;
       }
     break;
     }
@@ -2367,12 +2395,12 @@ if (insert)                             /* if inserting,                     */
   {
   if (!s)                               /* if address is already in use      */
     {                                   /* but not the correct label         */
-    if (strcmp(sym->name, lcltable[i].name))
+    if (strcmp(sym->name, lcltable.rec[i].name))
       error |= ERR_LABEL_MULT;          /* set error                         */
-    return lcltable + i;                /* return the local symbol           */
+    return lcltable.rec + i;            /* return the local symbol           */
     }
   i = (s < 0 ? i + 1 : i);
-  if (lclcounter == MAXLABELS)
+  if (lcltable.counter == MAXLABELS)
     {
     printf("%s(%ld): error 25: out of local symbol storage\n",
            expandfn(curline->fn), curline->ln);
@@ -2381,24 +2409,24 @@ if (insert)                             /* if inserting,                     */
     exit(4);
     }
   sym->cat = SYMCAT_LOCALLABEL;
-  for (j = lclcounter; j > i; j--)
-    lcltable[j] = lcltable[j - 1];
-  lclcounter++;
-  strcpy(lcltable[i].name, sym->name);
-  lcltable[i].cat = SYMCAT_LOCALLABEL;
-  lcltable[i].value = loccounter;
-  lcltable[i].u.parent = NULL;
-  return lcltable + i;                  /* pass back this symbol             */
+  for (j = lcltable.counter; j > i; j--)
+    lcltable.rec[j] = lcltable.rec[j - 1];
+  lcltable.counter++;
+  strcpy(lcltable.rec[i].name, sym->name);
+  lcltable.rec[i].cat = SYMCAT_LOCALLABEL;
+  lcltable.rec[i].value = loccounter;
+  lcltable.rec[i].u.parent = NULL;
+  return lcltable.rec + i;              /* pass back this symbol             */
   }
 
 if (forward)                            /* if forward search                 */
   {
   i = (s < 0 ? i - 1 : i);
-  for (; i < lclcounter; i++)
+  for (; i < lcltable.counter; i++)
     {
-    if ((!strcmp(lcltable[i].name, sym->name)) &&
-        (lcltable[i].value > loccounter))
-      return lcltable + i;
+    if ((!strcmp(lcltable.rec[i].name, sym->name)) &&
+        (lcltable.rec[i].value > loccounter))
+      return lcltable.rec + i;
     }
   }
 else                                    /* if backward search                */
@@ -2406,9 +2434,9 @@ else                                    /* if backward search                */
   i = (s > 0 ? i + 1 : i);
   for (; i >= 0; i--)
     {
-    if ((!strcmp(lcltable[i].name, sym->name)) &&
-        (lcltable[i].value <= loccounter))
-      return lcltable + i;
+    if ((!strcmp(lcltable.rec[i].name, sym->name)) &&
+        (lcltable.rec[i].value <= loccounter))
+      return lcltable.rec + i;
     }
   }
 
@@ -2455,13 +2483,13 @@ if (i)                                  /* if starting with number           */
   }
 
 lo = 0;                                 /* do binary search for the thing    */
-hi = symcounter - 1;
+hi = symtable.counter - 1;
 s = 1;
 i = 0;
 while (hi >= lo)
   {
   i = (lo + hi) / 2;
-  s = strcmp(symtable[i].name, name);
+  s = strcmp(symtable.rec[i].name, name);
   if (s < 0)
     lo = i + 1;
   else if (s > 0)
@@ -2476,7 +2504,7 @@ if (s)                                  /* if symbol not found               */
     return NULL;                        /* return without pointer            */
 
   i = (s < 0 ? i + 1 : i);
-  if (symcounter == MAXLABELS)
+  if (symtable.counter == MAXLABELS)
     {
     printf("%s(%ld): error 23: out of symbol storage\n",
            expandfn(curline->fn), curline->ln);
@@ -2484,25 +2512,25 @@ if (s)                                  /* if symbol not found               */
       putlist( "*** Error 23: out of symbol storage\n");
     exit(4);
     }
-  if (commonsym >= symtable + i)
+  if (commonsym >= symtable.rec + i)
     commonsym++;
-  for (j = 0; j < symcounter; j++)
-    if (symtable[j].u.parent >= symtable + i)
-      symtable[j].u.parent++;
-  for (j = symcounter; j > i; j--)
-    symtable[j] = symtable[j-1];
-  symcounter++;
-  strcpy(symtable[i].name, name);
-  symtable[i].cat = (islocal) ? SYMCAT_EMPTYLOCAL : SYMCAT_EMPTY;
-  symtable[i].value = 0;
-  symtable[i].u.flags = 0;
+  for (j = 0; j < symtable.counter; j++)
+    if (symtable.rec[j].u.parent >= symtable.rec + i)
+      symtable.rec[j].u.parent++;
+  for (j = symtable.counter; j > i; j--)
+    symtable.rec[j] = symtable.rec[j-1];
+  symtable.counter++;
+  strcpy(symtable.rec[i].name, name);
+  symtable.rec[i].cat = (islocal) ? SYMCAT_EMPTYLOCAL : SYMCAT_EMPTY;
+  symtable.rec[i].value = 0;
+  symtable.rec[i].u.flags = 0;
   }
 
 if (islocal)                            /* if searching for a local label    */
-  return findlocal(symtable + i,        /* search for the local label        */
+  return findlocal(symtable.rec + i,    /* search for the local label        */
                    forward, (islocal < 2));
 
-return symtable + i;                    /* return the found or inserted sym  */
+return symtable.rec + i;                /* return the found or inserted sym  */
 }  
 
 /*****************************************************************************/
@@ -2513,13 +2541,13 @@ char *findsymat(unsigned short addr)
 {
 /* since the symbol table is sorted by name, this needs a sequential search  */
 int i;
-for (i = 0; i < symcounter; i++) 
-  if (symtable[i].cat != SYMCAT_EMPTY)
+for (i = 0; i < symtable.counter; i++) 
+  if (symtable.rec[i].cat != SYMCAT_EMPTY)
     {
-    if (symtable[i].cat == SYMCAT_TEXT)
+    if (symtable.rec[i].cat == SYMCAT_TEXT)
       continue;
-    if (symtable[i].value == addr)
-      return symtable[i].name;
+    if (symtable.rec[i].value == addr)
+      return symtable.rec[i].name;
     }
 return NULL;
 }
@@ -2605,13 +2633,29 @@ if (nextptr)
 
 long parsedecimal(char *srcptr, char **nextptr)
 {
-char c = *srcptr++;
-long t = 0;
+char c;
+long t = 0, mult = 1;
+int i = 0;
+
+c = *srcptr++;
+#if 0
+/* since decimals don't have a leading indicator, '-' should already have been
+   processed by scanfactor() / scanexpr() */
+while (c == '-')
+  {
+  mult = -mult;
+  c = *srcptr++;
+  }
+#endif
 while (isdigit(c))
   {
+  i++;
   t = t * 10 + c - '0';
   c = *srcptr++;
   }
+t *= mult;
+if (i == 0)
+  error |= ERR_EXPR;
 if (nextptr)
   *nextptr = --srcptr;
 return t;
@@ -2623,20 +2667,33 @@ return t;
 
 long parsehex(char *srcptr, char **nextptr)
 {
-long t = 0, i = 0;
+char c;
+int i = 0;
+long t = 0, mult = 1;
 
-parsename(++srcptr, &srcptr);           /* parse skipping leading $          */
-while (unamebuf[i] >= '0' && unamebuf[i] <= 'F')
+srcptr++;                               /* skip $                            */
+while (*srcptr == '-')
   {
-  t = t * 16 + unamebuf[i] - '0';
-  if (unamebuf[i] > '9')
-    t -= 7;
+  mult = -mult;
+  srcptr++;
+  }
+c = toupper(*srcptr++);
+while ((c >= '0' && c <= '9') ||
+       (c >= 'A' && c <= 'F'))
+  {
   i++;
+  if (c >= '0' && c <= '9')
+    c -= '0';
+  else
+    c -= ('A' - 10);
+  t = t * 16 + c;
+  c = toupper(*srcptr++);
   }  
+t *= mult;
 if (i == 0)
   error |= ERR_EXPR;
 if (nextptr)
-  *nextptr = srcptr;
+  *nextptr = --srcptr;
 return t;
 }
 
@@ -2664,15 +2721,25 @@ return t;
 long parsebin(char *srcptr, char **nextptr)
 {
 char c;
-short t = 0;
+int i = 0;
+long t = 0, mult = 1;
 
 srcptr++;                               /* skip %                            */
+while (*srcptr == '-')
+  {
+  mult = -mult;
+  srcptr++;
+  }
 c = *srcptr++;
 while (c == '0' || c == '1')
   {
+  i++;
   t = t * 2 + c - '0';
   c = *srcptr++;
   }
+t *= mult;
+if (i == 0)
+  error |= ERR_EXPR;
 if (nextptr)
   *nextptr = --srcptr;
 return t;
@@ -2685,15 +2752,25 @@ return t;
 long parseoct(char *srcptr, char **nextptr)
 {
 char c;
-long t = 0;
+int i = 0;
+long t = 0, mult = 1;
 
 srcptr++;                               /* skip @                            */
+while (*srcptr == '-')
+  {
+  mult = -mult;
+  srcptr++;
+  }
 c = *srcptr++;
 while (c >= '0' && c <= '7')
   {
+  i++;
   t = t * 8 + c - '0';
   c = *srcptr++;
   }
+t *= mult;
+if (i == 0)
+  error |= ERR_EXPR;
 if (nextptr)
   *nextptr = --srcptr;
 return t;
@@ -2739,13 +2816,44 @@ return dest;
 }
 
 /*****************************************************************************/
+/* parsespace : parses whitespace characters                                 */
+/*****************************************************************************/
+
+char parsespace(char *srcptr, char **nextptr)
+{
+char c, lblk = 0;
+while ((c = *srcptr) == ' ' || c == '\t')
+  {
+  if (lblk < 127)
+    lblk++;
+  srcptr++;
+  }
+*nextptr = srcptr;
+return lblk; /* return whether (and approx. how many) leading blanks skipped */
+}
+
+/*****************************************************************************/
 /* settext : sets a text symbol                                              */
 /*****************************************************************************/
 
 int settext(char *namebuf, char *text)
 {
 struct symrecord *lp = findsym(namebuf, 1);
+char iname[sizeof(lp->name)];
 
+if (!namebuf)
+  {
+  error |= ERR_LABEL_UNDEF;
+  return -1;
+  }
+/* to keep texts separate from the normal labels' way, prepend them with &   */
+if (*namebuf != '&')
+  {
+  sprintf(iname, "&%.*s", (int)(sizeof(iname) - 2), namebuf);
+  namebuf = iname;
+  }
+
+lp = findsym(namebuf, 1);
 if (!lp)
   {
   error |= ERR_LABEL_UNDEF;
@@ -2774,11 +2882,11 @@ else
 if (!text)                              /* if NULL input                     */
   text = "";                            /* assume empty string               */
 
-texts[lp->value] = malloc(strlen(text) + 1);
+texts[lp->value] = (char *)malloc(strlen(text) + 1);
 if (texts[lp->value])
   strcpy(texts[lp->value], text);
 
-if (!strcmp(namebuf, "FILCHR"))         /* special for FILCHR : set internal */
+if (!strcmp(namebuf, "&FILCHR"))         /* special for FILCHR : set internal */
   {                                     /* byte                              */
   switch (text[0])
     {
@@ -2820,24 +2928,29 @@ else
   putlist("\n");
 
 putlist("%sSYMBOL TABLE", (dwOptions & OPTION_LPA) ? "* " : "");
-for (i = 0; i < symcounter; i++) 
-  if (symtable[i].cat != SYMCAT_EMPTY)
+for (i = 0; i < symtable.counter; i++) 
+  if (symtable.rec[i].cat != SYMCAT_EMPTY)
     {
                                         /* suppress listing of predef texts  */
-    if ((symtable[i].cat == SYMCAT_TEXT) &&
-        (symtable[i].value < nPredefinedTexts))
+    if ((symtable.rec[i].cat == SYMCAT_TEXT)
+#if 1
+/* not really necessary. OPT TXT can be used to output these. */
+        && (symtable.rec[i].value < nPredefinedTexts)
+#endif
+        )
       continue;
                                         /* if local label                    */
-    if (symtable[i].cat == SYMCAT_LOCALLABEL)
+    if (symtable.rec[i].cat == SYMCAT_LOCALLABEL)
       {
       int k;                            /* walk local label list             */
-      for (k = 0; k < lclcounter; k++)
-        if (!strcmp(lcltable[k].name, symtable[i].name))
+      for (k = 0; k < lcltable.counter; k++)
+        if (!strcmp(lcltable.rec[k].name, symtable.rec[i].name))
           {
           if (j % 4 == 0)
             putlist("\n%s", (dwOptions & OPTION_LPA) ? "* " : "");
-          putlist( " %9s %02d %04X", lcltable[k].name, lcltable[k].cat,
-                                     lcltable[k].value); 
+          putlist( " %9s %02d %04X", lcltable.rec[k].name,
+                                     lcltable.rec[k].cat,
+                                     lcltable.rec[k].value); 
           j++;
           }
       }
@@ -2845,8 +2958,9 @@ for (i = 0; i < symcounter; i++)
       {
       if (j % 4 == 0)
         putlist("\n%s", (dwOptions & OPTION_LPA) ? "* " : "");
-      putlist( " %9s %02d %04X", symtable[i].name,symtable[i].cat,
-                                 symtable[i].value); 
+      putlist( " %9s %02d %04X", symtable.rec[i].name,
+                                 symtable.rec[i].cat,
+                                 symtable.rec[i].value); 
       j++;
       }
     }
@@ -2874,7 +2988,9 @@ for (i = 0; i < relcounter; i++)
   {
   char name[10];
   sprintf(name, "%c%-.8s",
-          (reltable[i].exprcat & EXPRCAT_NEGATIVE) ? '-' : ' ',
+          (reltable[i].exprcat & EXPRCAT_NEGATIVE) ? '-' :
+              (reltable[i].exprcat & EXPRCAT_ONEBYTE) ? '\'' :
+              ' ',
           reltable[i].sym->name);
   if (j % 4 == 0)
     putlist("\n%s", (dwOptions & OPTION_LPA) ? "* " : "");
@@ -2904,14 +3020,14 @@ else
   putlist("\n");
 
 putlist("%sTEXT TABLE", (dwOptions & OPTION_LPA) ? "* " : "");
-for (i = 0; i < symcounter; i++) 
-  if (symtable[i].cat == SYMCAT_TEXT)
+for (i = 0; i < symtable.counter; i++) 
+  if (symtable.rec[i].cat == SYMCAT_TEXT)
     {
                                         /* suppress listing of predef texts  */
-    if (symtable[i].value < nPredefinedTexts)
+    if (symtable.rec[i].value < nPredefinedTexts)
       continue;
     putlist("\n%s %9s %s", (dwOptions & OPTION_LPA) ? "* " : "",
-            symtable[i].name, texts[symtable[i].value]); 
+            symtable.rec[i].name, texts[symtable.rec[i].value]); 
     j++;
     }
 putlist("\n%s%d TEXTS\n", (dwOptions & OPTION_LPA) ? "* " : "", j);
@@ -2967,8 +3083,7 @@ return 0;
 /* strupr : converts a string to uppercase (crude)                           */
 /*****************************************************************************/
 
-/*
-char *strupr(char *name)
+char *str_upr(char *name)
 {
 int i;
 if (!name)
@@ -2978,7 +3093,7 @@ for (i = 0; name[i]; i++)
     name[i] -= ('a' - 'A');
 return name;
 }
-*/
+
 /*****************************************************************************/
 /* addreloc : adds a relocation record to the list                           */
 /*****************************************************************************/
@@ -2998,6 +3113,9 @@ if ((!relocatable) ||                   /* if generating unrelocatable binary*/
 switch (rel.sym->cat)                   /* check symbol category             */
   {
   case SYMCAT_PUBLIC :                  /* public label ?                    */
+    if (rel.sym->u.flags & SYMFLAG_ABSOLUTE)
+      return;
+    /* fall thru on purpose for now ... */
   case SYMCAT_LABEL :                   /* normal label ?                    */
   case SYMCAT_EXTERN :                  /* external symbol ?                 */
     break;                              /* these are allowed                 */
@@ -3047,14 +3165,7 @@ parsename(srcptr, &srcptr);             /* parse with global pointer         */
 
 char skipspace()
 {
-char c, lblk = 0;
-while ((c = *srcptr) == ' ' || c == '\t')
-  {
-  if (lblk < 127)
-    lblk++;
-  srcptr++;
-  }
-return lblk; /* return whether (and approx. how many) leading blanks skipped */
+return parsespace(srcptr, &srcptr);
 } 
 
 /*****************************************************************************/
@@ -3694,7 +3805,7 @@ else
 
 #define RESTORE { srcptr = oldsrcptr; c = *srcptr; goto dodefault; }
 
-void scanoperands09(struct relocrecord *pp)
+void scanoperands09(struct relocrecord *pp, int endc)
 {
 char c, *oldsrcptr;
 unsigned char accpost, h63 = 0;
@@ -3840,7 +3951,7 @@ if (pass == 2 && unknown)
   error |= ERR_LABEL_UNDEF; 
 }
 
-void scanoperands00(struct relocrecord *pp)
+void scanoperands00(struct relocrecord *pp, int endc)
 {
 char c, *s = srcptr;
 
@@ -3921,9 +4032,9 @@ if (pass == 2 && unknown)
   error |= ERR_LABEL_UNDEF; 
 }
 
-void scanoperands11(struct relocrecord *pp)
+void scanoperands11(struct relocrecord *pp, int endc)
 {
-char c, *s = srcptr;
+char c, *s = srcptr, *next;
 
 unknown = 0;
 opsize = 0;
@@ -3932,23 +4043,6 @@ operand = 0;
 skipspace();
 c = *srcptr;
 mode = ADRMODE_IMM;
-
-/*
-What's still sorely missing here:
-something to catch the first part of the bit mask stuff in constructs like
-  addr,[#]mask
-  addr,[#]mask,target
-where processing should stop after addr
-and
-  [[off],]indexreg,[#]mask
-  [[off],]indexreg,[#]mask,target
-where processing should stop after indexreg.
-Until then, it's only possible to specify them like
-  addr [#]mask
-  addr [#]mask,target
-  [[off],]indexreg [#]mask
-  [[off],]indexreg [#]mask target
-*/
 
 switch (toupper(c))
   {
@@ -4022,9 +4116,31 @@ switch (toupper(c))
     operand = scanexpr(0, pp);
     if (!(dwOptions & OPTION_TSC))
       skipspace();
+#if 1
     if (*srcptr == ',')
-      goto Indexed;
+      {
+      if (!endc)
+        goto Indexed;
+      next = srcptr + 1;                /* if endc, parse ahead ...          */
+      if (!(dwOptions & OPTION_TSC))
+        parsespace(next, &next);
+      parsename(next, &next);
+      if (!strcmp(unamebuf, "X") ||     /* if it's "X" or "Y",               */
+          !strcmp(unamebuf, "Y"))       /* or "Y" alone                      */
+        {
+        srcptr = next;
+        goto IdxWithout;                /* process index argument            */
+        }
+      /* otherwise end parsing here */
+      }
+#else
+    if (*srcptr == ',')
+      {
+      if (!endc)
+        goto Indexed;
+      }
     else
+#endif
       {
       if (opsize == 0)
         {
@@ -4087,8 +4203,15 @@ if (wcommon)                            /* if writing common data            */
   }
 else                                    /* otherwise                         */
   {                                     /* write size of binary data         */
+/* this is wrong, as the current block doesn't necessarily start at 0 in abs mode! */
+/* TODO: replace this with reldatasize once it's calculated correctly */
+#if 1
+  fputc((unsigned char)(reldatasize >> 8), objfile);
+  fputc((unsigned char)(reldatasize & 0xFF), objfile);
+#else
   fputc((unsigned char)(loccounter >> 8), objfile);
   fputc((unsigned char)(loccounter & 0xFF), objfile);
+#endif
   }
 
 fputc(0, objfile);                      /* unknown data                      */
@@ -4106,9 +4229,12 @@ else
   int extrel = 0;                       /* # external relocation records     */
 
   for (i = 0; i < relcounter; i++)      /* calc # external symbols           */
-    if ((reltable[i].sym->cat == SYMCAT_EXTERN) ||
-        (reltable[i].sym->cat == SYMCAT_COMMON))
+    {
+    char cat = reltable[i].sym->cat;
+    if ((cat == SYMCAT_EXTERN) ||
+        (cat == SYMCAT_COMMON))
       extrel++;
+    }
                                         /* then calculate table size         */
   extrel = (extrel * 8) + (relcounter * 3);
                                         /* and write it out                  */
@@ -4139,8 +4265,8 @@ if (wcommon)
 else                                    /* calculate & write out global size */
   {
   int globals = 0;
-  for (i = 0; i < symcounter; i++)
-    if (symtable[i].cat == SYMCAT_PUBLIC)
+  for (i = 0; i < symtable.counter; i++)
+    if (symtable.rec[i].cat == SYMCAT_PUBLIC)
       globals++;
   globals *= 12;
   fputc((unsigned char)(globals >> 8), objfile);
@@ -4155,7 +4281,7 @@ if (wcommon)
   size_t len;
   char name[9] = "";
   sprintf(name, "%-.8s", commonsym->name);
-  strupr(name);
+  str_upr(name);
   len = strlen(name);
   if (len)                              /* if there,                         */
     len++;                              /* append a $04                      */
@@ -4190,24 +4316,24 @@ void writerelcommon()
 int i, j;
 char name[9];
                                         /* work through symbol list          */
-for (i = 0; i < symcounter; i++)
-  {
-  if (symtable[i].cat == SYMCAT_COMMON) /* if that is a common block         */
+for (i = 0; i < symtable.counter; i++)
+  {                                     /* if that is a common block         */
+  if (symtable.rec[i].cat == SYMCAT_COMMON)
     {
-    commonsym = symtable + i;           /* write it out                      */
+    commonsym = symtable.rec + i;       /* write it out                      */
     writerelhdr(1);
                                         /* then write the global definition  */
-    sprintf(name, "%-8.8s", symtable[i].name);
-    strupr(name);
+    sprintf(name, "%-8.8s", symtable.rec[i].name);
+    // strupr(name);
     fwrite(name, 1, 8, objfile);
     fputc(1, objfile);                  /* unknown data                      */
-    fputc((unsigned char)(symtable[i].value >> 8), objfile);
-    fputc((unsigned char)(symtable[i].value & 0xFF), objfile);
+    fputc((unsigned char)(symtable.rec[i].value >> 8), objfile);
+    fputc((unsigned char)(symtable.rec[i].value & 0xFF), objfile);
     fputc(0x13, objfile);               /* unknown flag                      */
 
                                         /* then write the Common name        */
-    sprintf(name, "%-.8s", symtable[i].name);
-    strupr(name);
+    sprintf(name, "%-.8s", symtable.rec[i].name);
+    // strupr(name);
     for (j = 0; name[j]; j++)
       fputc(name[j], objfile);
     fputc(0x04, objfile);
@@ -4234,20 +4360,23 @@ unsigned char flags;
 
 for (i = 0; i < relcounter; i++)        /* write out the external data       */
   {
+  char cat = reltable[i].sym->cat;
   fputc((unsigned char)(reltable[i].addr >> 8), objfile);
   fputc((unsigned char)(reltable[i].addr & 0xFF), objfile);
 
   flags = 0x00;                         /* reset flags                       */
   if (reltable[i].exprcat & EXPRCAT_NEGATIVE)
-    flags |= 0x20;                      /* eventually add subtraction flag   */
-  if ((reltable[i].sym->cat == SYMCAT_EXTERN) ||
-      (reltable[i].sym->cat == SYMCAT_COMMON))
-    flags |= 0x80;                      /* eventually add External flag      */
+    flags |= 0x20;                      /* add subtraction flag if necessary */
+  if (reltable[i].exprcat & EXPRCAT_ONEBYTE)
+    flags |= 0x40;                      /* add single-byte flag if necessary */
+  if ((cat == SYMCAT_EXTERN) ||
+      (cat == SYMCAT_COMMON))
+    flags |= 0x80;                      /* add External flag where necessary */
   fputc(flags, objfile);                /* write the flag bytes              */
-  if (flags & 0x80)                     /* eventually write external symbol  */
+  if (flags & 0x80)                     /* write external symbol if needed   */
     {
     sprintf(name, "%-8.8s", reltable[i].sym->name);
-    strupr(name);
+    // strupr(name);
     fwrite(name, 1, 8, objfile);
     }
   }
@@ -4262,20 +4391,25 @@ void writerelglobal()
 int i;
 char name[9];
 
-for (i = 0; i < symcounter; i++)        /* write out the global data         */
+for (i = 0; i < symtable.counter; i++)  /* write out the global data         */
   {
-  if (symtable[i].cat == SYMCAT_PUBLIC)
+  if (symtable.rec[i].cat == SYMCAT_PUBLIC)
     {
-    sprintf(name, "%-8.8s", symtable[i].name);
-    strupr(name);
+    int flag2 = 0x02;                   /* start with GLOBAL flag            */
+                                        /* add ABSOLUTE if necessary         */
+    if (symtable.rec[i].u.flags & SYMFLAG_ABSOLUTE)
+      flag2 |= 0x10;
+
+    sprintf(name, "%-8.8s", symtable.rec[i].name);
+    // strupr(name);
     fwrite(name, 1, 8, objfile);
 
     fputc(0, objfile);                  /* unknown data                      */
 
-    fputc((unsigned char)(symtable[i].value >> 8), objfile);
-    fputc((unsigned char)(symtable[i].value & 0xFF), objfile);
+    fputc((unsigned char)(symtable.rec[i].value >> 8), objfile);
+    fputc((unsigned char)(symtable.rec[i].value & 0xFF), objfile);
 
-    fputc(0x02, objfile);               /* unknown flag                      */
+    fputc(flag2, objfile);              /* unknown flag                      */
     }
   }
 }
@@ -4290,7 +4424,7 @@ int i;
 
 if (!modulename[0])
   return;
-strupr(modulename);
+// strupr(modulename);
 for (i = 0; modulename[i]; i++)
   fputc(modulename[i], objfile);
 fputc(0x04, objfile);
@@ -4382,7 +4516,7 @@ if (hexcount)
 
 void outhex (unsigned char x) 
 {
-if (hexcount == 16)
+if (hexcount == hexmaxcount)
   flushhex();
 hexbuffer[hexcount++] = x;
 chksum += x;
@@ -4394,7 +4528,7 @@ chksum += x;
 
 void outihex (unsigned char x) 
 {
-if (hexcount == 32)
+if (hexcount == ihexmaxcount)
   flushihex();
 hexbuffer[hexcount++] = x;
 chksum += x;
@@ -4406,7 +4540,7 @@ chksum += x;
 
 void outflex(unsigned char x)
 {
-if (hexcount == 255)                    /* if buffer full                    */
+if (hexcount == iflexmaxcount)          /* if buffer full                    */
   flushflex();                          /* flush it                          */
 hexbuffer[hexcount++] = x;              /* then put byte into buffer         */
 }
@@ -4425,11 +4559,36 @@ if (bUsedBytes[nByte] & nBitMask)       /* if address already used           */
 else                                    /* otherwise                         */
   bUsedBytes[nByte] |= nBitMask;        /* mark it as used                   */
 
+if ((outmode == OUT_REL) &&             /* if in REL output mode             */
+    (absmode))                          /* and producing an absolute module  */
+  {
+  if (reldataorg + 1 != loccounter + off)
+    {
+    long curoff = ftell(objfile);
+    if (relabsfoff >= 0)
+      {
+      long blockcnt = curoff - relabsfoff - 4;
+      fseek(objfile, relabsfoff, SEEK_SET);
+      fputc((unsigned char)(blockcnt >> 8), objfile);
+      fputc((unsigned char)(blockcnt & 0xFF), objfile);
+      fseek(objfile, curoff, SEEK_SET);
+      }
+    relabsfoff = curoff;
+    fputc(0, objfile);
+    fputc(1, objfile);
+    fputc((unsigned char)((loccounter + off) >> 8), objfile);
+    fputc((unsigned char)((loccounter + off) & 0xFF), objfile);
+    reldatasize += 4;
+    }
+  reldataorg = loccounter + off;
+  }
+
 switch (outmode)
   {
   case OUT_BIN :                        /* binary file                       */
   case OUT_REL :                        /* FLEX Relocatable                  */
     fputc(uc, objfile);
+    reldatasize++;
     break;
   case OUT_SREC :                       /* Motorola S-records                */
     outhex(uc);
@@ -4984,7 +5143,11 @@ switch (mode)
   {
   case ADRMODE_IMM :
     if (opsize == 2)
+      {
       putbyte((unsigned char)operand);
+      addrelocation = 1;
+      p->exprcat |= EXPRCAT_ONEBYTE;
+      }
     else if (opsize == 5)               /* LDQ special                       */
       putdword(operand);
     else
@@ -5122,7 +5285,7 @@ void oneimm(int co)
 {
 struct relocrecord p = {0};
 
-scanoperands(&p);
+scanoperands(&p, 0);
 if (mode >= ADRMODE_POST)
   error |= ERR_ILLEGAL_ADDR;
 putbyte((unsigned char)co);
@@ -5141,7 +5304,7 @@ void lea(int co)
 struct relocrecord p = {0};
 
 onebyte((unsigned char)co);
-scanoperands(&p);
+scanoperands(&p, 0);
 if (mode == ADRMODE_IMM)
   error |= ERR_ILLEGAL_ADDR;
 if (mode < ADRMODE_POST)
@@ -5162,7 +5325,7 @@ void sbranch(int co)
 struct relocrecord p = {0};
 int offs;
 
-scanoperands(&p);
+scanoperands(&p, 0);
 if (mode != ADRMODE_DIR && mode != ADRMODE_EXT)
   error |= ERR_ILLEGAL_ADDR;
 offs = (unsigned short)operand - (loccounter + phase) - 2;
@@ -5183,7 +5346,7 @@ void lbra(int co)
 struct relocrecord p = {0};
 int nDiff;
 
-scanoperands(&p);
+scanoperands(&p, 0);
 if (mode != ADRMODE_DIR && mode != ADRMODE_EXT)
   error |= ERR_ILLEGAL_ADDR;
 putbyte((unsigned char)co);
@@ -5204,7 +5367,7 @@ void lbranch(int co)
 struct relocrecord p = {0};
 int nDiff;
 
-scanoperands(&p);
+scanoperands(&p, 0);
 if (mode != ADRMODE_DIR && mode != ADRMODE_EXT)
   error |= ERR_ILLEGAL_ADDR;
 putword((unsigned short)co);
@@ -5223,7 +5386,7 @@ void arith(int co, char noimm)
 {
 struct relocrecord p = {0};
 
-scanoperands(&p);
+scanoperands(&p, 0);
 switch (mode)
   {
   case ADRMODE_IMM :
@@ -5310,7 +5473,7 @@ void idxextarith(int co)
 {
 struct relocrecord p = {0};
 
-scanoperands(&p);
+scanoperands(&p, 0);
 switch (mode)
   {
   case ADRMODE_IMM :
@@ -5339,7 +5502,7 @@ void darith(int co, char noimm)
 {
 struct relocrecord p = {0};
 
-scanoperands(&p);
+scanoperands(&p, 0);
 switch (mode)
   {
   case ADRMODE_IMM :
@@ -5391,7 +5554,7 @@ void d2arith(int co, char noimm)
 {
 struct relocrecord p = {0};
 
-scanoperands(&p);
+scanoperands(&p, 0);
 switch (mode)
   {
   case ADRMODE_IMM :
@@ -5420,7 +5583,7 @@ void qarith(int co, char noimm)
 {
 struct relocrecord p = {0};
 
-scanoperands(&p);
+scanoperands(&p, 0);
 switch (mode)
   {
   case ADRMODE_IMM :
@@ -5472,7 +5635,7 @@ if ((dwOptions & OPTION_TSC) &&         /* if TSC mode, check for 6800       */
   srcptr = s;
   }
 
-scanoperands(&p);
+scanoperands(&p, 0);
 switch (mode)
   {
   case ADRMODE_IMM :
@@ -5523,7 +5686,7 @@ if (dwOptions & OPTION_TSC)             /* if TSC mode, check for 6800       */
   srcptr = s;
   }
 
-scanoperands(&p);
+scanoperands(&p, 0);
 switch (mode)
   {
   case ADRMODE_IMM :
@@ -5635,7 +5798,7 @@ if (!(dwOptions & OPTION_TSC))
   skipspace();
 if (*srcptr++ != ',')
   error |= ERR_EXPR;
-scanoperands(&p);
+scanoperands(&p, 0);
 
 /* HD6301/6303 can handle Immediate and Indexed addressing, whereas
    HD6309 can handle Immediate, Extended and Indexed addressing */
@@ -5714,7 +5877,7 @@ if (*srcptr == ',')
   srcptr++;
 else
  error |= ERR_ILLEGAL_ADDR;
-scanoperands(&rp);
+scanoperands(&rp, 0);
 switch (mode)
   {
   case ADRMODE_DIR :
@@ -5808,10 +5971,10 @@ struct relocrecord p = {0};
 long mask = -1;
 
 /* expected:
-   dir [#]mask
-   [[off],]indexreg [#]mask */
+   dir [#]mask               |  dir,[#]mask
+   [[off],]indexreg [#]mask  |  [[off],]indexreg,[#]mask */
 
-scanoperands(&p);                       /* get 1st part (dir/index)          */
+scanoperands(&p, 1);                    /* get 1st part (dir/index)          */
 
 if (*srcptr == ',' ||                   /* either , or ' ' is valid          */
     *srcptr == ' ')
@@ -5852,10 +6015,10 @@ long mask = -1;
 int offs;
 
 /* expected:
-   dir [#]mask target
-   [[off],]indexreg [#]mask target */
+   dir [#]mask target  |  dir,[#]mask,target
+   [[off],]indexreg [#]mask target  |  [[off],]indexreg,[#]mask,target */
 
-scanoperands(&p);
+scanoperands(&p, 1);
 
 if (*srcptr == ',' ||                   /* either , or ' ' is valid          */
     *srcptr == ' ')
@@ -5880,7 +6043,7 @@ long s_operand = operand;
 char s_unknown = unknown;
 char s_certain = certain;
 unsigned char s_postbyte = postbyte;
-scanoperands(&pj);
+scanoperands(&pj, 0);
 if (mode != ADRMODE_DIR && mode != ADRMODE_EXT)
   error |= ERR_ILLEGAL_ADDR;
 offs = (unsigned short)operand - (loccounter + phase) - 4;
@@ -5967,9 +6130,11 @@ for (p = curline->txt; (*p) && (j < LINELEN); )
   else if (*p == '&' && (p[1] < '0' || p[1] > '9'))
     {
     struct symrecord *lp;
+    char iname[sizeof(namebuf)];
     srcptr = p + 1;
     scanname();
-    lp = findsym(namebuf, 0);
+    sprintf(iname, "&%.*s", (int)(sizeof(iname) - 2), namebuf);
+    lp = findsym(iname, 0);
     if (lp && *namebuf &&               /* if symbol IS a text constant,     */
         (lp->cat == SYMCAT_TEXT))
       {                                 /* insert its content                */
@@ -6336,7 +6501,9 @@ switch (co)
     setlabel(lp);
     if (generating && pass == 2)
       {
-      if (co != PSEUDO_RMB || outmode == OUT_BIN)
+      if (co != PSEUDO_RMB ||
+          outmode == OUT_BIN ||
+          outmode == OUT_REL)
         {
         if (co != PSEUDO_RMB)           /* if filling with a value,          */
           {                             /* fill codebuf first                */
@@ -6377,12 +6544,28 @@ switch (co)
           (lp->value == (unsigned short)operand &&
            pass == 2))
         {
-        if (exprcat == EXPRCAT_INTADDR)
-          lp->cat = SYMCAT_LABEL;
-        else
-          lp->cat = SYMCAT_CONSTANT;
+        if (lp->cat != SYMCAT_PUBLIC)
+          {   
+          if (exprcat == EXPRCAT_INTADDR)
+            lp->cat = SYMCAT_LABEL;
+          else
+            lp->cat = SYMCAT_CONSTANT;
+          }
         lp->value = (unsigned short)operand;
         printovr |= PRINTOV_PLABEL;
+        }
+      else if (lp->cat == SYMCAT_PUBLICUNDEF ||
+               (lp->cat == SYMCAT_PUBLIC &&
+                lp->value == (unsigned short)operand))
+        {
+        lp->cat = SYMCAT_PUBLIC;
+        if (!(exprcat & (EXPRCAT_INTADDR | EXPRCAT_EXTADDR)))
+          lp->u.flags |= SYMFLAG_ABSOLUTE;
+        lp->value = (unsigned short)operand;
+        /* Doesn't look like it's necessary ...
+        p.addr = (unsigned short)operand;
+        addreloc(&p);
+        */
         }
       else
         error |= ERR_LABEL_MULT;
@@ -6447,7 +6630,11 @@ switch (co)
         }
       else
         {
-        putbyte((unsigned char)scanexpr(0, &p));
+        long ex = scanexpr(0, &p);
+        p.addr = (unsigned short)(loccounter + codeptr);
+        putbyte((unsigned char)ex);
+        p.exprcat |= EXPRCAT_ONEBYTE;
+        addreloc(&p);
         if (unknown && pass == 2)
           error |= ERR_LABEL_UNDEF;
         }
@@ -6480,7 +6667,9 @@ switch (co)
         c = *srcptr;
         if ((c == '$') || isalnum(c))
           {
-          putbyte((unsigned char)scanexpr(0, &p));
+          long ex = scanexpr(0, &p);
+          p.addr = (unsigned short)(loccounter + codeptr);
+          putbyte((unsigned char)ex);
           if (unknown && pass == 2)
             error |= ERR_LABEL_UNDEF;
           }
@@ -6687,6 +6876,8 @@ switch (co)
         case OUT_FLEX :                 /* FLEX binary                       */
           flushflex();
           break;
+        case OUT_REL :                  /* RELASMB output                    */
+          break;
         }
       }
     loccounter = (unsigned short)operand;
@@ -6753,7 +6944,7 @@ switch (co)
         }
       }
                                         /* terminate current level           */
-    terminate = (curline->lvl & 0x0f);  /* (and any sublevels)               */
+    g_termflg = (curline->lvl & 0x0f);  /* (and any sublevels)               */
     break;     
   case PSEUDO_INCLUDE :                 /* INCLUDE <filename>                */
     nRepNext = 0;                       /* reset eventual repeat             */
@@ -7295,9 +7486,11 @@ while (pmac)                            /* walk through the macro lines      */
       else
         {
         struct symrecord *lp;
+        char iname[sizeof(namebuf)];
         char *nc;
         parsename(s + 1, &nc);
-        lp = findsym(namebuf, 0);
+        sprintf(iname, "&%.*s", (int)(sizeof(iname) - 2), namebuf);
+        lp = findsym(iname, 0);
         if (lp && *namebuf &&           /* if symbol IS a text constant,     */
             (lp->cat == SYMCAT_TEXT))
           {                             /* insert its content                */
@@ -7549,10 +7742,16 @@ if (isValidNameChar(*srcptr, 1))        /* look for label on line start      */
   if (*srcptr == ':')                   /* skip : following label            */
     srcptr++;
 
-  if ((lp) &&
-      (lp->cat != SYMCAT_COMMONDATA) &&
-      (lp->u.flags & SYMFLAG_FORWARD))
-    lp->u.flags |= SYMFLAG_PASSED;
+  if (lp)
+    {
+    if ((lp->cat != SYMCAT_COMMONDATA) &&
+        (lp->u.flags & SYMFLAG_FORWARD))
+      lp->u.flags |= SYMFLAG_PASSED;
+    if ((absmode) &&
+        (lp->cat == SYMCAT_PUBLICUNDEF ||
+         lp->cat == SYMCAT_PUBLIC))
+      lp->u.flags |= SYMFLAG_ABSOLUTE;
+    }
 
   lpLabel = lp;
   } 
@@ -7894,6 +8093,9 @@ for (i = 1; i < argc; i++)
         case 'c' :                      /* suppress code output              */
           outmode = OUT_NONE;
           break;
+        case 'u' :                      /* undefined is treated as external  */
+          dwOptions |= OPTION_UEX;
+          break;
         case 'b' :                      /* define binary output file         */
         case 's' :                      /* define Motorola output file       */
         case 'x' :                      /* define Intel Hex output file      */
@@ -8022,8 +8224,8 @@ struct linebuf *plast = pline;
 
 while (pline)
   {
-  if (terminate < 0 ||                  /* skip all lines until going up     */
-      (pline->lvl & 0x0f) < terminate)
+  if (g_termflg < 0 ||                  /* skip all lines until going up     */
+      (pline->lvl & 0x0f) < g_termflg)
     {
     curline = pline;
     error = ERR_OK;
@@ -8088,6 +8290,8 @@ int main (int argc, char *argv[])
 int i;
 struct linebuf *pLastLine = NULL;
 
+scanoperands = scanoperands09;
+
 settext("ASM", "A09");                  /* initialize predefined texts       */
 settext("VERSION", VERSNUM);
 settext("PASS", "1");
@@ -8105,9 +8309,11 @@ nTotErrors = errors = 0;
 nTotWarnings = warnings = 0;
 generating = 0;
 common = 0;
-terminate = -1;
+g_termflg = -1;
 if (!absmode)                           /* in relocating mode                */
   dpsetting = -1;                       /* there IS no Direct Page           */
+if (outmode != OUT_REL)                 /* Undef->Ext only for RELASMB output*/
+  dwOptions &= ~OPTION_UEX;
 
 printf("A09 Assembler V" VERSION "\n");
 
@@ -8160,11 +8366,19 @@ phase = 0;
 errors = 0;
 warnings = 0;
 generating = 0;
-terminate = -1;
+reldataorg = -2;
+reldatasize = 0;
+g_termflg = -1;
 memset(bUsedBytes, 0, sizeof(bUsedBytes));
-for (i = 0; i < symcounter; i++)        /* reset all PASSED flags            */
-  if (symtable[i].cat != SYMCAT_COMMONDATA)
-    symtable[i].u.flags &= ~SYMFLAG_PASSED;
+for (i = 0; i < symtable.counter; i++)   /* reset all PASSED flags            */
+  if (symtable.rec[i].cat != SYMCAT_COMMONDATA)
+    symtable.rec[i].u.flags &= ~SYMFLAG_PASSED;
+if (dwOptions & OPTION_UEX)
+  {                                     /* make all undefined symbols extern */
+  for (i = 0; i < symtable.counter; i++)
+    if (symtable.rec[i].cat == SYMCAT_UNRESOLVED)
+      symtable.rec[i].cat = SYMCAT_EXTERN;
+  }
 
 if (listing & LIST_ON)
   {
@@ -8198,6 +8412,7 @@ if (outmode == OUT_REL)                 /* if writing FLEX Relocatable       */
   writerelcommon();                     /* write out common blocks           */
   relhdrfoff = ftell(objfile);
   writerelhdr(0);                       /* write out initial header          */
+  relabsfoff = -1;
   }
 
 processfile(rootline);
@@ -8266,6 +8481,21 @@ switch (outmode)                        /* look whether object cleanup needed*/
       }
     break;
   case OUT_REL :                        /* FLEX Relocatable                  */
+
+    if (absmode)                        /* if producing an absolute module   */
+      {                                 /* correct the last object record    */
+      long curoff = ftell(objfile);
+      if (relabsfoff >= 0)
+        {
+        long blockcnt = curoff - relabsfoff - 4;
+        fseek(objfile, relabsfoff, SEEK_SET);
+        fputc((unsigned char)(blockcnt >> 8), objfile);
+        fputc((unsigned char)(blockcnt & 0xFF), objfile);
+        fseek(objfile, curoff, SEEK_SET);
+        }
+      /* relabsfoff = curoff; */
+      }
+
     writerelext();                      /* write out External table          */
     writerelglobal();                   /* write out Global table            */
     writerelmodname();                  /* write out Module Name             */

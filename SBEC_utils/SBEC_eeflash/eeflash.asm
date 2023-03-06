@@ -7,6 +7,7 @@
 ; until 512 bytes has been written then send eeprom
 ; to PC for verification
 
+ OPT H11
     ORG $0000
 
 Start:

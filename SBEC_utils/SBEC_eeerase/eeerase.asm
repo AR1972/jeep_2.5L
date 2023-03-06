@@ -5,6 +5,7 @@
 ; bootstrap will send $B600->$B800 for backup, erase the
 ; 68hc11 eeprom, then send $B600->$B800 for verification
 
+ OPT H11
     ORG $0000
 
 Start:

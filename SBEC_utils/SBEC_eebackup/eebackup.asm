@@ -4,6 +4,7 @@
 ;
 ; bootstrap will send $B600->$B800 for backup
 
+ OPT H11
     ORG $0000
 
 Start:

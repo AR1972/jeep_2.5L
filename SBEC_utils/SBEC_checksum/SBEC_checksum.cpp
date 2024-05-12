@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 {
 	int ret = 1;
 	BOOL write_checksum = FALSE;
-	unsigned int eeprom_size = 0x8000;
+	int eeprom_size = 0x8000;
 	unsigned long num = 0;
 	unsigned char file_checksum = 0;
 	unsigned char file_correction = 0;
@@ -87,20 +87,20 @@ int main(int argc, char *argv[])
 	calculated_correction = file_checksum - calculated_checksum;
 	calculated_correction += file_correction;
 
-	printf("\nfile values:\n");
+	printf("\nfile:\n");
 	printf("checksum 0x%02X correction 0x%02X\n", file_checksum, file_correction);
-	printf("\ncalculated values:\n");
+	printf("\ncalculated:\n");
 	printf("checksum 0x%02X correction 0x%02X\n", calculated_checksum, calculated_correction);
 	
 	if ((file_checksum == calculated_checksum) & (file_correction == calculated_correction))
 	{
-		printf("\nchecksum is correct\n\n");
+		printf("checksum is correct\n\n");
 		ret = 0;
 		goto EXIT;
 	}
 	else
 	{
-		printf("\n>>>> checksum is incorrect <<<<\n\n");
+		printf("checksum is incorrect\n\n");
 	}
 	
 	if (write_checksum)
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 		printf("checksum 0x%02X correction 0x%02X\n", calculated_checksum, file_buffer[12]);
 		if (file_checksum == calculated_checksum)
 		{
-			printf("\nchecksum is correct\n\n");
+			printf("checksum is correct\n\n");
 			SetFilePointer(hBuff, -eeprom_size, NULL, FILE_END);
 			WriteFile(hBuff, file_buffer, eeprom_size, &num, NULL);
 			ret = 0;
@@ -121,8 +121,8 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			printf("\n>>>> checksum is incorrect <<<<\n");
-			printf("\n>>>>     unknown error     <<<<\n");
+			printf("checksum is incorrect\n");
+			printf(">unknown error\n");
 			goto EXIT;
 		}
 	}

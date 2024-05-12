@@ -1,0 +1,11 @@
+Thumbs.db
+SBEC_checksum.tlog
+SBEC_checksum.tlog/*
+*.log
+*.obj
+*.pdb
+*.sdf
+*.opensdf
+SBEC_checksum.sdf
+Release
+Release/*

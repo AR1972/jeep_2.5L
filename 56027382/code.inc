@@ -8393,8 +8393,12 @@ loc_CFD9:                               ; RESERVED:off_CCEC↑o
 
 
 sub_CFDE:                               ; sub_E542+44↓P
-                ldx     #$8000
+                ldx     #Data_start
+ IF Data_start == $8000
                 ldd     #$9200
+ ELSE IF Data_start == $2000
+                ldd     #$2200
+ ENDIF
                 std     Temp0
                 clra
                 ldab    #8

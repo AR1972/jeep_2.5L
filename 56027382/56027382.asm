@@ -6,7 +6,9 @@ FILCHR TEXT $3F
 Data_start equ $8000
 Code_start equ $9400
 PiaAddr equ $6000
+;PiaAddr equ $0400
 NOEMR equ 0
+; 2 is stock clock
 ECLOCK equ 2
 ; ASD on time above freezing stock
 ; value is 1, about 1/2 second

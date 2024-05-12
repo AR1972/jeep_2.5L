@@ -372,10 +372,6 @@ Start:
 
     Sleep(585);
 
-    // the bootstrap sits in a loop for about 100ms to give us
-    // time to apply 20 volts to pin 45, if 20 volts isn't
-    // applied in time the chip id function will fail.
-
     if (!ReadFile(hComm, recv_buffer, 0x100, &recv_num, NULL)) {
         printf("ERROR: reading from COM port\n");
     }
@@ -478,12 +474,12 @@ Start:
 
     for (unsigned int i = 0; i < (eeprom_size/0x40); i++){
         rel_onoff(dev, DATA, RELAY_DATA);
-        Sleep(80);
+        Sleep(100);
         if (!WriteFile(hComm, &file_buffer[num], 0x40, &send_num, NULL)) {
             printf("\nERROR: sending data\n");
             goto EXIT;
         }
-        Sleep(80);
+        Sleep(100);
         rel_onoff(dev, VSEL, RELAY_DATA);
         num += send_num;
         printf("\r");

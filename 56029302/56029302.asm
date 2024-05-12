@@ -2751,7 +2751,7 @@ loc_A183:                               ; CODE XREF: sub_A12C:loc_A173↑j
 ; ---------------------------------------------------------------------------
 
 loc_A18B:                               ; CODE XREF: sub_A12C+4B↑j
-                ldx     #$A1BA
+                ldx     #word_A1BC-2
                 aslb
                 abx
                 ldx     0,x
@@ -2785,8 +2785,8 @@ loc_A1B3:                               ; CODE XREF: sub_A12C+82↑j
                 staa    TMSK1           ; Timer Interrupt Mask Register 1
                 rts
 ; End of function sub_A12C
-
 ; ---------------------------------------------------------------------------
+word_A1BC:
                 fdb $44
                 fdb $3D
                 fdb $45

@@ -45,7 +45,7 @@ wait_0:
     ldY     #Buffer
 
 InitRetryCounter:
-    ldaA    #$19
+    ldaA    #$2
     staA    <RetryCounter
 
 ProgramBytes:
@@ -53,7 +53,7 @@ ProgramBytes:
     staA    $00,X
     ldaA    $00,Y
     staA    $00,X
-    ldaB    #$28
+    ldaB    #$64
     bsr     ShortDelayLoop
     ldaB    #$C0
     staB    $00,X
@@ -63,6 +63,7 @@ ProgramBytes:
     beq     ByteVerified
     dec     RetryCounter
     bne     ProgramBytes
+	bra		ResetEEPROM
 
 Finished:
     ldaA    #$19

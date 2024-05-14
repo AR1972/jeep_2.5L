@@ -474,12 +474,12 @@ Start:
 
     for (unsigned int i = 0; i < (eeprom_size/0x40); i++){
         rel_onoff(dev, DATA, RELAY_DATA);
-        Sleep(100);
+        Sleep(80);
         if (!WriteFile(hComm, &file_buffer[num], 0x40, &send_num, NULL)) {
             printf("\nERROR: sending data\n");
             goto EXIT;
         }
-        Sleep(100);
+        Sleep(80);
         rel_onoff(dev, VSEL, RELAY_DATA);
         num += send_num;
         printf("\r");

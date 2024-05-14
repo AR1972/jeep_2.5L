@@ -87,10 +87,8 @@ int main(int argc, char *argv[])
 	calculated_correction = file_checksum - calculated_checksum;
 	calculated_correction += file_correction;
 
-	printf("\nfile:\n");
-	printf("checksum 0x%02X correction 0x%02X\n", file_checksum, file_correction);
-	printf("\ncalculated:\n");
-	printf("checksum 0x%02X correction 0x%02X\n", calculated_checksum, calculated_correction);
+	printf("\nfile:\nchecksum   0x%02X\ncorrection 0x%02X\n", file_checksum, file_correction);
+	printf("\ncalculated:\nchecksum   0x%02X\ncorrection 0x%02X\n", calculated_checksum, calculated_correction);
 	
 	if ((file_checksum == calculated_checksum) & (file_correction == calculated_correction))
 	{
@@ -110,7 +108,7 @@ int main(int argc, char *argv[])
 		calculated_checksum = 0;
 		calculated_correction = 0;
 		calculated_checksum = checksum(file_buffer, eeprom_size);
-		printf("checksum 0x%02X correction 0x%02X\n", calculated_checksum, file_buffer[12]);
+		printf("checksum   0x%02X\ncorrection 0x%02X\n", calculated_checksum, file_buffer[12]);
 		if (file_checksum == calculated_checksum)
 		{
 			printf("checksum is correct\n\n");

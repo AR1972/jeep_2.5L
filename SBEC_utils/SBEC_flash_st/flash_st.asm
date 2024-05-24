@@ -45,7 +45,7 @@ wait_0:
     ldY     #Buffer
 
 InitRetryCounter:
-    ldaA    #$2
+    ldaA    #$8
     staA    <RetryCounter
 
 ProgramBytes:

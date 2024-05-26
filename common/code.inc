@@ -891,7 +891,7 @@ loc_9A99:
 
 loc_9AB1:
         jsr     sub_9D4C
-        jsr     sub_BD34
+        jsr     CalculateSparkAdvance_MM
         jsr     sub_C04E
         jsr     sub_C184
         jsr     sub_C1F1
@@ -4899,9 +4899,9 @@ loc_BD30:
 locret_BD33:
         rts
 
-sub_BD34:
+CalculateSparkAdvance_MM:
         clr     Temp4
-        ldx     #unk_8083
+        ldx     #TL_Spark1A_RPMMAP
         ldaa    <BitFlags6d_t3
         bita    #$50
         bne     loc_BD51
@@ -4914,22 +4914,22 @@ loc_BD4A:
         brclr   <PIA2_Buffer_t3 $02 loc_BD51
 
 loc_BD4E:
-        ldx     #unk_811F
+        ldx     #TL_Spark1B_RPMMAP
 
 loc_BD51:
         ldaa    <EngineRPM_3D
         ldab    <MapValue2
-        jsr     sub_E72F
+        jsr     Lookup3DTableRoutine
         bpl     loc_BD5C
         ldaa    #$7F
 
 loc_BD5C:
         staa    Temp5
-        brclr   <IPL1 $10 loc_BD7B
-        ldx     #unk_81BC
+        brclr   <IPL1 $10 CalcSpark
+        ldx     #TL_Spark2A_RPMMAP
         ldaa    <EngineRPM_3D
         ldab    <MapValue2
-        jsr     sub_E72F
+        jsr     Lookup3DTableRoutine
         bpl     loc_BD71
         ldaa    #$7F
 
@@ -4941,21 +4941,21 @@ loc_BD71:
 loc_BD78:
         staa    Temp5
 
-loc_BD7B:
-        ldx     #unk_8258
+CalcSpark:
+        ldx     #TL_MapValFromRPMPtr
         ldab    <RPMTableOffset
         abx
         ldaa    $00,x
         cmpa    <MapValue2
         bcc     loc_BDCC
         bset    <BitFlags23 $40
-        ldx     #unk_8266
+        ldx     #TL_TL_8266
         ldaa    <CoolantTemp_fromTable_Scaled
         jsr     sub_E68D
         subb    #$20
         stab    Temp4
         ldaa    <IntakeTemp_fromTable_Scaled
-        ldx     #unk_826F
+        ldx     #TL_TL_826F
         jsr     sub_E68D
         subb    #$20
         addb    Temp4
@@ -5488,18 +5488,18 @@ sub_C147:
         staa    Temp0
         ldab    <MapValue
         ldx     #unk_850D
-        jsr     sub_E72F
+        jsr     Lookup3DTableRoutine
         staa    <o2LowLimitForInMiddleDetermination
         ldaa    Temp0
         ldab    <MapValue
         ldx     #unk_85A9
-        jsr     sub_E72F
+        jsr     Lookup3DTableRoutine
         staa    Temp1
         brclr   <BitFlags29 $08 loc_C181
         ldaa    Temp0
         ldab    <MapValue
         ldx     #unk_8ABA
-        jsr     sub_E72F
+        jsr     Lookup3DTableRoutine
         tab
         ldaa    Temp1
         sba
@@ -5971,7 +5971,7 @@ loc_C48E:
         staa    <Ram_85
         ldaa    <EngineRPM_3D
         ldab    <MapValue2
-        jsr     sub_E72F
+        jsr     Lookup3DTableRoutine
         staa    <Ram_86
         rts
 
@@ -11383,7 +11383,7 @@ sub_E721:
         staa    <EngineRPM_3D
         rts
 
-sub_E72F:
+Lookup3DTableRoutine:
         ldy     #loc_E7A4
         brclr   $02,x $FF loc_E73B
         ldy     #loc_E7A0
